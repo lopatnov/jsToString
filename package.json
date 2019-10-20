@@ -1,13 +1,13 @@
 {
   "name": "javascripttostring",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "Apache-2.0",
   "author": "lopatnov",
-  "description": "JavaScript to String converter function",
+  "description": "JavaScript value to string converter",
   "homepage": "https://github.com/lopatnov/jsToString#readme",
-  "main": "dist/jstostring.umd.js",
-  "module": "dist/jstostring.es5.js",
-  "typings": "dist/types/jstostring.d.ts",
+  "main": "dist/javascripttostring.umd.js",
+  "module": "dist/javascripttostring.es5.js",
+  "typings": "dist/types/javascripttostring.d.ts",
   "files": [
     "dist"
   ],
