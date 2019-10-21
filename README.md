@@ -2,6 +2,12 @@
 
 JavaScript value to string converter. It converts a runtime value into string value.
 
+# Install
+
+```
+npm i javascripttostring
+```
+
 ## Import package to the project
 
 ```
