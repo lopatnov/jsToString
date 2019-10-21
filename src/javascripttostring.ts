@@ -37,11 +37,20 @@ function javaScriptToString(obj: any): string {
     case "undefined":
       return String(obj);
     case "object":
-      for (prop in obj) {
-        if (obj.hasOwnProperty(prop))
-          str.push(prop + ": " + javaScriptToString(obj[prop]));
+      if (obj instanceof Map) {
+        let stringParams: string[] = [];
+        obj.forEach((value, key) => {
+          stringParams.push(`[${javaScriptToString(key)},${javaScriptToString(value)}]`);
+        });
+        str.push(`new Map([${stringParams.join(",")}])`);
+      } else {
+        for (prop in obj) {
+          if (obj.hasOwnProperty(prop))
+            str.push(prop + ": " + javaScriptToString(obj[prop]));
+        }
+        return "{" + str.join(",") + "}";
       }
-      return "{" + str.join(",") + "}";
+      break;
     case "regexp":
       str.push(obj.toString());
       break;
