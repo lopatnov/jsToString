@@ -1,5 +1,4 @@
-let javascripttostring = require('../src/javascripttostring');
-let j2s = javascripttostring.default;
+let j2s = require('../src/javascripttostring').default;
 
 describe("Boolean to String tests", () => {
   it("should convert true", () => {
