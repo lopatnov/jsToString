@@ -1,6 +1,6 @@
 let j2s = require('../src/javascripttostring').default;
 
-describe("Boolean to String tests", () => {
+describe("Boolean to String", () => {
   it("should convert true", () => {
     let actual = j2s(true);
     let expected = "true";
@@ -20,7 +20,7 @@ describe("Boolean to String tests", () => {
     expect(actual).toBe(expected);
   });
 });
-describe("Number to String tests", () => {
+describe("Number to String", () => {
   it("should convert 0", () => {
     let actual = j2s(0);
     let expected = "0";
@@ -62,5 +62,45 @@ describe("Number to String tests", () => {
 
     expect(actual1).toBe(expected1);
     expect(actual2).toBe(expected2);
+  });
+});
+describe("String to String", () => {
+  it("should convert empty string", () => {
+    let actual = j2s("");
+    let expected = "\"\"";
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert a string", () => {
+    let actual = j2s("JavaScript value to string converter. It converts a runtime value into string value.");
+    let expected = "\"JavaScript value to string converter. It converts a runtime value into string value.\"";
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert special symbols", () => {
+    let actual = j2s("Check symbols: '\"\t\n—“”⚡");
+    let expected = "\"Check symbols: '\\\"\\t\\n—“”⚡\"";
+
+    expect(actual).toBe(expected);
+  });
+});
+describe("Function to String (need improve)", () => {
+  it("should convert an anonymous function", () => {
+    let actual = j2s(function (a:any, b:any, c:any) { return a + b + c; });
+    let expected = "function (a, b, c) { return a + b + c; }";
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert an named function", () => {
+    let actual = j2s(function sum(a:any, b:any, c:any) { return a + b + c; });
+    let expected = "function sum(a, b, c) { return a + b + c; }";
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert lambda function", () => {
+    let actual = j2s((a:any, b:any, c:any) => { return a + b + c; });
+    let expected = "function (a, b, c) { return a + b + c; }";
+
+    expect(actual).toBe(expected);
   });
 });
