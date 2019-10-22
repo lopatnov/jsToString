@@ -43,6 +43,13 @@
                   });
                   str.push("new Map([" + stringParams_1.join(",") + "])");
               }
+              if (obj instanceof Set) {
+                  var stringParams_2 = [];
+                  obj.forEach(function (value1, value2, set) {
+                      stringParams_2.push("" + javaScriptToString(value2));
+                  });
+                  str.push("new Set([" + stringParams_2.join(",") + "])");
+              }
               else {
                   for (prop in obj) {
                       if (obj.hasOwnProperty(prop))

@@ -43,6 +43,12 @@ function javaScriptToString(obj: any): string {
           stringParams.push(`[${javaScriptToString(key)},${javaScriptToString(value)}]`);
         });
         str.push(`new Map([${stringParams.join(",")}])`);
+      } if (obj instanceof Set){
+        let stringParams: string[] = [];
+        obj.forEach((value1, value2, set) => {
+          stringParams.push(`${javaScriptToString(value2)}`);
+        });
+        str.push(`new Set([${stringParams.join(",")}])`);
       } else {
         for (prop in obj) {
           if (obj.hasOwnProperty(prop))

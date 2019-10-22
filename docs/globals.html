@@ -2392,6 +2392,10 @@ img {
 				<h1>JavaScriptToString</h1>
 			</a>
 			<p>JavaScript value to string converter. It converts a runtime value into string value.</p>
+			<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+				<h1>Install</h1>
+			</a>
+			<pre><code>npm <span class="hljs-selector-tag">i</span> javascripttostring</code></pre>
 			<a href="#import-package-to-the-project" id="import-package-to-the-project" style="color: inherit; text-decoration: none;">
 				<h2>Import package to the project</h2>
 			</a>
@@ -2399,22 +2403,39 @@ img {
 			<a href="#convert-javascript-values-into-string-values" id="convert-javascript-values-into-string-values" style="color: inherit; text-decoration: none;">
 				<h2>Convert JavaScript values into string values</h2>
 			</a>
-			<pre><code><span class="hljs-keyword">let</span> myStringOfString = javaScriptToString(<span class="hljs-string">'Hello world'</span>);
+			<p><strong>function javaScriptToString(obj: any) =&gt; string // Converts JavaScript value (obj) to string</strong></p>
+			<pre><code>let myStringOfString = javaScriptToString('Hello world');
+/* expected myStringOfString value: <span class="hljs-string">"\"</span>Hello world\<span class="hljs-string">""</span> */
 
-<span class="hljs-keyword">let</span> myStringOfArray = javaScriptToString([<span class="hljs-string">"Hello"</span>, <span class="hljs-string">"World"</span>, <span class="hljs-string">"."</span>, <span class="hljs-string">"How"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"you"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"?"</span>]);
+let myStringOfArray = javaScriptToString([<span class="hljs-string">"Hello"</span>, <span class="hljs-string">"World"</span>, <span class="hljs-string">"."</span>, <span class="hljs-string">"How"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"you"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"?"</span>]);
+/* expected myStringOfArray value: <span class="hljs-string">"[\"</span>Hello\<span class="hljs-string">",\"</span>World\<span class="hljs-string">",\"</span>.\<span class="hljs-string">",\"</span>How\<span class="hljs-string">",\"</span>do\<span class="hljs-string">",\"</span>you\<span class="hljs-string">",\"</span>do\<span class="hljs-string">",\"</span>?\<span class="hljs-string">"]"</span> */
 
-<span class="hljs-keyword">let</span> myObjectString = javaScriptToString({
-    <span class="hljs-attr">friend1</span>: <span class="hljs-string">"Shurik"</span>,
-    <span class="hljs-attr">friend2</span>: <span class="hljs-string">"Alex"</span>,
-    <span class="hljs-attr">friends</span>: {
-        <span class="hljs-attr">friend3</span>: <span class="hljs-number">123456</span>,
-        <span class="hljs-attr">friend4</span>: {},
-        <span class="hljs-attr">friend5</span>: [<span class="hljs-string">"Hola"</span>, <span class="hljs-string">"amigo"</span>],
-        <span class="hljs-attr">friend6</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"How you doing?"</span>);
+let myObjectString = javaScriptToString({
+    friend1: <span class="hljs-string">"Shurik"</span>,
+    friend2: <span class="hljs-string">"Alex"</span>,
+    friends: {
+        friend3: <span class="hljs-number">123456</span>,
+        friend4: {},
+        friend5: [<span class="hljs-string">"Hola"</span>, <span class="hljs-string">"amigo"</span>],
+        friend6: () =&gt; {
+            console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"How you doing?"</span>);
         }
     }
-});</code></pre>
+});
+/* expected myObjectString value:
+<span class="hljs-string">"{friend1: \"</span>Shurik\<span class="hljs-string">",friend2: \"</span>Alex\<span class="hljs-string">",friends: {friend3: 123456,friend4: {},friend5: [\"</span>Hola\<span class="hljs-string">",\"</span>amigo\<span class="hljs-string">"],friend6: () =&gt; {</span>
+            console.<span class="hljs-built_in">log</span>(\<span class="hljs-string">"How you doing?\"</span>);
+        }}}<span class="hljs-string">"</span>
+*/
+
+let myFunctionString = javaScriptToString(function(a,b) {
+  console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"Just a function"</span>);
+})
+/* expected myFunctionString:
+<span class="hljs-string">"function(a,b) {</span>
+  console.<span class="hljs-built_in">log</span>(\<span class="hljs-string">"Just a function\"</span>);
+}<span class="hljs-string">"</span>
+*/</code></pre>
 			<a href="#rights-and-agreements" id="rights-and-agreements" style="color: inherit; text-decoration: none;">
 				<h1>Rights and Agreements</h1>
 			</a>
@@ -2448,7 +2469,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">get<wbr>Object<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;(function() {let types: any &#x3D; {},typesToString: any &#x3D; types.toString;[&quot;Boolean&quot;,&quot;Number&quot;,&quot;String&quot;,&quot;Function&quot;,&quot;Array&quot;,&quot;Date&quot;,&quot;RegExp&quot;,&quot;Object&quot;,&quot;Error&quot;].forEach(function(name) {types[&quot;[object &quot; + name + &quot;]&quot;] &#x3D; name.toLowerCase();});return (obj: any): string &#x3D;&gt; {return obj &#x3D;&#x3D; null? obj + &quot;&quot;: typeof obj &#x3D;&#x3D;&#x3D; &quot;object&quot; || typeof obj &#x3D;&#x3D;&#x3D; &quot;function&quot;? types[typesToString.call(obj)] || &quot;object&quot;: typeof obj;};})()</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/ecce772/src/javascripttostring.ts#L1">javascripttostring.ts:1</a></li>
+						<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/78f0de8/src/javascripttostring.ts#L1">javascripttostring.ts:1</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2465,7 +2486,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/ecce772/src/javascripttostring.ts#L32">javascripttostring.ts:32</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/78f0de8/src/javascripttostring.ts#L32">javascripttostring.ts:32</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
