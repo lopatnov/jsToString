@@ -16,7 +16,7 @@ import javaScriptToString from 'javascripttostring';
 
 ## Convert JavaScript values into string values
 
-    function javaScriptToString(obj: any) => string // Converts JavaScript value (obj) to string
+**function javaScriptToString(obj: any) => string // Converts JavaScript value (obj) to string**
 
 ```
 let myStringOfString = javaScriptToString('Hello world');
