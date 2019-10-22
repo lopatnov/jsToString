@@ -1,4 +1,4 @@
-let j2s = require('../src/javascripttostring').default;
+let j2s = require("../src/javascripttostring").default;
 
 describe("Boolean to String", () => {
   it("should convert true", () => {
@@ -67,40 +67,60 @@ describe("Number to String", () => {
 describe("String to String", () => {
   it("should convert empty string", () => {
     let actual = j2s("");
-    let expected = "\"\"";
+    let expected = '""';
 
     expect(actual).toBe(expected);
   });
   it("should convert a string", () => {
-    let actual = j2s("JavaScript value to string converter. It converts a runtime value into string value.");
-    let expected = "\"JavaScript value to string converter. It converts a runtime value into string value.\"";
+    let actual = j2s(
+      "JavaScript value to string converter. It converts a runtime value into string value."
+    );
+    let expected =
+      '"JavaScript value to string converter. It converts a runtime value into string value."';
 
     expect(actual).toBe(expected);
   });
   it("should convert special symbols", () => {
     let actual = j2s("Check symbols: '\"\t\n—“”⚡");
-    let expected = "\"Check symbols: '\\\"\\t\\n—“”⚡\"";
+    let expected = '"Check symbols: \'\\"\\t\\n—“”⚡"';
 
     expect(actual).toBe(expected);
   });
 });
-describe("Function to String (need improve)", () => {
+describe("Function to String", () => {
   it("should convert an anonymous function", () => {
-    let actual = j2s(function (a:any, b:any, c:any) { return a + b + c; });
-    let expected = "function (a, b, c) { return a + b + c; }";
+    let stringFunction = j2s(function(a: any, b: any, c: any) {
+      return a + b + c;
+    });
+    let actual = Function("return " + stringFunction)();
+    let expected = 6;
 
-    expect(actual).toBe(expected);
+    expect(actual(1, 2, 3)).toBe(expected);
   });
   it("should convert an named function", () => {
-    let actual = j2s(function sum(a:any, b:any, c:any) { return a + b + c; });
-    let expected = "function sum(a, b, c) { return a + b + c; }";
+    function sum(...numbers: number[]) {
+      console.log(numbers);
+      return Array.prototype.reduce.call(
+        numbers,
+        (accumulator: any, currentValue: any) => {
+          return accumulator + currentValue;
+        }, 0
+      );
+    }
 
-    expect(actual).toBe(expected);
+    let stringFunction = j2s(sum);
+    let actual = Function("return " + stringFunction)();
+    let expected = 10;
+
+    expect(actual(1,2,3,4)).toBe(expected);
   });
   it("should convert lambda function", () => {
-    let actual = j2s((a:any, b:any, c:any) => { return a + b + c; });
-    let expected = "function (a, b, c) { return a + b + c; }";
+    let stringFunction = j2s((a: any, b: any) => {
+      return a * b;
+    });
+    let actual = Function("return " + stringFunction)();
+    let expected = 12;
 
-    expect(actual).toBe(expected);
+    expect(actual(3,4)).toBe(expected);
   });
 });
