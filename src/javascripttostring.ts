@@ -40,13 +40,16 @@ function javaScriptToString(obj: any): string {
       if (obj instanceof Map) {
         let stringParams: string[] = [];
         obj.forEach((value, key) => {
-          stringParams.push(`[${javaScriptToString(key)},${javaScriptToString(value)}]`);
+          stringParams.push(
+            `[${javaScriptToString(key)},${javaScriptToString(value)}]`
+          );
         });
         str.push(`new Map([${stringParams.join(",")}])`);
-      } if (obj instanceof Set){
+      }
+      if (obj instanceof Set) {
         let stringParams: string[] = [];
         obj.forEach((value1, value2, set) => {
-          stringParams.push(`${javaScriptToString(value2)}`);
+          stringParams.push(javaScriptToString(value2));
         });
         str.push(`new Set([${stringParams.join(",")}])`);
       } else {
@@ -111,6 +114,9 @@ function javaScriptToString(obj: any): string {
         fileName = JSON.stringify(obj.fileName),
         lineNumber = JSON.stringify(obj.lineNumber);
       str.push(`new Error(${message}, ${fileName}, ${lineNumber})`);
+      break;
+    case "symbol":
+      str.push(`Symbol("${obj.description}")`);
       break;
     default:
       str.push(JSON.stringify(obj));

@@ -46,7 +46,7 @@
               if (obj instanceof Set) {
                   var stringParams_2 = [];
                   obj.forEach(function (value1, value2, set) {
-                      stringParams_2.push("" + javaScriptToString(value2));
+                      stringParams_2.push(javaScriptToString(value2));
                   });
                   str.push("new Set([" + stringParams_2.join(",") + "])");
               }
@@ -112,6 +112,9 @@
           case "error":
               var message = JSON.stringify(obj.message), fileName = JSON.stringify(obj.fileName), lineNumber = JSON.stringify(obj.lineNumber);
               str.push("new Error(" + message + ", " + fileName + ", " + lineNumber + ")");
+              break;
+          case "symbol":
+              str.push("Symbol(\"" + obj.description + "\")");
               break;
           default:
               str.push(JSON.stringify(obj));
