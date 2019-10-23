@@ -77,6 +77,9 @@
                     str.push("new Date(" + obj.toISOString() + ")");
                 }
                 break;
+            case "bigint":
+                str.push("BigInt(" + obj + ")");
+                break;
             case "number":
                 if (Number.isNaN(obj)) {
                     str.push("Number.NaN");
@@ -114,7 +117,8 @@
                 str.push("new Error(" + message + ", " + fileName + ", " + lineNumber + ")");
                 break;
             case "symbol":
-                str.push("Symbol(\"" + obj.description + "\")");
+                var description = obj.description ? "\"" + obj.description + "\"" : '';
+                str.push("Symbol(" + description + ")");
                 break;
             default:
                 str.push(JSON.stringify(obj));

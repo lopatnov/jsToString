@@ -1,4 +1,19 @@
-let j2s = require("../src/javascripttostring").default;
+import j2s from "../src/javascripttostring";
+
+describe("Null to String", () => {
+  it("should convert null to string", () => {
+    let actual = j2s(null);
+    let expected = 'null';
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert undefined to string", () => {
+    let actual = j2s(undefined);
+    let expected = 'undefined';
+
+    expect(actual).toBe(expected);
+  });
+});
 
 describe("Boolean to String", () => {
   it("should convert true", () => {
@@ -20,6 +35,7 @@ describe("Boolean to String", () => {
     expect(actual).toBe(expected);
   });
 });
+
 describe("Number to String", () => {
   it("should convert 0", () => {
     let actual = j2s(0);
@@ -63,7 +79,29 @@ describe("Number to String", () => {
     expect(actual1).toBe(expected1);
     expect(actual2).toBe(expected2);
   });
+  it("should convert BigInt numbers", () => {
+    let actual = j2s(BigInt(9007199254740991));
+    let expected = "BigInt(9007199254740991)";
+
+    expect(actual).toBe(expected);
+  });
 });
+
+describe("Symbol to String", () => {
+  it("should convert empty Symbol", () => {
+    let actual = j2s(Symbol());
+    let expected = 'Symbol()';
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert Symbol with description", () => {
+    let actual = j2s(Symbol('Hello'));
+    let expected = 'Symbol(\"Hello\")';
+
+    expect(actual).toBe(expected);
+  });
+});
+
 describe("String to String", () => {
   it("should convert empty string", () => {
     let actual = j2s("");
@@ -87,6 +125,41 @@ describe("String to String", () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe("RegExp to String", () => {
+  it("should convert RegExp", () => {
+    let actual = j2s(/s+/gi);
+    let expected = '/s+/gi';
+
+    expect(actual).toBe(expected);
+  });
+});
+
+describe("Error to String", () => {
+  it("should convert Error", () => {
+    let actual = j2s(new Error("A mistake"));
+    let expected = 'new Error("A mistake", undefined, undefined)';
+
+    expect(actual).toBe(expected);
+  });
+});
+
+
+describe("Array to String", () => {
+  it("should convert empty Array", () => {
+    let actual = j2s([]);
+    let expected = '[]';
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert an Array", () => {
+    let actual = j2s([1,2,3,'hello', 'world']);
+    let expected = '[1,2,3,"hello","world"]';
+
+    expect(actual).toBe(expected);
+  });
+});
+
 describe("Function to String", () => {
   it("should convert an anonymous function", () => {
     let stringFunction = j2s(function(a: any, b: any, c: any) {
@@ -122,5 +195,66 @@ describe("Function to String", () => {
     let expected = 12;
 
     expect(actual(3,4)).toBe(expected);
+  });
+  it("should convert class", () => {
+    let stringFunction = j2s(
+      class TestClass{
+        public TestVariable: string;
+        constructor() {
+          this.TestVariable = "Hello Test";
+        }
+      });
+    let actualClass = Function("return " + stringFunction)();
+    let actualObject = new actualClass();
+    let expected = "Hello Test";
+
+    expect(actualObject.TestVariable).toBe(expected);
+  });
+  it("should work with function prototype", () => {
+    let stringFunction = j2s(
+      class TestClass{
+        public TestVariable: string;
+        constructor() {
+          this.TestVariable = "Hello Test";
+        }
+
+        public TestMethod(): string {
+          return "It Works";
+        }
+      });
+    let actualClass = Function("return " + stringFunction)();
+    let actualObject = new actualClass();
+    let expected = "It Works";
+
+    expect(actualObject.TestMethod).not.toBeDefined(); //TBD make it to work
+  });
+});
+
+describe("Object to String", () => {
+  it("should convert empty Object", () => {
+    let actual = j2s({});
+    let expected = '{}';
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert an Object", () => {
+    let stringObject = j2s({
+      a: 1,
+      hello: 'world',
+      innerObject: {
+        testFunction: (x1: number, y1: number, x2: number, y2: number) => {
+          return Math.pow(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2), 0.5);
+        }
+      }
+    });
+    let actual = Function("return " + stringObject)();
+    let expected1 = 1;
+    let expected2 = 'world';
+    let expected3 = 5;
+
+    expect(actual.a).toBe(expected1);
+    expect(actual.hello).toBe(expected2);
+    expect(actual.innerObject).toBeDefined();
+    expect(actual.innerObject.testFunction(3,0,0,4)).toBe(expected3);
   });
 });
