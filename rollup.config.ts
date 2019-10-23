@@ -7,24 +7,38 @@ import json from 'rollup-plugin-json';
 
 const pkg = require('./package.json');
 
-const libraryName = 'javascripttostring';
+const libraryName = 'JavaScriptToString';
 
 export default {
-  input: `src/${libraryName}.ts`,
+  input: `src/${libraryName.toLowerCase()}.ts`,
   output: [
-    { file: pkg.main, name: camelCase(libraryName), format: 'umd', sourcemap: true },
-    { file: pkg.module, format: 'es', sourcemap: true },
+    {
+      file: pkg.main,
+      name: camelCase(libraryName),
+      format: 'umd',
+      sourcemap: true
+    },
+    {
+      file: pkg.module,
+      format: 'es',
+      sourcemap: true
+    },
   ],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: [],
+  external: [
+    ...Object.keys(pkg.peerDependencies || {})
+  ],
   watch: {
-    include: 'src/**',
+    include: 'src/**/*',
   },
   plugins: [
     // Allow json resolution
     json(),
     // Compile TypeScript files
-    typescript({ useTsconfigDeclarationDir: true }),
+    typescript({
+      typescript: require('typescript'),
+      useTsconfigDeclarationDir: true
+    }),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs(),
     // Allow node_modules resolution, so you can use 'external' to control

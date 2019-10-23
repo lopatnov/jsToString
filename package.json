@@ -37,5 +37,8 @@
     "ts-jest": "^24.1.0",
     "typedoc": "^0.15.0",
     "typescript": "^3.6.4"
+  },
+  "dependencies": {
+    "get-internal-type": "^1.1.2"
   }
 }

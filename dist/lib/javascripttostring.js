@@ -1,34 +1,16 @@
 "use strict";
-var getObjectType = (function () {
-    var types = {}, typesToString = types.toString;
-    [
-        "Boolean",
-        "Number",
-        "String",
-        "Function",
-        "Array",
-        "Date",
-        "RegExp",
-        "Object",
-        "Error"
-    ].forEach(function (name) {
-        types["[object " + name + "]"] = name.toLowerCase();
-    });
-    return function (obj) {
-        return obj == null
-            ? obj + ""
-            : typeof obj === "object" || typeof obj === "function"
-                ? types[typesToString.call(obj)] || "object"
-                : typeof obj;
-    };
-})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var get_internal_type_1 = __importDefault(require("get-internal-type"));
 /**
  * Converts JavaScript value to string
  * @param obj the value of any type
  */
 function javaScriptToString(obj) {
     var prop, str = [];
-    switch (getObjectType(obj)) {
+    switch (get_internal_type_1.default(obj)) {
         case "undefined":
             return String(obj);
         case "object":

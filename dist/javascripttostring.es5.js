@@ -1,33 +1,32 @@
-var getObjectType = (function () {
-    var types = {}, typesToString = types.toString;
-    [
-        "Boolean",
-        "Number",
-        "String",
-        "Function",
-        "Array",
-        "Date",
-        "RegExp",
-        "Object",
-        "Error"
-    ].forEach(function (name) {
-        types["[object " + name + "]"] = name.toLowerCase();
-    });
-    return function (obj) {
-        return obj == null
-            ? obj + ""
-            : typeof obj === "object" || typeof obj === "function"
-                ? types[typesToString.call(obj)] || "object"
-                : typeof obj;
-    };
-})();
+var types = {}, typesToString = types.toString;
+[
+    "Boolean",
+    "Number",
+    "String",
+    "Function",
+    "Array",
+    "Date",
+    "RegExp",
+    "Object",
+    "Error"
+].forEach(function (name) {
+    types["[object " + name + "]"] = name.toLowerCase();
+});
+function getInternalType(obj) {
+    return obj == null
+        ? obj + ""
+        : typeof obj === "object" || typeof obj === "function"
+            ? types[typesToString.call(obj)] || "object"
+            : typeof obj;
+}
+
 /**
  * Converts JavaScript value to string
  * @param obj the value of any type
  */
 function javaScriptToString(obj) {
     var prop, str = [];
-    switch (getObjectType(obj)) {
+    switch (getInternalType(obj)) {
         case "undefined":
             return String(obj);
         case "object":
@@ -116,5 +115,6 @@ function javaScriptToString(obj) {
     }
     return str.join(",");
 }
-exports.default = javaScriptToString;
+
+export default javaScriptToString;
 //# sourceMappingURL=javascripttostring.es5.js.map
