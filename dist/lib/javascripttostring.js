@@ -95,8 +95,27 @@ function javaScriptToString(obj) {
             str.push("new Error(" + message + ", " + fileName + ", " + lineNumber + ")");
             break;
         case "symbol":
-            var description = obj.description ? "\"" + obj.description + "\"" : '';
-            str.push("Symbol(" + description + ")");
+            switch (obj) {
+                case Symbol.asyncIterator:
+                case Symbol.hasInstance:
+                case Symbol.isConcatSpreadable:
+                case Symbol.iterator:
+                case Symbol.match:
+                case Symbol.prototype:
+                case Symbol.replace:
+                case Symbol.search:
+                case Symbol.species:
+                case Symbol.split:
+                case Symbol.toPrimitive:
+                case Symbol.toStringTag:
+                case Symbol.unscopables:
+                    str.push(obj.description);
+                    break;
+                default:
+                    var description = obj.description ? "\"" + obj.description + "\"" : "";
+                    str.push("Symbol(" + description + ")");
+                    break;
+            }
             break;
         default:
             str.push(JSON.stringify(obj));

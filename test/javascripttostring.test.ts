@@ -100,6 +100,11 @@ describe("Symbol to String", () => {
 
     expect(actual).toBe(expected);
   });
+  it("should convert built-in symbols", () => {
+    expect(j2s(Symbol.iterator)).toBe('Symbol.iterator');
+    expect(j2s(Symbol.asyncIterator)).toBe('Symbol.asyncIterator');
+    expect(j2s(Symbol.hasInstance)).toBe('Symbol.hasInstance');
+  });
 });
 
 describe("String to String", () => {

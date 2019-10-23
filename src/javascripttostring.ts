@@ -1,4 +1,4 @@
-import getObjectType from 'get-internal-type';
+import getObjectType from "get-internal-type";
 
 /**
  * Converts JavaScript value to string
@@ -54,7 +54,7 @@ function javaScriptToString(obj: any): string {
       }
       break;
     case "bigint":
-      str.push(`BigInt(${obj})`)
+      str.push(`BigInt(${obj})`);
       break;
     case "number":
       if (Number.isNaN(obj)) {
@@ -94,8 +94,27 @@ function javaScriptToString(obj: any): string {
       str.push(`new Error(${message}, ${fileName}, ${lineNumber})`);
       break;
     case "symbol":
-      let description = obj.description ? `"${obj.description}"` : '';
-      str.push(`Symbol(${description})`);
+      switch (obj) {
+        case Symbol.asyncIterator:
+        case Symbol.hasInstance:
+        case Symbol.isConcatSpreadable:
+        case Symbol.iterator:
+        case Symbol.match:
+        case Symbol.prototype:
+        case Symbol.replace:
+        case Symbol.search:
+        case Symbol.species:
+        case Symbol.split:
+        case Symbol.toPrimitive:
+        case Symbol.toStringTag:
+        case Symbol.unscopables:
+          str.push(obj.description);
+          break;
+        default:
+          let description = obj.description ? `"${obj.description}"` : "";
+          str.push(`Symbol(${description})`);
+          break;
+      }
       break;
     default:
       str.push(JSON.stringify(obj));
