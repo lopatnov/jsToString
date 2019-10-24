@@ -2380,6 +2380,12 @@ img {
 		<li class=" tsd-kind-function">
 			<a href="globals.html#javascripttostring" class="tsd-kind-icon">java<wbr>Script<wbr>ToString</a>
 		</li>
+		<li class=" tsd-kind-function">
+			<a href="globals.html#strignifyref" class="tsd-kind-icon">strignify<wbr>Ref</a>
+		</li>
+		<li class=" tsd-kind-function">
+			<a href="globals.html#stringify" class="tsd-kind-icon">stringify</a>
+		</li>
 	</ul>
 </nav>
 <div class="container container-main">
@@ -2447,6 +2453,8 @@ let myFunctionString = javaScriptToString(function(a,b) {
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function"><a href="globals.html#javascripttostring" class="tsd-kind-icon">java<wbr>Script<wbr>ToString</a></li>
+							<li class="tsd-kind-function"><a href="globals.html#strignifyref" class="tsd-kind-icon">strignify<wbr>Ref</a></li>
+							<li class="tsd-kind-function"><a href="globals.html#stringify" class="tsd-kind-icon">stringify</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2464,7 +2472,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9543881/src/javascripttostring.ts#L7">javascripttostring.ts:7</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/23854a4/src/javascripttostring.ts#L166">javascripttostring.ts:166</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2479,6 +2487,58 @@ let myFunctionString = javaScriptToString(function(a,b) {
 								<div class="tsd-comment tsd-typography">
 									<p>the value of any type</p>
 								</div>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function">
+				<a name="strignifyref" class="tsd-anchor"></a>
+				<h3>strignify<wbr>Ref</h3>
+				<ul class="tsd-signatures tsd-kind-function">
+					<li class="tsd-signature tsd-kind-icon">strignify<wbr>Ref<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, references<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/23854a4/src/javascripttostring.ts#L142">javascripttostring.ts:142</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>value: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>references: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function">
+				<a name="stringify" class="tsd-anchor"></a>
+				<h3>stringify</h3>
+				<ul class="tsd-signatures tsd-kind-function">
+					<li class="tsd-signature tsd-kind-icon">stringify<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, references<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/23854a4/src/javascripttostring.ts#L3">javascripttostring.ts:3</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>value: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> references: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 							</li>
 						</ul>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>

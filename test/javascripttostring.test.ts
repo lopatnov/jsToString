@@ -159,7 +159,7 @@ describe("Array to String", () => {
   });
   it("should convert an Array", () => {
     let actual = j2s([1,2,3,'hello', 'world']);
-    let expected = '[1,2,3,"hello","world"]';
+    let expected = '[1, 2, 3, "hello", "world"]';
 
     expect(actual).toBe(expected);
   });
@@ -216,22 +216,23 @@ describe("Function to String", () => {
     expect(actualObject.TestVariable).toBe(expected);
   });
   it("should work with function prototype", () => {
-    let stringFunction = j2s(
-      class TestClass{
-        public TestVariable: string;
-        constructor() {
-          this.TestVariable = "Hello Test";
-        }
+    class TestClass {
+      public TestVariable: string;
+      constructor() {
+        this.TestVariable = "Hello Test";
+      }
 
-        public TestMethod(): string {
-          return "It Works";
-        }
-      });
+      public TestMethod(): string {
+        return "It Works";
+      }
+    }
+
+    let stringFunction = j2s(TestClass);
     let actualClass = Function("return " + stringFunction)();
     let actualObject = new actualClass();
     let expected = "It Works";
 
-    expect(actualObject.TestMethod).not.toBeDefined(); //TBD make it to work
+    expect(actualObject.TestMethod()).toBe(expected); //TBD make it to work
   });
 });
 

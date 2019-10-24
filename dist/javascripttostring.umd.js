@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.javaScriptToString = factory());
-}(this, function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = global || self, factory(global.javaScriptToString = {}));
+}(this, function (exports) { 'use strict';
 
     var types = {}, typesToString = types.toString;
     [
@@ -26,98 +26,44 @@
                 : typeof obj;
     }
 
-    /**
-     * Converts JavaScript value to string
-     * @param obj the value of any type
-     */
-    function javaScriptToString(obj) {
-        var prop, str = [];
-        switch (getInternalType(obj)) {
+    function stringify(value, references) {
+        var referenceValues = references || [value];
+        switch (getInternalType(value)) {
             case "undefined":
-                return String(obj);
-            case "object":
-                if (obj instanceof Map) {
-                    var stringParams_1 = [];
-                    obj.forEach(function (value, key) {
-                        stringParams_1.push("[" + javaScriptToString(key) + "," + javaScriptToString(value) + "]");
-                    });
-                    str.push("new Map([" + stringParams_1.join(",") + "])");
-                }
-                if (obj instanceof Set) {
-                    var stringParams_2 = [];
-                    obj.forEach(function (value1, value2, set) {
-                        stringParams_2.push(javaScriptToString(value2));
-                    });
-                    str.push("new Set([" + stringParams_2.join(",") + "])");
-                }
-                else {
-                    for (prop in obj) {
-                        if (obj.hasOwnProperty(prop))
-                            str.push(prop + ": " + javaScriptToString(obj[prop]));
-                    }
-                    return "{" + str.join(",") + "}";
-                }
-                break;
+                return "undefined";
+            case "null":
+                return "null";
+            case "boolean":
             case "regexp":
-                str.push(obj.toString());
-                break;
-            case "array":
-                for (prop = 0; prop < obj.length; prop++) {
-                    str.push(javaScriptToString(obj[prop]));
-                }
-                return "[" + str.join(",") + "]";
-            case "function":
-                str.push(obj.toString());
-                break;
-            case "date":
-                if (isNaN(obj.getTime())) {
-                    str.push("new Date(" + obj.toString() + ")");
-                }
-                else {
-                    str.push("new Date(" + obj.toISOString() + ")");
-                }
-                break;
-            case "bigint":
-                str.push("BigInt(" + obj + ")");
-                break;
+                return String(value);
+            case "string":
+                return JSON.stringify(value);
             case "number":
-                if (Number.isNaN(obj)) {
-                    str.push("Number.NaN");
+                if (Number.isNaN(value)) {
+                    return "Number.NaN";
                 }
-                else {
-                    switch (obj) {
-                        case Number.POSITIVE_INFINITY:
-                            str.push("Number.POSITIVE_INFINITY");
-                            break;
-                        case Number.NEGATIVE_INFINITY:
-                            str.push("Number.NEGATIVE_INFINITY");
-                            break;
-                        case Number.EPSILON:
-                            str.push("Number.EPSILON");
-                            break;
-                        case Number.MAX_SAFE_INTEGER:
-                            str.push("Number.MAX_SAFE_INTEGER");
-                            break;
-                        case Number.MIN_SAFE_INTEGER:
-                            str.push("Number.MIN_SAFE_INTEGER");
-                            break;
-                        case Number.MAX_VALUE:
-                            str.push("Number.MAX_VALUE");
-                            break;
-                        case Number.MIN_VALUE:
-                            str.push("Number.MIN_VALUE");
-                            break;
-                        default:
-                            str.push(JSON.stringify(obj));
-                    }
+                switch (value) {
+                    case Number.POSITIVE_INFINITY:
+                        return "Number.POSITIVE_INFINITY";
+                    case Number.NEGATIVE_INFINITY:
+                        return "Number.NEGATIVE_INFINITY";
+                    case Number.EPSILON:
+                        return "Number.EPSILON";
+                    case Number.MAX_SAFE_INTEGER:
+                        return "Number.MAX_SAFE_INTEGER";
+                    case Number.MIN_SAFE_INTEGER:
+                        return "Number.MIN_SAFE_INTEGER";
+                    case Number.MAX_VALUE:
+                        return "Number.MAX_VALUE";
+                    case Number.MIN_VALUE:
+                        return "Number.MIN_VALUE";
+                    default:
+                        return String(value);
                 }
-                break;
-            case "error":
-                var message = JSON.stringify(obj.message), fileName = JSON.stringify(obj.fileName), lineNumber = JSON.stringify(obj.lineNumber);
-                str.push("new Error(" + message + ", " + fileName + ", " + lineNumber + ")");
-                break;
+            case "bigint":
+                return "BigInt(" + value + ")";
             case "symbol":
-                switch (obj) {
+                switch (value) {
                     case Symbol.asyncIterator:
                     case Symbol.hasInstance:
                     case Symbol.isConcatSpreadable:
@@ -131,21 +77,98 @@
                     case Symbol.toPrimitive:
                     case Symbol.toStringTag:
                     case Symbol.unscopables:
-                        str.push(obj.description);
-                        break;
+                        return value.description;
                     default:
-                        var description = obj.description ? "\"" + obj.description + "\"" : "";
-                        str.push("Symbol(" + description + ")");
-                        break;
+                        var description = value.description ? "\"" + value.description + "\"" : "";
+                        return "Symbol(" + description + ")";
                 }
-                break;
+            case "date":
+                if (isNaN(value.getTime())) {
+                    return "new Date(" + value.toString() + ")";
+                }
+                return "new Date(" + value.toISOString() + ")";
+            case "error":
+                var message = JSON.stringify(value.message), fileName = JSON.stringify(value.fileName), lineNumber = JSON.stringify(value.lineNumber);
+                return "new Error(" + message + ", " + fileName + ", " + lineNumber + ")";
+            case "array":
+                if (value.length === 0)
+                    return "[]";
+                value[0] = strignifyRef(value[0], referenceValues);
+                var arrayValues = value.reduce(function (x1, x2) { return x1 + ", " + strignifyRef(x2, referenceValues); });
+                return "[" + arrayValues + "]";
+            case "set":
+                var setValues_1 = [];
+                value.forEach(function (value1, value2, set) {
+                    setValues_1.push(strignifyRef(value2, referenceValues));
+                });
+                return "new Set([" + setValues_1.join(", ") + "])";
+            case "map":
+                var mapValues_1 = [];
+                value.forEach(function (indexValue, key) {
+                    mapValues_1.push("[" + strignifyRef(key, referenceValues) + "," + strignifyRef(indexValue, referenceValues) + "]");
+                });
+                return "new Map([" + mapValues_1.join(", ") + "])";
+            case "object":
+                var objectValues = [];
+                for (var propertyName in value) {
+                    if (value.hasOwnProperty(propertyName))
+                        objectValues.push(propertyName + ": " + strignifyRef(value[propertyName], referenceValues));
+                }
+                if (objectValues.length === 0)
+                    return '{}';
+                return "{\n" + objectValues.join(",\n") + "\n}";
+            case "function":
+                var functionName = value.name || "anonymousFunction";
+                var functionObject = "";
+                var functionPrototype = "";
+                for (var propertyName in value) {
+                    if (value.hasOwnProperty(propertyName))
+                        functionObject += functionName + "." + propertyName + " = " + strignifyRef(value[propertyName], referenceValues) + ";\n";
+                }
+                for (var propertyName in value.prototype) {
+                    if (value.prototype.hasOwnProperty(propertyName))
+                        functionObject += functionName + ".prototype." + propertyName + " = " + strignifyRef(value.prototype[propertyName], referenceValues) + ";\n";
+                }
+                if (!functionObject && !functionPrototype) {
+                    return String(value);
+                }
+                return "(function(){\n var " + functionName + " = " + String(value) + ";\n " + functionObject + "\n " + functionPrototype + "\n return " + functionName + ";\n}())";
             default:
-                str.push(JSON.stringify(obj));
+                return JSON.stringify(value);
         }
-        return str.join(",");
+    }
+    function strignifyRef(value, references) {
+        switch (getInternalType(value)) {
+            case "array":
+            case "object":
+            case "map":
+            case "set":
+            case "function":
+                if (references.indexOf(value) < 0) {
+                    var referencesLength = references.length;
+                    references.push(value);
+                    var refString = stringify(value, references);
+                    references.splice(referencesLength);
+                    return refString;
+                }
+                return "null";
+            default:
+                return stringify(value);
+        }
+    }
+    /**
+     * Converts JavaScript value to string
+     * @param obj the value of any type
+     */
+    function javaScriptToString(obj) {
+        return stringify(obj);
     }
 
-    return javaScriptToString;
+    exports.default = javaScriptToString;
+    exports.strignifyRef = strignifyRef;
+    exports.stringify = stringify;
+
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
 //# sourceMappingURL=javascripttostring.umd.js.map
