@@ -28,6 +28,11 @@
                 : typeof obj;
     }
 
+    /**
+     * Converts JavaScript value to string
+     * @param value the value, that converts to string
+     * @param references the references to stringified objects
+     */
     function stringify(value, references) {
         var referenceValues = references || [value];
         switch (getInternalType(value)) {
@@ -103,12 +108,16 @@
                 value.forEach(function (value1, value2, set) {
                     setValues_1.push(strignifyRef(value2, referenceValues));
                 });
+                if (setValues_1.length === 0)
+                    return "new Set()";
                 return "new Set([" + setValues_1.join(", ") + "])";
             case "map":
                 var mapValues_1 = [];
                 value.forEach(function (indexValue, key) {
-                    mapValues_1.push("[" + strignifyRef(key, referenceValues) + "," + strignifyRef(indexValue, referenceValues) + "]");
+                    mapValues_1.push("[" + strignifyRef(key, referenceValues) + ", " + strignifyRef(indexValue, referenceValues) + "]");
                 });
+                if (mapValues_1.length === 0)
+                    return "new Map()";
                 return "new Map([" + mapValues_1.join(", ") + "])";
             case "object":
                 var objectValues = [];
@@ -117,7 +126,7 @@
                         objectValues.push(propertyName + ": " + strignifyRef(value[propertyName], referenceValues));
                 }
                 if (objectValues.length === 0)
-                    return '{}';
+                    return "{}";
                 return "{\n" + objectValues.join(",\n") + "\n}";
             case "function":
                 var functionName = value.name || "anonymousFunction";
@@ -139,6 +148,11 @@
                 return JSON.stringify(value);
         }
     }
+    /**
+     * Stringify the value, if it wasn't before
+     * @param value the value, that converts to string
+     * @param references the references to stringified objects
+     */
     function strignifyRef(value, references) {
         switch (getInternalType(value)) {
             case "array":
@@ -160,14 +174,13 @@
     }
     /**
      * Converts JavaScript value to string
-     * @param obj the value of any type
+     * @param value the value of any type
      */
-    function javaScriptToString(obj) {
-        return stringify(obj);
+    function javaScriptToString(value) {
+        return stringify(value);
     }
 
     exports.default = javaScriptToString;
-    exports.strignifyRef = strignifyRef;
     exports.stringify = stringify;
 
     Object.defineProperty(exports, '__esModule', { value: true });
