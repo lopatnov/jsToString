@@ -1,5 +1,10 @@
 import getObjectType from "get-internal-type";
 
+/**
+ * Converts JavaScript value to string
+ * @param value the value, that converts to string
+ * @param references the references to stringified objects
+ */
 export function stringify(value: any, references?: any[]): string {
   let referenceValues: any[] = references || [value];
   switch (getObjectType(value)) {
@@ -146,7 +151,12 @@ export function stringify(value: any, references?: any[]): string {
   }
 }
 
-export function strignifyRef(value: any, references: any[]): string {
+/**
+ * Stringify the value, if it wasn't before
+ * @param value the value, that converts to string
+ * @param references the references to stringified objects
+ */
+function strignifyRef(value: any, references: any[]): string {
   switch (getObjectType(value)) {
     case "array":
     case "object":
@@ -168,10 +178,10 @@ export function strignifyRef(value: any, references: any[]): string {
 
 /**
  * Converts JavaScript value to string
- * @param obj the value of any type
+ * @param value the value of any type
  */
-function javaScriptToString(obj: any): string {
-  return stringify(obj);
+function javaScriptToString(value: any): string {
+  return stringify(value);
 }
 
 export default javaScriptToString;
