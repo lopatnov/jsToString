@@ -75,20 +75,28 @@ export function stringify(value: any, references?: any[]): string {
       return `[${arrayValues}]`;
     case "set":
       let setValues: string[] = [];
+
       value.forEach((value1: any, value2: any, set: Set<any>) => {
         setValues.push(strignifyRef(value2, referenceValues));
       });
+
+      if (setValues.length === 0) return "new Set()";
+
       return `new Set([${setValues.join(", ")}])`;
     case "map":
       let mapValues: string[] = [];
+
       value.forEach((indexValue: any, key: any) => {
         mapValues.push(
-          `[${strignifyRef(key, referenceValues)},${strignifyRef(
+          `[${strignifyRef(key, referenceValues)}, ${strignifyRef(
             indexValue,
             referenceValues
           )}]`
         );
       });
+
+      if (mapValues.length === 0) return "new Map()";
+
       return `new Map([${mapValues.join(", ")}])`;
     case "object":
       let objectValues = [];
@@ -103,8 +111,7 @@ export function stringify(value: any, references?: any[]): string {
           );
       }
 
-      if (objectValues.length === 0)
-        return '{}';
+      if (objectValues.length === 0) return "{}";
 
       return `{\n${objectValues.join(",\n")}\n}`;
     case "function":

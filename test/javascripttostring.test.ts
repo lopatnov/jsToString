@@ -3,13 +3,13 @@ import j2s from "../src/javascripttostring";
 describe("Null to String", () => {
   it("should convert null to string", () => {
     let actual = j2s(null);
-    let expected = 'null';
+    let expected = "null";
 
     expect(actual).toBe(expected);
   });
   it("should convert undefined to string", () => {
     let actual = j2s(undefined);
-    let expected = 'undefined';
+    let expected = "undefined";
 
     expect(actual).toBe(expected);
   });
@@ -90,20 +90,20 @@ describe("Number to String", () => {
 describe("Symbol to String", () => {
   it("should convert empty Symbol", () => {
     let actual = j2s(Symbol());
-    let expected = 'Symbol()';
+    let expected = "Symbol()";
 
     expect(actual).toBe(expected);
   });
   it("should convert Symbol with description", () => {
-    let actual = j2s(Symbol('Hello'));
-    let expected = 'Symbol(\"Hello\")';
+    let actual = j2s(Symbol("Hello"));
+    let expected = 'Symbol("Hello")';
 
     expect(actual).toBe(expected);
   });
   it("should convert built-in symbols", () => {
-    expect(j2s(Symbol.iterator)).toBe('Symbol.iterator');
-    expect(j2s(Symbol.asyncIterator)).toBe('Symbol.asyncIterator');
-    expect(j2s(Symbol.hasInstance)).toBe('Symbol.hasInstance');
+    expect(j2s(Symbol.iterator)).toBe("Symbol.iterator");
+    expect(j2s(Symbol.asyncIterator)).toBe("Symbol.asyncIterator");
+    expect(j2s(Symbol.hasInstance)).toBe("Symbol.hasInstance");
   });
 });
 
@@ -134,7 +134,7 @@ describe("String to String", () => {
 describe("RegExp to String", () => {
   it("should convert RegExp", () => {
     let actual = j2s(/s+/gi);
-    let expected = '/s+/gi';
+    let expected = "/s+/gi";
 
     expect(actual).toBe(expected);
   });
@@ -149,16 +149,15 @@ describe("Error to String", () => {
   });
 });
 
-
 describe("Array to String", () => {
   it("should convert empty Array", () => {
     let actual = j2s([]);
-    let expected = '[]';
+    let expected = "[]";
 
     expect(actual).toBe(expected);
   });
   it("should convert an Array", () => {
-    let actual = j2s([1,2,3,'hello', 'world']);
+    let actual = j2s([1, 2, 3, "hello", "world"]);
     let expected = '[1, 2, 3, "hello", "world"]';
 
     expect(actual).toBe(expected);
@@ -182,7 +181,8 @@ describe("Function to String", () => {
         numbers,
         (accumulator: any, currentValue: any) => {
           return accumulator + currentValue;
-        }, 0
+        },
+        0
       );
     }
 
@@ -190,7 +190,7 @@ describe("Function to String", () => {
     let actual = Function("return " + stringFunction)();
     let expected = 10;
 
-    expect(actual(1,2,3,4)).toBe(expected);
+    expect(actual(1, 2, 3, 4)).toBe(expected);
   });
   it("should convert lambda function", () => {
     let stringFunction = j2s((a: any, b: any) => {
@@ -199,16 +199,17 @@ describe("Function to String", () => {
     let actual = Function("return " + stringFunction)();
     let expected = 12;
 
-    expect(actual(3,4)).toBe(expected);
+    expect(actual(3, 4)).toBe(expected);
   });
   it("should convert class", () => {
     let stringFunction = j2s(
-      class TestClass{
+      class TestClass {
         public TestVariable: string;
         constructor() {
           this.TestVariable = "Hello Test";
         }
-      });
+      }
+    );
     let actualClass = Function("return " + stringFunction)();
     let actualObject = new actualClass();
     let expected = "Hello Test";
@@ -239,14 +240,14 @@ describe("Function to String", () => {
 describe("Object to String", () => {
   it("should convert empty Object", () => {
     let actual = j2s({});
-    let expected = '{}';
+    let expected = "{}";
 
     expect(actual).toBe(expected);
   });
   it("should convert an Object", () => {
     let stringObject = j2s({
       a: 1,
-      hello: 'world',
+      hello: "world",
       innerObject: {
         testFunction: (x1: number, y1: number, x2: number, y2: number) => {
           return Math.pow(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2), 0.5);
@@ -255,12 +256,42 @@ describe("Object to String", () => {
     });
     let actual = Function("return " + stringObject)();
     let expected1 = 1;
-    let expected2 = 'world';
+    let expected2 = "world";
     let expected3 = 5;
 
     expect(actual.a).toBe(expected1);
     expect(actual.hello).toBe(expected2);
     expect(actual.innerObject).toBeDefined();
-    expect(actual.innerObject.testFunction(3,0,0,4)).toBe(expected3);
+    expect(actual.innerObject.testFunction(3, 0, 0, 4)).toBe(expected3);
+  });
+});
+
+describe("Set to String", () => {
+  it("should convert the empty set", () => {
+    let actual = j2s(new Set());
+    let expected = "new Set()";
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert a set", () => {
+    let actual = j2s(new Set([1, 2, 3]));
+    let expected = "new Set([1, 2, 3])";
+
+    expect(actual).toBe(expected);
+  });
+});
+
+describe("Map to String", () => {
+  it("should convert the empty map", () => {
+    let actual = j2s(new Map());
+    let expected = "new Map()";
+
+    expect(actual).toBe(expected);
+  });
+  it("should convert a map", () => {
+    let actual = j2s(new Map([[1, 2], [3, 4]]));
+    let expected = "new Map([[1, 2], [3, 4]])";
+
+    expect(actual).toBe(expected);
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "javascripttostring",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "Apache-2.0",
   "author": "lopatnov",
   "description": "JavaScript value to string converter",
@@ -39,6 +39,6 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "get-internal-type": "^1.1.2"
+    "get-internal-type": "^1.2.0"
   }
 }
