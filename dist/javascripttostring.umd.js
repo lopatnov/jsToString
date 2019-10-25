@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = global || self, factory(global.javaScriptToString = {}));
-}(this, function (exports) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global = global || self, global.javaScriptToString = factory());
+}(this, function () { 'use strict';
 
     var types = {}, typesToString = types.toString;
     [
@@ -29,7 +29,7 @@
     }
 
     /**
-     * Converts JavaScript value to string
+     * Converts to string the value, if it wasn't before
      * @param value the value, that converts to string
      * @param references the references to stringified objects
      */
@@ -180,10 +180,7 @@
         return stringify(value);
     }
 
-    exports.default = javaScriptToString;
-    exports.stringify = stringify;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
+    return javaScriptToString;
 
 }));
 //# sourceMappingURL=javascripttostring.umd.js.map

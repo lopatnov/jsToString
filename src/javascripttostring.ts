@@ -5,7 +5,7 @@ import getObjectType from "get-internal-type";
  * @param value the value, that converts to string
  * @param references the references to stringified objects
  */
-export function stringify(value: any, references?: any[]): string {
+function stringify(value: any, references?: any[]): string {
   let referenceValues: any[] = references || [value];
   switch (getObjectType(value)) {
     case "undefined":

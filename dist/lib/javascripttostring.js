@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var get_internal_type_1 = __importDefault(require("get-internal-type"));
 /**
- * Converts JavaScript value to string
+ * Converts to string the value, if it wasn't before
  * @param value the value, that converts to string
  * @param references the references to stringified objects
  */
@@ -124,7 +124,6 @@ function stringify(value, references) {
             return JSON.stringify(value);
     }
 }
-exports.stringify = stringify;
 /**
  * Stringify the value, if it wasn't before
  * @param value the value, that converts to string
