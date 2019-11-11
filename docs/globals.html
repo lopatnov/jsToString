@@ -2460,13 +2460,13 @@ img {
   nestedObjectsAmount?: number; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
   nestedArraysAmount?: number; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
   nestedFunctionsAmount?: number; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
-}</code></pre><pre><code>let myStringOfString = javaScriptToString('Hello world');
-/* expected myStringOfString value: <span class="hljs-string">"\"</span>Hello world\<span class="hljs-string">""</span> */
-
-let myStringOfArray = javaScriptToString([<span class="hljs-string">"Hello"</span>, <span class="hljs-string">"World"</span>, <span class="hljs-string">"."</span>, <span class="hljs-string">"How"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"you"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"?"</span>]);
-/* expected myStringOfArray value: <span class="hljs-string">"[\"</span>Hello\<span class="hljs-string">",\"</span>World\<span class="hljs-string">",\"</span>.\<span class="hljs-string">",\"</span>How\<span class="hljs-string">",\"</span>do\<span class="hljs-string">",\"</span>you\<span class="hljs-string">",\"</span>do\<span class="hljs-string">",\"</span>?\<span class="hljs-string">"]"</span> */
-
-let myObjectString = javaScriptToString({
+}</code></pre>
+			<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+				<h1>Examples</h1>
+			</a>
+			<pre><code><span class="hljs-keyword">let</span> myStringOfString = javaScriptToString(<span class="hljs-symbol">'Hello</span> world');
+/* expected myStringOfString <span class="hljs-keyword">value</span>: <span class="hljs-string">"\"Hello world\""</span> */</code></pre><pre><code><span class="hljs-keyword">let</span> myStringOfArray = javaScriptToString([<span class="hljs-string">"Hello"</span>, <span class="hljs-string">"World"</span>, <span class="hljs-string">"."</span>, <span class="hljs-string">"How"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"you"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"?"</span>]);
+/* expected myStringOfArray value: <span class="hljs-string">"[\"</span>Hello\<span class="hljs-string">",\"</span>World\<span class="hljs-string">",\"</span>.\<span class="hljs-string">",\"</span>How\<span class="hljs-string">",\"</span><span class="hljs-keyword">do</span>\<span class="hljs-string">",\"</span>you\<span class="hljs-string">",\"</span><span class="hljs-keyword">do</span>\<span class="hljs-string">",\"</span>?\<span class="hljs-string">"]"</span> */</code></pre><pre><code>let myObjectString = javaScriptToString({
     friend1: <span class="hljs-string">"Shurik"</span>,
     friend2: <span class="hljs-string">"Alex"</span>,
     friends: {
@@ -2482,16 +2482,14 @@ let myObjectString = javaScriptToString({
 <span class="hljs-string">"{friend1: \"</span>Shurik\<span class="hljs-string">",friend2: \"</span>Alex\<span class="hljs-string">",friends: {friend3: 123456,friend4: {},friend5: [\"</span>Hola\<span class="hljs-string">",\"</span>amigo\<span class="hljs-string">"],friend6: () =&gt; {</span>
             console.<span class="hljs-built_in">log</span>(\<span class="hljs-string">"How you doing?\"</span>);
         }}}<span class="hljs-string">"</span>
-*/
-
-let myFunctionString = javaScriptToString(function(a,b) {
-  console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"Just a function"</span>);
+*/</code></pre><pre><code><span class="hljs-keyword">let</span> myFunctionString = javaScriptToString(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a,b</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Just a function"</span>);
 })
-/* expected myFunctionString:
-<span class="hljs-string">"function(a,b) {</span>
-  console.<span class="hljs-built_in">log</span>(\<span class="hljs-string">"Just a function\"</span>);
-}<span class="hljs-string">"</span>
-*/</code></pre>
+<span class="hljs-comment">/* expected myFunctionString:
+"function(a,b) {
+  console.log(\"Just a function\");
+}"
+*/</span></code></pre>
 			<a href="#rights-and-agreements" id="rights-and-agreements" style="color: inherit; text-decoration: none;">
 				<h1>Rights and Agreements</h1>
 			</a>
@@ -2545,7 +2543,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L229">javascripttostring.ts:229</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L229">javascripttostring.ts:229</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2574,7 +2572,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L95">javascripttostring.ts:95</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L95">javascripttostring.ts:95</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2603,7 +2601,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L239">javascripttostring.ts:239</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L239">javascripttostring.ts:239</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2632,7 +2630,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L81">javascripttostring.ts:81</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L81">javascripttostring.ts:81</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2655,7 +2653,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L88">javascripttostring.ts:88</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L88">javascripttostring.ts:88</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2678,7 +2676,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L184">javascripttostring.ts:184</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L184">javascripttostring.ts:184</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2710,7 +2708,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L202">javascripttostring.ts:202</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L202">javascripttostring.ts:202</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2739,7 +2737,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L363">javascripttostring.ts:363</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L363">javascripttostring.ts:363</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2776,7 +2774,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L141">javascripttostring.ts:141</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L141">javascripttostring.ts:141</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2805,7 +2803,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L19">javascripttostring.ts:19</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L19">javascripttostring.ts:19</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2828,7 +2826,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L163">javascripttostring.ts:163</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L163">javascripttostring.ts:163</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2857,7 +2855,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L125">javascripttostring.ts:125</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L125">javascripttostring.ts:125</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2886,7 +2884,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L254">javascripttostring.ts:254</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L254">javascripttostring.ts:254</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2923,7 +2921,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L310">javascripttostring.ts:310</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L310">javascripttostring.ts:310</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2960,7 +2958,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L59">javascripttostring.ts:59</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L59">javascripttostring.ts:59</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2983,7 +2981,7 @@ let myFunctionString = javaScriptToString(function(a,b) {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3e4c7f5/src/javascripttostring.ts#L114">javascripttostring.ts:114</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/3dd7600/src/javascripttostring.ts#L114">javascripttostring.ts:114</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
