@@ -1,6 +1,6 @@
 export interface IJ2SOptions {
-    includeFunctionPrototype?: boolean;
     includeFunctionProperties?: boolean;
+    includeFunctionPrototype?: boolean;
 }
 /**
  * Converts JavaScript value to string
