@@ -4,8 +4,16 @@ JavaScript value to string runtime converter. It converts a runtime value into s
 
 # Install
 
+Node:
+
 ```
 npm i javascripttostring
+```
+
+Browser:
+
+```
+<script src="<path to library>/javascripttostring.umd.js"></script>
 ```
 
 ## Import package to the project
