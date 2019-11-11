@@ -122,6 +122,29 @@ console.log(javaScriptToString(Simple));
 */
 ```
 
+# TBD
+
+```
+— Resolve references to parent elements and itself
+
+Example:
+
+var x = [1,2,3];
+x[0] = x;
+console.log(javaScriptToString(x));
+
+Actual output:
+[null, 2, 3]
+
+Expected output:
+(function(){
+  var x = [null, 2, 3];
+  x[0] = x;
+  return x;
+}())
+
+```
+
 # Rights and Agreements
 
 License [Apache-2.0](https://github.com/lopatnov/jsToString/blob/master/LICENSE)
