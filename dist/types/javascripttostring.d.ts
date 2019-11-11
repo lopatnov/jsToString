@@ -1,6 +1,7 @@
 export interface IJ2SOptions {
     includeFunctionProperties?: boolean;
     includeFunctionPrototype?: boolean;
+    includeBuffers?: boolean;
     nestedObjectsAmount?: number;
     nestedArraysAmount?: number;
     nestedFunctionsAmount?: number;

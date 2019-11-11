@@ -3,6 +3,7 @@ import getObjectType from "get-internal-type";
 export interface IJ2SOptions {
   includeFunctionProperties?: boolean; // default true
   includeFunctionPrototype?: boolean; // default true
+  includeBuffers?: boolean; // default true
   nestedObjectsAmount?: number; // default Number.POSITIVE_INFINITY
   nestedArraysAmount?: number; // default Number.POSITIVE_INFINITY
   nestedFunctionsAmount?: number; // default Number.POSITIVE_INFINITY
@@ -225,6 +226,26 @@ function functionToString(
   )};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`;
 }
 
+function arrayBufferToString(
+  value: ArrayBuffer,
+  options: IJ2SOptions,
+  history: IJ2SHistory
+): string {
+  if (!options.includeBuffers) return "undefined";
+  let str = typedArrayToString(new Int8Array(value), options, history);
+  return `(${str}).buffer`;
+}
+
+function dataViewToString(
+  value: DataView,
+  options: IJ2SOptions,
+  history: IJ2SHistory
+): string {
+  if (!options.includeBuffers) return "undefined";
+  let bufString = arrayBufferToString(value.buffer, options, history);
+  return `new DataView(${bufString}, ${value.byteOffset}, ${value.byteLength})`;
+}
+
 /**
  * Converts to string the value, if it wasn't before
  * @param value the value, that converts to string
@@ -269,6 +290,10 @@ function stringify(
     case "function":
     case "generatorfunction":
       return functionToString(value, options, history);
+    case "arraybuffer":
+      return arrayBufferToString(value, options, history);
+    case "dataview":
+      return dataViewToString(value, options, history);
     case "promise":
     case "generator":
       return "undefined";
@@ -341,6 +366,7 @@ function javaScriptToString(value: any, options?: IJ2SOptions): string {
     opt.includeFunctionProperties = true;
   if (opt.includeFunctionPrototype === undefined)
     opt.includeFunctionPrototype = true;
+  if (opt.includeBuffers === undefined) opt.includeBuffers = true;
   if (opt.nestedObjectsAmount === undefined)
     opt.nestedObjectsAmount = Number.POSITIVE_INFINITY;
   if (opt.nestedArraysAmount === undefined)

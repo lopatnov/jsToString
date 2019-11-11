@@ -22,8 +22,12 @@ where
 
 ```
 interface IJ2SOptions {
-  includeFunctionProperties?: boolean;
-  includeFunctionPrototype?: boolean;
+  includeFunctionProperties?: boolean; // default true
+  includeFunctionPrototype?: boolean; // default true
+  includeBuffers?: boolean; // default true
+  nestedObjectsAmount?: number; // default Number.POSITIVE_INFINITY
+  nestedArraysAmount?: number; // default Number.POSITIVE_INFINITY
+  nestedFunctionsAmount?: number; // default Number.POSITIVE_INFINITY
 }
 ```
 

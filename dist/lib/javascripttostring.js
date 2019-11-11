@@ -144,6 +144,18 @@ function functionToString(value, options, history) {
     }
     return "(function(){\n var " + functionName + " = " + String(value) + ";\n " + functionObject + "\n " + functionPrototype + "\n return " + functionName + ";\n}())";
 }
+function arrayBufferToString(value, options, history) {
+    if (!options.includeBuffers)
+        return "undefined";
+    var str = typedArrayToString(new Int8Array(value), options, history);
+    return "(" + str + ").buffer";
+}
+function dataViewToString(value, options, history) {
+    if (!options.includeBuffers)
+        return "undefined";
+    var bufString = arrayBufferToString(value.buffer, options, history);
+    return "new DataView(" + bufString + ", " + value.byteOffset + ", " + value.byteLength + ")";
+}
 /**
  * Converts to string the value, if it wasn't before
  * @param value the value, that converts to string
@@ -184,6 +196,10 @@ function stringify(value, options, history) {
         case "function":
         case "generatorfunction":
             return functionToString(value, options, history);
+        case "arraybuffer":
+            return arrayBufferToString(value, options, history);
+        case "dataview":
+            return dataViewToString(value, options, history);
         case "promise":
         case "generator":
             return "undefined";
@@ -250,6 +266,8 @@ function javaScriptToString(value, options) {
         opt.includeFunctionProperties = true;
     if (opt.includeFunctionPrototype === undefined)
         opt.includeFunctionPrototype = true;
+    if (opt.includeBuffers === undefined)
+        opt.includeBuffers = true;
     if (opt.nestedObjectsAmount === undefined)
         opt.nestedObjectsAmount = Number.POSITIVE_INFINITY;
     if (opt.nestedArraysAmount === undefined)
