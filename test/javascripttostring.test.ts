@@ -157,10 +157,33 @@ describe("Array to String", () => {
     expect(actual).toBe(expected);
   });
   it("should convert an Array", () => {
-    let actual = j2s([1, 2, 3, "hello", "world"]);
+    let arr = [1, 2, 3, "hello", "world"];
+    let actual = j2s(arr);
     let expected = '[1, 2, 3, "hello", "world"]';
 
     expect(actual).toBe(expected);
+    expect(arr[0]).toBe(1);
+    expect(arr[1]).toBe(2);
+  });
+  it("should convert with nestedArraysAmount = 0", () => {
+    let str = j2s([1,2,3,[4,5,6, [7,8,9]]], {
+      nestedArraysAmount: 0
+    });
+    let actual = Function(`return ${str};`)();
+
+    expect(actual[2]).toBe(3);
+    expect(actual[3]).not.toBeDefined();
+  });
+  it("should convert with nestedArraysAmount = 1", () => {
+    let str = j2s([1,2,3,[4,5,6, [7,8,9]]], {
+      nestedArraysAmount: 1
+    });
+    let actual = Function(`return ${str};`)();
+
+    expect(actual[2]).toBe(3);
+    expect(actual[3]).toBeDefined();
+    expect(actual[3][0]).toBe(4);
+    expect(actual[3][3]).not.toBeDefined();
   });
 });
 
@@ -258,6 +281,12 @@ describe("Function to String", () => {
     TestConstructor.prototype.testMethod = function() {
       return "It works";
     };
+    TestConstructor.prototype.testMethod.subTestMethod = function() {
+      return "It not works";
+    };
+    TestConstructor.prototype.testMethod.prototype.subTestMethod = function() {
+      return "It works too";
+    };
 
     let stringFunction = j2s(TestConstructor, {
       includeFunctionProperties: false
@@ -267,6 +296,8 @@ describe("Function to String", () => {
     expect(actualClass.name).toBe("TestConstructor");
     expect(actualClass.Test1).not.toBeDefined();
     expect(actualClass.prototype.testMethod()).toBe("It works");
+    expect(actualClass.prototype.testMethod.subTestMethod).not.toBeDefined();
+    expect(actualClass.prototype.testMethod.prototype.subTestMethod()).toBe("It works too");
   });
   it("should work with includeFunctionPrototype = false", () => {
     function TestConstructor() {}
@@ -283,6 +314,42 @@ describe("Function to String", () => {
     expect(actualClass.name).toBe("TestConstructor");
     expect(actualClass.Test1).toBe("Completed");
     expect(actualClass.prototype.testMethod).not.toBeDefined();
+  });
+  it("should work with nestedFunctionsAmount = 0", () => {
+    function TestConstructor() {}
+    (TestConstructor as any).Test1 = "Completed";
+    TestConstructor.prototype.testMethod = function() {
+      return "It works";
+    };
+
+    let stringFunction = j2s(TestConstructor, {
+      nestedFunctionsAmount: 0
+    });
+    let actualClass = Function("return " + stringFunction)();
+
+    expect(actualClass.name).toBe("TestConstructor");
+    expect(actualClass.Test1).toBe("Completed");
+    expect(actualClass.prototype.testMethod).not.toBeDefined();
+  });
+  it("should work with nestedFunctionsAmount = 1", () => {
+    function TestConstructor() {}
+    (TestConstructor as any).Test1 = "Completed";
+    TestConstructor.prototype.testMethod = function() {
+      return "It works";
+    };
+    TestConstructor.prototype.testMethod.subTestMethod = function() {
+      return "It works too";
+    };
+
+    let stringFunction = j2s(TestConstructor, {
+      nestedFunctionsAmount: 1
+    });
+    let actualClass = Function("return " + stringFunction)();
+
+    expect(actualClass.name).toBe("TestConstructor");
+    expect(actualClass.Test1).toBe("Completed");
+    expect(actualClass.prototype.testMethod()).toBe("It works");
+    expect(actualClass.prototype.testMethod.subTestMethod).not.toBeDefined();
   });
 });
 
@@ -312,6 +379,73 @@ describe("Object to String", () => {
     expect(actual.hello).toBe(expected2);
     expect(actual.innerObject).toBeDefined();
     expect(actual.innerObject.testFunction(3, 0, 0, 4)).toBe(expected3);
+  });
+  it("should work with nestedObjectsAmount = 0", () => {
+    let objectString = j2s({
+      a: "hello",
+      b: true,
+      c: {
+        d: "world"
+      }
+    }, {
+      nestedObjectsAmount: 0
+    });
+    let actual = Function(`return ${objectString};`)();
+
+    expect(actual.a).toBe("hello");
+    expect(actual.b).toBe(true);
+    expect(actual.c).not.toBeDefined();
+  });
+  it("should work with nestedObjectsAmount = 1", () => {
+    let objectString = j2s({
+      a: "hello",
+      b: true,
+      c: {
+        d: {
+          e: {
+            f: 'world'
+          },
+          g: 123
+        },
+        j: () => 'ok'
+      }
+    }, {
+      nestedObjectsAmount: 1
+    });
+    let actual = Function(`return ${objectString};`)();
+
+    expect(actual.a).toBe("hello");
+    expect(actual.b).toBe(true);
+    expect(actual.c).toBeDefined();
+    expect(actual.c.d).not.toBeDefined();
+    expect(actual.c.j).toBeDefined();
+    expect(actual.c.j()).toBe('ok');
+  });
+  it("should work with nestedObjectsAmount = 2", () => {
+    let objectString = j2s({
+      a: "hello",
+      b: true,
+      c: {
+        d: {
+          e: {
+            f: 'world'
+          },
+          g: 123
+        },
+        j: () => 'ok'
+      }
+    }, {
+      nestedObjectsAmount: 2
+    });
+    let actual = Function(`return ${objectString};`)();
+
+    expect(actual.a).toBe("hello");
+    expect(actual.b).toBe(true);
+    expect(actual.c).toBeDefined();
+    expect(actual.c.j).toBeDefined();
+    expect(actual.c.j()).toBe('ok');
+    expect(actual.c.d.e).not.toBeDefined();
+    expect(actual.c.d.g).toBe(123);
   });
 });
 

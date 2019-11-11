@@ -1,8 +1,18 @@
 import getObjectType from "get-internal-type";
 
 export interface IJ2SOptions {
-  includeFunctionProperties?: boolean;
-  includeFunctionPrototype?: boolean;
+  includeFunctionProperties?: boolean; // default true
+  includeFunctionPrototype?: boolean; // default true
+  nestedObjectsAmount?: number; // default Number.POSITIVE_INFINITY
+  nestedArraysAmount?: number; // default Number.POSITIVE_INFINITY
+  nestedFunctionsAmount?: number; // default Number.POSITIVE_INFINITY
+}
+
+interface IJ2SHistory {
+  references: any[];
+  nestedObjectsLeft: number;
+  nestedArraysLeft: number;
+  nestedFunctionsLeft: number;
 }
 
 function numberToString(value: number): string {
@@ -84,12 +94,18 @@ function errorToString(value: any): string {
 function arrayToString(
   value: Array<any>,
   options: IJ2SOptions,
-  referenceValues: any[]
+  history: IJ2SHistory
 ): string {
   if (value.length === 0) return "[]";
-  value[0] = stringifyRef(value[0], options, referenceValues);
+  let zeroValue = value[0],
+    strZeroValue = stringifyRef(value[0], options, history);
   let arrayValues = value.reduce(
-    (x1: any, x2: any) => `${x1}, ${stringifyRef(x2, options, referenceValues)}`
+    (x1: any, x2: any) =>
+      `${x1 === zeroValue ? strZeroValue : x1}, ${stringifyRef(
+        x2,
+        options,
+        history
+      )}`
   );
   return `[${arrayValues}]`;
 }
@@ -97,12 +113,12 @@ function arrayToString(
 function setToString(
   value: Set<any>,
   options: IJ2SOptions,
-  referenceValues: any[]
+  history: IJ2SHistory
 ): string {
   let setValues: string[] = [];
 
   value.forEach((value1: any, value2: any, set: Set<any>) => {
-    setValues.push(stringifyRef(value2, options, referenceValues));
+    setValues.push(stringifyRef(value2, options, history));
   });
 
   if (setValues.length === 0) return "new Set()";
@@ -113,16 +129,16 @@ function setToString(
 function mapToString(
   value: Map<any, any>,
   options: IJ2SOptions,
-  referenceValues: any[]
+  history: IJ2SHistory
 ): string {
   let mapValues: string[] = [];
 
   value.forEach((indexValue: any, key: any) => {
     mapValues.push(
-      `[${stringifyRef(key, options, referenceValues)}, ${stringifyRef(
+      `[${stringifyRef(key, options, history)}, ${stringifyRef(
         indexValue,
         options,
-        referenceValues
+        history
       )}]`
     );
   });
@@ -135,19 +151,17 @@ function mapToString(
 function objectToString(
   value: any,
   options: IJ2SOptions,
-  referenceValues: any[]
+  history: IJ2SHistory
 ): string {
   let objectValues = [];
 
   for (let propertyName in value) {
-    if (value.hasOwnProperty(propertyName))
-      objectValues.push(
-        `${propertyName}: ${stringifyRef(
-          value[propertyName],
-          options,
-          referenceValues
-        )}`
-      );
+    if (value.hasOwnProperty(propertyName)) {
+      let propertyValue = stringifyRef(value[propertyName], options, history);
+      if (propertyValue !== "undefined") {
+        objectValues.push(`${propertyName}: ${propertyValue}`);
+      }
+    }
   }
 
   if (objectValues.length === 0) return "{}";
@@ -155,40 +169,46 @@ function objectToString(
   return `{\n${objectValues.join(",\n")}\n}`;
 }
 
+function functionPropertiesToString(
+  functionName: string,
+  value: any,
+  options: IJ2SOptions,
+  history: IJ2SHistory
+): string {
+  let result = "";
+  for (let propertyName in value) {
+    if (value.hasOwnProperty(propertyName)) {
+      let propertyValue = stringifyRef(value[propertyName], options, history);
+      if (propertyValue !== "undefined") {
+        result += `${functionName}.${propertyName} = ${propertyValue};\n`;
+      }
+    }
+  }
+  return result;
+}
+
 function functionToString(
   value: any,
   options: IJ2SOptions,
-  referenceValues: any[]
+  history: IJ2SHistory
 ): string {
   let functionName = value.name || "anonymousFunction";
-  let functionObject = "";
-  let functionPrototype = "";
-
-  if (options.includeFunctionProperties) {
-    for (let propertyName in value) {
-      if (value.hasOwnProperty(propertyName))
-        functionObject += `${functionName}.${propertyName} = ${stringifyRef(
-          value[propertyName],
-          options,
-          referenceValues
-        )};\n`;
-    }
-  }
-
-  if (options.includeFunctionPrototype) {
-    for (let propertyName in value.prototype) {
-      if (value.prototype.hasOwnProperty(propertyName))
-        functionObject += `${functionName}.prototype.${propertyName} = ${stringifyRef(
-          value.prototype[propertyName],
-          options,
-          referenceValues
-        )};\n`;
-    }
-  }
+  let functionObject = options.includeFunctionProperties
+    ? functionPropertiesToString(functionName, value, options, history)
+    : "";
+  let functionPrototype = options.includeFunctionPrototype
+    ? functionPropertiesToString(
+        `${functionName}.prototype`,
+        value.prototype,
+        options,
+        history
+      )
+    : "";
 
   if (!functionObject && !functionPrototype) {
     return String(value);
   }
+
   return `(function(){\n var ${functionName} = ${String(
     value
   )};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`;
@@ -202,9 +222,8 @@ function functionToString(
 function stringify(
   value: any,
   options: IJ2SOptions,
-  references?: any[]
+  history: IJ2SHistory
 ): string {
-  let referenceValues: any[] = references || [value];
   switch (getObjectType(value)) {
     case "undefined":
       return "undefined";
@@ -227,15 +246,15 @@ function stringify(
     case "error":
       return errorToString(value);
     case "array":
-      return arrayToString(value, options, referenceValues);
+      return arrayToString(value, options, history);
     case "set":
-      return setToString(value, options, referenceValues);
+      return setToString(value, options, history);
     case "map":
-      return mapToString(value, options, referenceValues);
+      return mapToString(value, options, history);
     case "object":
-      return objectToString(value, options, referenceValues);
+      return objectToString(value, options, history);
     case "function":
-      return functionToString(value, options, referenceValues);
+      return functionToString(value, options, history);
     default:
       return JSON.stringify(value);
   }
@@ -249,13 +268,42 @@ function stringify(
 function stringifyRef(
   value: any,
   options: IJ2SOptions,
-  references: any[]
+  history: IJ2SHistory
 ): string {
-  if (references.indexOf(value) < 0) {
-    let referencesLength = references.length;
-    references.push(value);
-    let refString = stringify(value, options, references);
-    references.splice(referencesLength);
+  if (history.references.indexOf(value) < 0) {
+    let objectType = getObjectType(value);
+    let referencesLength = history.references.length;
+    history.references.push(value);
+    switch (objectType) {
+      case "object":
+        if (history.nestedObjectsLeft <= 0) return "undefined";
+        history.nestedObjectsLeft--;
+        break;
+      case "array":
+        if (history.nestedArraysLeft <= 0) return "undefined";
+        history.nestedArraysLeft--;
+        break;
+      case "function":
+        if (history.nestedFunctionsLeft <= 0) return "undefined";
+        history.nestedFunctionsLeft--;
+        break;
+    }
+
+    let refString = stringify(value, options, history);
+
+    history.references.splice(referencesLength);
+    switch (objectType) {
+      case "object":
+        history.nestedObjectsLeft++;
+        break;
+      case "array":
+        history.nestedArraysLeft++;
+        break;
+      case "function":
+        history.nestedFunctionsLeft++;
+        break;
+    }
+
     return refString;
   }
   return "null";
@@ -272,8 +320,19 @@ function javaScriptToString(value: any, options?: IJ2SOptions): string {
     opt.includeFunctionProperties = true;
   if (opt.includeFunctionPrototype === undefined)
     opt.includeFunctionPrototype = true;
+  if (opt.nestedObjectsAmount === undefined)
+    opt.nestedObjectsAmount = Number.POSITIVE_INFINITY;
+  if (opt.nestedArraysAmount === undefined)
+    opt.nestedArraysAmount = Number.POSITIVE_INFINITY;
+  if (opt.nestedFunctionsAmount === undefined)
+    opt.nestedFunctionsAmount = Number.POSITIVE_INFINITY;
 
-  return stringify(value, opt);
+  return stringify(value, opt, {
+    references: [value],
+    nestedObjectsLeft: opt.nestedObjectsAmount,
+    nestedArraysLeft: opt.nestedArraysAmount,
+    nestedFunctionsLeft: opt.nestedFunctionsAmount
+  });
 }
 
 export default javaScriptToString;

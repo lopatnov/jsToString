@@ -122,57 +122,67 @@
         var message = JSON.stringify(value.message), fileName = JSON.stringify(value.fileName), lineNumber = JSON.stringify(value.lineNumber);
         return "new Error(" + message + ", " + fileName + ", " + lineNumber + ")";
     }
-    function arrayToString(value, options, referenceValues) {
+    function arrayToString(value, options, history) {
         if (value.length === 0)
             return "[]";
-        value[0] = stringifyRef(value[0], options, referenceValues);
-        var arrayValues = value.reduce(function (x1, x2) { return x1 + ", " + stringifyRef(x2, options, referenceValues); });
+        var zeroValue = value[0], strZeroValue = stringifyRef(value[0], options, history);
+        var arrayValues = value.reduce(function (x1, x2) {
+            return (x1 === zeroValue ? strZeroValue : x1) + ", " + stringifyRef(x2, options, history);
+        });
         return "[" + arrayValues + "]";
     }
-    function setToString(value, options, referenceValues) {
+    function setToString(value, options, history) {
         var setValues = [];
         value.forEach(function (value1, value2, set) {
-            setValues.push(stringifyRef(value2, options, referenceValues));
+            setValues.push(stringifyRef(value2, options, history));
         });
         if (setValues.length === 0)
             return "new Set()";
         return "new Set([" + setValues.join(", ") + "])";
     }
-    function mapToString(value, options, referenceValues) {
+    function mapToString(value, options, history) {
         var mapValues = [];
         value.forEach(function (indexValue, key) {
-            mapValues.push("[" + stringifyRef(key, options, referenceValues) + ", " + stringifyRef(indexValue, options, referenceValues) + "]");
+            mapValues.push("[" + stringifyRef(key, options, history) + ", " + stringifyRef(indexValue, options, history) + "]");
         });
         if (mapValues.length === 0)
             return "new Map()";
         return "new Map([" + mapValues.join(", ") + "])";
     }
-    function objectToString(value, options, referenceValues) {
+    function objectToString(value, options, history) {
         var objectValues = [];
         for (var propertyName in value) {
-            if (value.hasOwnProperty(propertyName))
-                objectValues.push(propertyName + ": " + stringifyRef(value[propertyName], options, referenceValues));
+            if (value.hasOwnProperty(propertyName)) {
+                var propertyValue = stringifyRef(value[propertyName], options, history);
+                if (propertyValue !== "undefined") {
+                    objectValues.push(propertyName + ": " + propertyValue);
+                }
+            }
         }
         if (objectValues.length === 0)
             return "{}";
         return "{\n" + objectValues.join(",\n") + "\n}";
     }
-    function functionToString(value, options, referenceValues) {
+    function functionPropertiesToString(functionName, value, options, history) {
+        var result = "";
+        for (var propertyName in value) {
+            if (value.hasOwnProperty(propertyName)) {
+                var propertyValue = stringifyRef(value[propertyName], options, history);
+                if (propertyValue !== "undefined") {
+                    result += functionName + "." + propertyName + " = " + propertyValue + ";\n";
+                }
+            }
+        }
+        return result;
+    }
+    function functionToString(value, options, history) {
         var functionName = value.name || "anonymousFunction";
-        var functionObject = "";
-        var functionPrototype = "";
-        if (options.includeFunctionProperties) {
-            for (var propertyName in value) {
-                if (value.hasOwnProperty(propertyName))
-                    functionObject += functionName + "." + propertyName + " = " + stringifyRef(value[propertyName], options, referenceValues) + ";\n";
-            }
-        }
-        if (options.includeFunctionPrototype) {
-            for (var propertyName in value.prototype) {
-                if (value.prototype.hasOwnProperty(propertyName))
-                    functionObject += functionName + ".prototype." + propertyName + " = " + stringifyRef(value.prototype[propertyName], options, referenceValues) + ";\n";
-            }
-        }
+        var functionObject = options.includeFunctionProperties
+            ? functionPropertiesToString(functionName, value, options, history)
+            : "";
+        var functionPrototype = options.includeFunctionPrototype
+            ? functionPropertiesToString(functionName + ".prototype", value.prototype, options, history)
+            : "";
         if (!functionObject && !functionPrototype) {
             return String(value);
         }
@@ -183,8 +193,7 @@
      * @param value the value, that converts to string
      * @param references the references to stringified objects
      */
-    function stringify(value, options, references) {
-        var referenceValues = references || [value];
+    function stringify(value, options, history) {
         switch (getInternalType(value)) {
             case "undefined":
                 return "undefined";
@@ -207,15 +216,15 @@
             case "error":
                 return errorToString(value);
             case "array":
-                return arrayToString(value, options, referenceValues);
+                return arrayToString(value, options, history);
             case "set":
-                return setToString(value, options, referenceValues);
+                return setToString(value, options, history);
             case "map":
-                return mapToString(value, options, referenceValues);
+                return mapToString(value, options, history);
             case "object":
-                return objectToString(value, options, referenceValues);
+                return objectToString(value, options, history);
             case "function":
-                return functionToString(value, options, referenceValues);
+                return functionToString(value, options, history);
             default:
                 return JSON.stringify(value);
         }
@@ -225,12 +234,41 @@
      * @param value the value, that converts to string
      * @param references the references to stringified objects
      */
-    function stringifyRef(value, options, references) {
-        if (references.indexOf(value) < 0) {
-            var referencesLength = references.length;
-            references.push(value);
-            var refString = stringify(value, options, references);
-            references.splice(referencesLength);
+    function stringifyRef(value, options, history) {
+        if (history.references.indexOf(value) < 0) {
+            var objectType = getInternalType(value);
+            var referencesLength = history.references.length;
+            history.references.push(value);
+            switch (objectType) {
+                case "object":
+                    if (history.nestedObjectsLeft <= 0)
+                        return "undefined";
+                    history.nestedObjectsLeft--;
+                    break;
+                case "array":
+                    if (history.nestedArraysLeft <= 0)
+                        return "undefined";
+                    history.nestedArraysLeft--;
+                    break;
+                case "function":
+                    if (history.nestedFunctionsLeft <= 0)
+                        return "undefined";
+                    history.nestedFunctionsLeft--;
+                    break;
+            }
+            var refString = stringify(value, options, history);
+            history.references.splice(referencesLength);
+            switch (objectType) {
+                case "object":
+                    history.nestedObjectsLeft++;
+                    break;
+                case "array":
+                    history.nestedArraysLeft++;
+                    break;
+                case "function":
+                    history.nestedFunctionsLeft++;
+                    break;
+            }
             return refString;
         }
         return "null";
@@ -246,7 +284,18 @@
             opt.includeFunctionProperties = true;
         if (opt.includeFunctionPrototype === undefined)
             opt.includeFunctionPrototype = true;
-        return stringify(value, opt);
+        if (opt.nestedObjectsAmount === undefined)
+            opt.nestedObjectsAmount = Number.POSITIVE_INFINITY;
+        if (opt.nestedArraysAmount === undefined)
+            opt.nestedArraysAmount = Number.POSITIVE_INFINITY;
+        if (opt.nestedFunctionsAmount === undefined)
+            opt.nestedFunctionsAmount = Number.POSITIVE_INFINITY;
+        return stringify(value, opt, {
+            references: [value],
+            nestedObjectsLeft: opt.nestedObjectsAmount,
+            nestedArraysLeft: opt.nestedArraysAmount,
+            nestedFunctionsLeft: opt.nestedFunctionsAmount
+        });
     }
 
     return javaScriptToString;

@@ -1,6 +1,9 @@
 export interface IJ2SOptions {
     includeFunctionProperties?: boolean;
     includeFunctionPrototype?: boolean;
+    nestedObjectsAmount?: number;
+    nestedArraysAmount?: number;
+    nestedFunctionsAmount?: number;
 }
 /**
  * Converts JavaScript value to string
