@@ -361,24 +361,37 @@ function stringifyRef(
  * @param options [optional] The options of conversion
  */
 function javaScriptToString(value: any, options?: IJ2SOptions): string {
-  let opt: IJ2SOptions = options || {};
-  if (opt.includeFunctionProperties === undefined)
-    opt.includeFunctionProperties = true;
-  if (opt.includeFunctionPrototype === undefined)
-    opt.includeFunctionPrototype = true;
-  if (opt.includeBuffers === undefined) opt.includeBuffers = true;
-  if (opt.nestedObjectsAmount === undefined)
-    opt.nestedObjectsAmount = Number.POSITIVE_INFINITY;
-  if (opt.nestedArraysAmount === undefined)
-    opt.nestedArraysAmount = Number.POSITIVE_INFINITY;
-  if (opt.nestedFunctionsAmount === undefined)
-    opt.nestedFunctionsAmount = Number.POSITIVE_INFINITY;
+  options = options || {};
+  let concreteOptions: IJ2SOptions = {
+    includeFunctionProperties:
+      options.includeFunctionProperties === undefined
+        ? true
+        : options.includeFunctionProperties,
+    includeFunctionPrototype:
+      options.includeFunctionPrototype === undefined
+        ? true
+        : options.includeFunctionPrototype,
+    includeBuffers:
+      options.includeBuffers === undefined ? true : options.includeBuffers,
+    nestedObjectsAmount:
+      options.nestedObjectsAmount === undefined
+        ? Number.POSITIVE_INFINITY
+        : options.nestedObjectsAmount,
+    nestedArraysAmount:
+      options.nestedArraysAmount === undefined
+        ? Number.POSITIVE_INFINITY
+        : options.nestedArraysAmount,
+    nestedFunctionsAmount:
+      options.nestedFunctionsAmount === undefined
+        ? Number.POSITIVE_INFINITY
+        : options.nestedFunctionsAmount
+  };
 
-  return stringify(value, opt, {
+  return stringify(value, concreteOptions, {
     references: [value],
-    nestedObjectsLeft: opt.nestedObjectsAmount,
-    nestedArraysLeft: opt.nestedArraysAmount,
-    nestedFunctionsLeft: opt.nestedFunctionsAmount
+    nestedObjectsLeft: concreteOptions.nestedObjectsAmount as number,
+    nestedArraysLeft: concreteOptions.nestedArraysAmount as number,
+    nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount as number
   });
 }
 

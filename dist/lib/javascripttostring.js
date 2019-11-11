@@ -261,24 +261,30 @@ function stringifyRef(value, options, history) {
  * @param options [optional] The options of conversion
  */
 function javaScriptToString(value, options) {
-    var opt = options || {};
-    if (opt.includeFunctionProperties === undefined)
-        opt.includeFunctionProperties = true;
-    if (opt.includeFunctionPrototype === undefined)
-        opt.includeFunctionPrototype = true;
-    if (opt.includeBuffers === undefined)
-        opt.includeBuffers = true;
-    if (opt.nestedObjectsAmount === undefined)
-        opt.nestedObjectsAmount = Number.POSITIVE_INFINITY;
-    if (opt.nestedArraysAmount === undefined)
-        opt.nestedArraysAmount = Number.POSITIVE_INFINITY;
-    if (opt.nestedFunctionsAmount === undefined)
-        opt.nestedFunctionsAmount = Number.POSITIVE_INFINITY;
-    return stringify(value, opt, {
+    options = options || {};
+    var concreteOptions = {
+        includeFunctionProperties: options.includeFunctionProperties === undefined
+            ? true
+            : options.includeFunctionProperties,
+        includeFunctionPrototype: options.includeFunctionPrototype === undefined
+            ? true
+            : options.includeFunctionPrototype,
+        includeBuffers: options.includeBuffers === undefined ? true : options.includeBuffers,
+        nestedObjectsAmount: options.nestedObjectsAmount === undefined
+            ? Number.POSITIVE_INFINITY
+            : options.nestedObjectsAmount,
+        nestedArraysAmount: options.nestedArraysAmount === undefined
+            ? Number.POSITIVE_INFINITY
+            : options.nestedArraysAmount,
+        nestedFunctionsAmount: options.nestedFunctionsAmount === undefined
+            ? Number.POSITIVE_INFINITY
+            : options.nestedFunctionsAmount
+    };
+    return stringify(value, concreteOptions, {
         references: [value],
-        nestedObjectsLeft: opt.nestedObjectsAmount,
-        nestedArraysLeft: opt.nestedArraysAmount,
-        nestedFunctionsLeft: opt.nestedFunctionsAmount
+        nestedObjectsLeft: concreteOptions.nestedObjectsAmount,
+        nestedArraysLeft: concreteOptions.nestedArraysAmount,
+        nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount
     });
 }
 exports.default = javaScriptToString;
