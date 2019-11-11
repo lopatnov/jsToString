@@ -165,6 +165,18 @@ describe("Array to String", () => {
     expect(arr[0]).toBe(1);
     expect(arr[1]).toBe(2);
   });
+  it("should convert a typed Array", () => {
+    let arr = new Int8Array([1, 2, 3]);
+    let str = j2s(arr);
+    let actual = Function(`return ${str};`)();
+
+    expect(arr[0]).toBe(1);
+    expect(arr[1]).toBe(2);
+    expect(actual instanceof Int8Array).toBeTruthy();
+    expect(actual[0]).toBe(1);
+    expect(actual[1]).toBe(2);
+    expect(actual[2]).toBe(3);
+  });
   it("should convert with nestedArraysAmount = 0", () => {
     let str = j2s([1,2,3,[4,5,6, [7,8,9]]], {
       nestedArraysAmount: 0

@@ -125,6 +125,10 @@ function arrayToString(value, options, history) {
     });
     return "[" + arrayValues + "]";
 }
+function typedArrayToString(value, options, history) {
+    var arr = Array.from(value), arrString = arrayToString(arr, options, history), constructorName = value.constructor.name;
+    return "new " + constructorName + "(" + arrString + ")";
+}
 function setToString(value, options, history) {
     var setValues = [];
     value.forEach(function (value1, value2, set) {
@@ -211,6 +215,8 @@ function stringify(value, options, history) {
             return errorToString(value);
         case "array":
             return arrayToString(value, options, history);
+        case "typedarray":
+            return typedArrayToString(value, options, history);
         case "set":
             return setToString(value, options, history);
         case "map":
@@ -218,7 +224,11 @@ function stringify(value, options, history) {
         case "object":
             return objectToString(value, options, history);
         case "function":
+        case "generatorfunction":
             return functionToString(value, options, history);
+        case "promise":
+        case "generator":
+            return "undefined";
         default:
             return JSON.stringify(value);
     }
@@ -240,11 +250,13 @@ function stringifyRef(value, options, history) {
                 history.nestedObjectsLeft--;
                 break;
             case "array":
+            case "typedarray":
                 if (history.nestedArraysLeft <= 0)
                     return "undefined";
                 history.nestedArraysLeft--;
                 break;
             case "function":
+            case "generatorfunction":
                 if (history.nestedFunctionsLeft <= 0)
                     return "undefined";
                 history.nestedFunctionsLeft--;
@@ -257,9 +269,11 @@ function stringifyRef(value, options, history) {
                 history.nestedObjectsLeft++;
                 break;
             case "array":
+            case "typedarray":
                 history.nestedArraysLeft++;
                 break;
             case "function":
+            case "generatorfunction":
                 history.nestedFunctionsLeft++;
                 break;
         }

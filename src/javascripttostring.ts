@@ -110,6 +110,17 @@ function arrayToString(
   return `[${arrayValues}]`;
 }
 
+function typedArrayToString(
+  value: any,
+  options: IJ2SOptions,
+  history: IJ2SHistory
+): string {
+  let arr = Array.from(value),
+    arrString = arrayToString(arr, options, history),
+    constructorName = value.constructor.name;
+  return `new ${constructorName}(${arrString})`;
+}
+
 function setToString(
   value: Set<any>,
   options: IJ2SOptions,
@@ -247,6 +258,8 @@ function stringify(
       return errorToString(value);
     case "array":
       return arrayToString(value, options, history);
+    case "typedarray":
+      return typedArrayToString(value, options, history);
     case "set":
       return setToString(value, options, history);
     case "map":
@@ -254,7 +267,11 @@ function stringify(
     case "object":
       return objectToString(value, options, history);
     case "function":
+    case "generatorfunction":
       return functionToString(value, options, history);
+    case "promise":
+    case "generator":
+      return "undefined";
     default:
       return JSON.stringify(value);
   }
@@ -280,10 +297,12 @@ function stringifyRef(
         history.nestedObjectsLeft--;
         break;
       case "array":
+      case "typedarray":
         if (history.nestedArraysLeft <= 0) return "undefined";
         history.nestedArraysLeft--;
         break;
       case "function":
+      case "generatorfunction":
         if (history.nestedFunctionsLeft <= 0) return "undefined";
         history.nestedFunctionsLeft--;
         break;
@@ -297,9 +316,11 @@ function stringifyRef(
         history.nestedObjectsLeft++;
         break;
       case "array":
+      case "typedarray":
         history.nestedArraysLeft++;
         break;
       case "function":
+      case "generatorfunction":
         history.nestedFunctionsLeft++;
         break;
     }
