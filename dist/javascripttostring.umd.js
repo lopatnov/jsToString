@@ -4,8 +4,7 @@
     (global = global || self, global.javaScriptToString = factory());
 }(this, function () { 'use strict';
 
-    var types = {}, typesToString = types.toString;
-    [
+    var types = {}, typesToString = types.toString, buildInList = [
         "Boolean",
         "Number",
         "String",
@@ -14,11 +13,36 @@
         "Date",
         "RegExp",
         "Object",
-        "Map",
-        "Set",
-        "Error"
-    ].forEach(function (name) {
+        "Error",
+        "Promise",
+        "Generator",
+        "GeneratorFunction",
+        "ArrayBuffer",
+        "DataView"
+    ], typedArrays = [
+        "Int8Array",
+        "Uint8Array",
+        "Uint8ClampedArray",
+        "Int16Array",
+        "Uint16Array",
+        "Int32Array",
+        "Uint32Array",
+        "Float32Array",
+        "Float64Array",
+        "BigInt64Array",
+        "BigUint64Array"
+    ], maps = ["Map", "WeakMap"], sets = ["Set", "WeakSet"];
+    buildInList.forEach(function (name) {
         types["[object " + name + "]"] = name.toLowerCase();
+    });
+    maps.forEach(function (name) {
+        types["[object " + name + "]"] = "map";
+    });
+    sets.forEach(function (name) {
+        types["[object " + name + "]"] = "set";
+    });
+    typedArrays.forEach(function (name) {
+        types["[object " + name + "]"] = "typedarray";
     });
     function getInternalType(obj) {
         return obj == null
@@ -33,7 +57,7 @@
      * @param value the value, that converts to string
      * @param references the references to stringified objects
      */
-    function stringify(value, references) {
+    function stringify(value, options, references) {
         var referenceValues = references || [value];
         switch (getInternalType(value)) {
             case "undefined":
@@ -100,13 +124,15 @@
             case "array":
                 if (value.length === 0)
                     return "[]";
-                value[0] = strignifyRef(value[0], referenceValues);
-                var arrayValues = value.reduce(function (x1, x2) { return x1 + ", " + strignifyRef(x2, referenceValues); });
+                value[0] = strignifyRef(value[0], options, referenceValues);
+                var arrayValues = value.reduce(function (x1, x2) {
+                    return x1 + ", " + strignifyRef(x2, options, referenceValues);
+                });
                 return "[" + arrayValues + "]";
             case "set":
                 var setValues_1 = [];
                 value.forEach(function (value1, value2, set) {
-                    setValues_1.push(strignifyRef(value2, referenceValues));
+                    setValues_1.push(strignifyRef(value2, options, referenceValues));
                 });
                 if (setValues_1.length === 0)
                     return "new Set()";
@@ -114,7 +140,7 @@
             case "map":
                 var mapValues_1 = [];
                 value.forEach(function (indexValue, key) {
-                    mapValues_1.push("[" + strignifyRef(key, referenceValues) + ", " + strignifyRef(indexValue, referenceValues) + "]");
+                    mapValues_1.push("[" + strignifyRef(key, options, referenceValues) + ", " + strignifyRef(indexValue, options, referenceValues) + "]");
                 });
                 if (mapValues_1.length === 0)
                     return "new Map()";
@@ -123,7 +149,7 @@
                 var objectValues = [];
                 for (var propertyName in value) {
                     if (value.hasOwnProperty(propertyName))
-                        objectValues.push(propertyName + ": " + strignifyRef(value[propertyName], referenceValues));
+                        objectValues.push(propertyName + ": " + strignifyRef(value[propertyName], options, referenceValues));
                 }
                 if (objectValues.length === 0)
                     return "{}";
@@ -132,13 +158,17 @@
                 var functionName = value.name || "anonymousFunction";
                 var functionObject = "";
                 var functionPrototype = "";
-                for (var propertyName in value) {
-                    if (value.hasOwnProperty(propertyName))
-                        functionObject += functionName + "." + propertyName + " = " + strignifyRef(value[propertyName], referenceValues) + ";\n";
+                if (options.includeFunctionProperties) {
+                    for (var propertyName in value) {
+                        if (value.hasOwnProperty(propertyName))
+                            functionObject += functionName + "." + propertyName + " = " + strignifyRef(value[propertyName], options, referenceValues) + ";\n";
+                    }
                 }
-                for (var propertyName in value.prototype) {
-                    if (value.prototype.hasOwnProperty(propertyName))
-                        functionObject += functionName + ".prototype." + propertyName + " = " + strignifyRef(value.prototype[propertyName], referenceValues) + ";\n";
+                if (options.includeFunctionPrototype) {
+                    for (var propertyName in value.prototype) {
+                        if (value.prototype.hasOwnProperty(propertyName))
+                            functionObject += functionName + ".prototype." + propertyName + " = " + strignifyRef(value.prototype[propertyName], options, referenceValues) + ";\n";
+                    }
                 }
                 if (!functionObject && !functionPrototype) {
                     return String(value);
@@ -153,31 +183,28 @@
      * @param value the value, that converts to string
      * @param references the references to stringified objects
      */
-    function strignifyRef(value, references) {
-        switch (getInternalType(value)) {
-            case "array":
-            case "object":
-            case "map":
-            case "set":
-            case "function":
-                if (references.indexOf(value) < 0) {
-                    var referencesLength = references.length;
-                    references.push(value);
-                    var refString = stringify(value, references);
-                    references.splice(referencesLength);
-                    return refString;
-                }
-                return "null";
-            default:
-                return stringify(value);
+    function strignifyRef(value, options, references) {
+        if (references.indexOf(value) < 0) {
+            var referencesLength = references.length;
+            references.push(value);
+            var refString = stringify(value, options, references);
+            references.splice(referencesLength);
+            return refString;
         }
+        return "null";
     }
     /**
      * Converts JavaScript value to string
      * @param value the value of any type
+     * @param options [optional] The options of conversion
      */
-    function javaScriptToString(value) {
-        return stringify(value);
+    function javaScriptToString(value, options) {
+        var opt = options || {};
+        if (opt.includeFunctionProperties === undefined)
+            opt.includeFunctionProperties = true;
+        if (opt.includeFunctionPrototype === undefined)
+            opt.includeFunctionPrototype = true;
+        return stringify(value, opt);
     }
 
     return javaScriptToString;

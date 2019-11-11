@@ -1,6 +1,6 @@
 # JavaScriptToString
 
-JavaScript value to string converter. It converts a runtime value into string value.
+JavaScript value to string converter. It converts a runtime value into string a value.
 
 # Install
 
@@ -16,7 +16,16 @@ import javaScriptToString from 'javascripttostring';
 
 ## Convert JavaScript values into string values
 
-**function javaScriptToString(obj: any) => string // Converts JavaScript value (obj) to string**
+**javaScriptToString(value: any, options?: IJ2SOptions) => string // Converts JavaScript value (obj) to string**
+
+where
+
+```
+interface IJ2SOptions {
+  includeFunctionProperties?: boolean;
+  includeFunctionPrototype?: boolean;
+}
+```
 
 ```
 let myStringOfString = javaScriptToString('Hello world');

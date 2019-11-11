@@ -233,7 +233,56 @@ describe("Function to String", () => {
     let actualObject = new actualClass();
     let expected = "It Works";
 
-    expect(actualObject.TestMethod()).toBe(expected); //TBD make it to work
+    expect(actualObject.TestMethod()).toBe(expected);
+  });
+  it("should work with includeFunctionProperties = false & includeFunctionPrototype = false", () => {
+    function TestConstructor() {}
+    (TestConstructor as any).Test1 = "Completed";
+    TestConstructor.prototype.testMethod = function() {
+      return "It works";
+    };
+
+    let stringFunction = j2s(TestConstructor, {
+      includeFunctionProperties: false,
+      includeFunctionPrototype: false
+    });
+    let actualClass = Function("return " + stringFunction)();
+
+    expect(actualClass.name).toBe("TestConstructor");
+    expect(actualClass.Test1).not.toBeDefined();
+    expect(actualClass.prototype.testMethod).not.toBeDefined();
+  });
+  it("should work with includeFunctionProperties = false", () => {
+    function TestConstructor() {}
+    (TestConstructor as any).Test1 = "Completed";
+    TestConstructor.prototype.testMethod = function() {
+      return "It works";
+    };
+
+    let stringFunction = j2s(TestConstructor, {
+      includeFunctionProperties: false
+    });
+    let actualClass = Function("return " + stringFunction)();
+
+    expect(actualClass.name).toBe("TestConstructor");
+    expect(actualClass.Test1).not.toBeDefined();
+    expect(actualClass.prototype.testMethod()).toBe("It works");
+  });
+  it("should work with includeFunctionPrototype = false", () => {
+    function TestConstructor() {}
+    (TestConstructor as any).Test1 = "Completed";
+    TestConstructor.prototype.testMethod = function() {
+      return "It works";
+    };
+
+    let stringFunction = j2s(TestConstructor, {
+      includeFunctionPrototype: false
+    });
+    let actualClass = Function("return " + stringFunction)();
+
+    expect(actualClass.name).toBe("TestConstructor");
+    expect(actualClass.Test1).toBe("Completed");
+    expect(actualClass.prototype.testMethod).not.toBeDefined();
   });
 });
 

@@ -1,11 +1,20 @@
 import getObjectType from "get-internal-type";
 
+export interface IJ2SOptions {
+  includeFunctionProperties?: boolean;
+  includeFunctionPrototype?: boolean;
+}
+
 /**
  * Converts to string the value, if it wasn't before
  * @param value the value, that converts to string
  * @param references the references to stringified objects
  */
-function stringify(value: any, references?: any[]): string {
+function stringify(
+  value: any,
+  options: IJ2SOptions,
+  references?: any[]
+): string {
   let referenceValues: any[] = references || [value];
   switch (getObjectType(value)) {
     case "undefined":
@@ -73,16 +82,17 @@ function stringify(value: any, references?: any[]): string {
       return `new Error(${message}, ${fileName}, ${lineNumber})`;
     case "array":
       if (value.length === 0) return "[]";
-      value[0] = strignifyRef(value[0], referenceValues);
+      value[0] = strignifyRef(value[0], options, referenceValues);
       let arrayValues = value.reduce(
-        (x1: any, x2: any) => `${x1}, ${strignifyRef(x2, referenceValues)}`
+        (x1: any, x2: any) =>
+          `${x1}, ${strignifyRef(x2, options, referenceValues)}`
       );
       return `[${arrayValues}]`;
     case "set":
       let setValues: string[] = [];
 
       value.forEach((value1: any, value2: any, set: Set<any>) => {
-        setValues.push(strignifyRef(value2, referenceValues));
+        setValues.push(strignifyRef(value2, options, referenceValues));
       });
 
       if (setValues.length === 0) return "new Set()";
@@ -93,8 +103,9 @@ function stringify(value: any, references?: any[]): string {
 
       value.forEach((indexValue: any, key: any) => {
         mapValues.push(
-          `[${strignifyRef(key, referenceValues)}, ${strignifyRef(
+          `[${strignifyRef(key, options, referenceValues)}, ${strignifyRef(
             indexValue,
+            options,
             referenceValues
           )}]`
         );
@@ -111,6 +122,7 @@ function stringify(value: any, references?: any[]): string {
           objectValues.push(
             `${propertyName}: ${strignifyRef(
               value[propertyName],
+              options,
               referenceValues
             )}`
           );
@@ -124,20 +136,26 @@ function stringify(value: any, references?: any[]): string {
       let functionObject = "";
       let functionPrototype = "";
 
-      for (let propertyName in value) {
-        if (value.hasOwnProperty(propertyName))
-          functionObject += `${functionName}.${propertyName} = ${strignifyRef(
-            value[propertyName],
-            referenceValues
-          )};\n`;
+      if (options.includeFunctionProperties) {
+        for (let propertyName in value) {
+          if (value.hasOwnProperty(propertyName))
+            functionObject += `${functionName}.${propertyName} = ${strignifyRef(
+              value[propertyName],
+              options,
+              referenceValues
+            )};\n`;
+        }
       }
 
-      for (let propertyName in value.prototype) {
-        if (value.prototype.hasOwnProperty(propertyName))
-          functionObject += `${functionName}.prototype.${propertyName} = ${strignifyRef(
-            value.prototype[propertyName],
-            referenceValues
-          )};\n`;
+      if (options.includeFunctionPrototype) {
+        for (let propertyName in value.prototype) {
+          if (value.prototype.hasOwnProperty(propertyName))
+            functionObject += `${functionName}.prototype.${propertyName} = ${strignifyRef(
+              value.prototype[propertyName],
+              options,
+              referenceValues
+            )};\n`;
+        }
       }
 
       if (!functionObject && !functionPrototype) {
@@ -156,32 +174,34 @@ function stringify(value: any, references?: any[]): string {
  * @param value the value, that converts to string
  * @param references the references to stringified objects
  */
-function strignifyRef(value: any, references: any[]): string {
-  switch (getObjectType(value)) {
-    case "array":
-    case "object":
-    case "map":
-    case "set":
-    case "function":
-      if (references.indexOf(value) < 0) {
-        let referencesLength = references.length;
-        references.push(value);
-        let refString = stringify(value, references);
-        references.splice(referencesLength);
-        return refString;
-      }
-      return "null";
-    default:
-      return stringify(value);
+function strignifyRef(
+  value: any,
+  options: IJ2SOptions,
+  references: any[]
+): string {
+  if (references.indexOf(value) < 0) {
+    let referencesLength = references.length;
+    references.push(value);
+    let refString = stringify(value, options, references);
+    references.splice(referencesLength);
+    return refString;
   }
+  return "null";
 }
 
 /**
  * Converts JavaScript value to string
  * @param value the value of any type
+ * @param options [optional] The options of conversion
  */
-function javaScriptToString(value: any): string {
-  return stringify(value);
+function javaScriptToString(value: any, options?: IJ2SOptions): string {
+  let opt: IJ2SOptions = options || {};
+  if (opt.includeFunctionProperties === undefined)
+    opt.includeFunctionProperties = true;
+  if (opt.includeFunctionPrototype === undefined)
+    opt.includeFunctionPrototype = true;
+
+  return stringify(value, opt);
 }
 
 export default javaScriptToString;
