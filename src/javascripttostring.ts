@@ -302,6 +302,51 @@ function stringify(
   }
 }
 
+function beforeStringifyRef(
+  value: any,
+  objectType: string,
+  history: IJ2SHistory
+) {
+  history.references.push(value);
+  switch (objectType) {
+    case "object":
+      if (history.nestedObjectsLeft <= 0) return "undefined";
+      history.nestedObjectsLeft--;
+      break;
+    case "array":
+    case "typedarray":
+      if (history.nestedArraysLeft <= 0) return "undefined";
+      history.nestedArraysLeft--;
+      break;
+    case "function":
+    case "generatorfunction":
+      if (history.nestedFunctionsLeft <= 0) return "undefined";
+      history.nestedFunctionsLeft--;
+      break;
+  }
+}
+
+function afterStringifyRef(
+  objectType: string,
+  history: IJ2SHistory,
+  referencesLength: number
+) {
+  history.references.splice(referencesLength);
+  switch (objectType) {
+    case "object":
+      history.nestedObjectsLeft++;
+      break;
+    case "array":
+    case "typedarray":
+      history.nestedArraysLeft++;
+      break;
+    case "function":
+    case "generatorfunction":
+      history.nestedFunctionsLeft++;
+      break;
+  }
+}
+
 /**
  * Stringify the value, if it wasn't before
  * @param value the value, that converts to string
@@ -313,42 +358,12 @@ function stringifyRef(
   history: IJ2SHistory
 ): string {
   if (history.references.indexOf(value) < 0) {
-    let objectType = getObjectType(value);
-    let referencesLength = history.references.length;
-    history.references.push(value);
-    switch (objectType) {
-      case "object":
-        if (history.nestedObjectsLeft <= 0) return "undefined";
-        history.nestedObjectsLeft--;
-        break;
-      case "array":
-      case "typedarray":
-        if (history.nestedArraysLeft <= 0) return "undefined";
-        history.nestedArraysLeft--;
-        break;
-      case "function":
-      case "generatorfunction":
-        if (history.nestedFunctionsLeft <= 0) return "undefined";
-        history.nestedFunctionsLeft--;
-        break;
-    }
+    let objectType = getObjectType(value),
+      referencesLength = history.references.length;
 
+    beforeStringifyRef(value, objectType, history);
     let refString = stringify(value, options, history);
-
-    history.references.splice(referencesLength);
-    switch (objectType) {
-      case "object":
-        history.nestedObjectsLeft++;
-        break;
-      case "array":
-      case "typedarray":
-        history.nestedArraysLeft++;
-        break;
-      case "function":
-      case "generatorfunction":
-        history.nestedFunctionsLeft++;
-        break;
-    }
+    afterStringifyRef(objectType, history, referencesLength);
 
     return refString;
   }
