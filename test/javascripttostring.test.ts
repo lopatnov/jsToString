@@ -211,7 +211,6 @@ describe("Function to String", () => {
   });
   it("should convert an named function", () => {
     function sum(...numbers: number[]) {
-      console.log(numbers);
       return Array.prototype.reduce.call(
         numbers,
         (accumulator: any, currentValue: any) => {
