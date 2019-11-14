@@ -5,7 +5,13 @@
   "author": "lopatnov",
   "description": "JavaScript value to string converter",
   "homepage": "https://github.com/lopatnov/jsToString#readme",
-  "keywords": ["TypeScript", "JavaScript", "reverse engineering", "object to string", "conversion"],
+  "keywords": [
+    "TypeScript",
+    "JavaScript",
+    "reverse engineering",
+    "object to string",
+    "conversion"
+  ],
   "main": "dist/javascripttostring.umd.js",
   "module": "dist/javascripttostring.es5.js",
   "typings": "dist/types/javascripttostring.d.ts",
