@@ -5,6 +5,7 @@
   "author": "lopatnov",
   "description": "JavaScript value to string converter",
   "homepage": "https://github.com/lopatnov/jsToString#readme",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "keywords": [
     "TypeScript",
     "JavaScript",
