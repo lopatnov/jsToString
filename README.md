@@ -6,29 +6,31 @@ JavaScript value to string runtime converter. It converts a runtime value into s
 
 Node:
 
-```
+```shell
 npm i javascripttostring
 ```
 
 Browser:
 
-```
+```html
 <script src="<path to library>/javascripttostring.umd.js"></script>
 ```
 
 ## Import package to the project
 
-```
+```typescript
 import javaScriptToString from 'javascripttostring';
 ```
 
 ## Convert JavaScript values into string values
 
-**javaScriptToString(value: any, options?: IJ2SOptions) => string**
+```typescript
+javaScriptToString(value: any, options?: IJ2SOptions) => string
+```
 
 where
 
-```
+```typescript
 interface IJ2SOptions {
   includeFunctionProperties?: boolean; // default true
   includeFunctionPrototype?: boolean; // default true
@@ -41,19 +43,19 @@ interface IJ2SOptions {
 
 # Examples
 
-```
+```typescript
 let myStringOfString = javaScriptToString('Hello world');
 console.log(myStringOfString);
 /* expected myStringOfString value: "\"Hello world\"" */
 ```
 
-```
+```typescript
 let myStringOfArray = javaScriptToString(["Hello", "World", ".", "How", "do", "you", "do", "?"]);
 console.log(myStringOfArray);
 /* expected myStringOfArray value: "[\"Hello\",\"World\",\".\",\"How\",\"do\",\"you\",\"do\",\"?\"]" */
 ```
 
-```
+```typescript
 let myObjectString = javaScriptToString({
     friend1: "Shurik",
     friend2: "Alex",
@@ -75,7 +77,7 @@ console.log(myObjectString);
 */
 ```
 
-```
+```typescript
 let myFunctionString = javaScriptToString(function(a,b) {
   console.log("Just a function");
 })
@@ -88,7 +90,7 @@ console.log(myFunctionString);
 */
 ```
 
-```
+```typescript
 function Simple(title) {
   this.title = title || "world";
 }
@@ -124,19 +126,22 @@ console.log(javaScriptToString(Simple));
 
 # TBD
 
-```
 — Resolve references to parent elements and itself
 
 Example:
 
+```javascript
 var x = [1,2,3];
 x[0] = x;
 console.log(javaScriptToString(x));
+```
 
 Actual output:
+```javascript
 [null, 2, 3]
-
+```
 Expected output:
+```javascript
 (function(){
   var x = [null, 2, 3];
   x[0] = x;
