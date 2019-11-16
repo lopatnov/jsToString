@@ -122,6 +122,12 @@ console.log(javaScriptToString(Simple));
 */
 ```
 
+# Demo
+
+See, how it's working: [https://runkit.com/lopatnov/javascripttostring-demo](https://runkit.com/lopatnov/javascripttostring-demo)
+
+Test it with a runkit: [https://npm.runkit.com/javascripttostring](https://npm.runkit.com/javascripttostring)
+
 # TBD
 
 ```
