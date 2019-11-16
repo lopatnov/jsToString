@@ -6,8 +6,16 @@ JavaScript value to string runtime converter. It converts a runtime value into s
 
 Node:
 
+[npmjs repository](//www.npmjs.com/package/javascripttostring)
+
 ```shell
 npm i javascripttostring
+```
+
+[github repository](//github.com/lopatnov/jsToString/packages)
+
+```shell
+npm install @lopatnov/javascripttostring
 ```
 
 Browser:
