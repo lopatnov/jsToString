@@ -4,8 +4,7 @@
   "license": "Apache-2.0",
   "author": "lopatnov",
   "description": "JavaScript value to string converter",
-  "homepage": "https://github.com/lopatnov/jsToString#readme",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "homepage": "https://lopatnov.github.io/jsToString/",
   "keywords": [
     "TypeScript",
     "JavaScript",
