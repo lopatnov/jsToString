@@ -29,6 +29,10 @@ Browser:
 ```typescript
 import javaScriptToString from 'javascripttostring';
 ```
+or
+```javascript
+var javaScriptToString = require("javascripttostring");
+```
 
 ## Convert JavaScript values into string values
 
