@@ -144,29 +144,7 @@ Test it with a runkit: [https://npm.runkit.com/javascripttostring](https://npm.r
 
 # TBD
 
-— Resolve references to parent elements and itself
-
-Example:
-
-```javascript
-var x = [1,2,3];
-x[0] = x;
-console.log(javaScriptToString(x));
-```
-
-Actual output:
-```javascript
-[null, 2, 3]
-```
-Expected output:
-```javascript
-(function(){
-  var x = [null, 2, 3];
-  x[0] = x;
-  return x;
-}())
-
-```
+— [Resolve references to parent elements and itself](https://github.com/lopatnov/jsToString/issues/1)
 
 # Rights and Agreements
 
