@@ -25,7 +25,7 @@ npm install javascripttostring
 npm install @lopatnov/javascripttostring
 ```
 
-Browser:
+[Browser](//lopatnov.github.io/jsToString/dist/javascripttostring.umd.js)
 
 ```html
 <script src="//lopatnov.github.io/jsToString/dist/javascripttostring.umd.js"></script>
