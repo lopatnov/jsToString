@@ -1,18 +1,25 @@
 # JavaScriptToString
 
+[![NPM version](https://badge.fury.io/js/javascripttostring.svg)](https://badge.fury.io/js/javascripttostring)
+![License](https://img.shields.io/github/license/lopatnov/jsToString)
+[![Build Status](https://travis-ci.org/lopatnov/jsToString.png?branch=master)](https://travis-ci.org/lopatnov/jsToString)
+[![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fjavascripttostring)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fjavascripttostring)
+
 JavaScript value to string runtime converter. It converts a runtime value into string a value.
 
 # Install
 
 Node:
 
-[npmjs repository](//www.npmjs.com/package/javascripttostring)
+[NPM repository](//www.npmjs.com/package/javascripttostring)
+
+[![https://nodei.co/npm/javascripttostring.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/javascripttostring.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/javascripttostring)
 
 ```shell
-npm i javascripttostring
+npm install javascripttostring
 ```
 
-[github repository](//github.com/lopatnov/jsToString/packages)
+[GitHub repository](//github.com/lopatnov/jsToString/packages)
 
 ```shell
 npm install @lopatnov/javascripttostring
@@ -21,7 +28,7 @@ npm install @lopatnov/javascripttostring
 Browser:
 
 ```html
-<script src="<path to library>/javascripttostring.umd.js"></script>
+<script src="//lopatnov.github.io/jsToString/dist/javascripttostring.umd.js"></script>
 ```
 
 ## Import package to the project
