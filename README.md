@@ -9,10 +9,6 @@ JavaScript value to string runtime converter. It converts a runtime value into s
 
 ## Install
 
-Node:
-
-[NPM repository](//www.npmjs.com/package/@lopatnov/javascripttostring)
-
 [![https://nodei.co/npm/@lopatnov/javascripttostring.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/@lopatnov/javascripttostring.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/@lopatnov/javascripttostring)
 
 ```shell
