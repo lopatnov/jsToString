@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>javascripttostring | javascripttostring</title>
+	<title>@lopatnov/javascripttostring | @lopatnov/javascripttostring</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2347,7 +2347,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="index.html">javascripttostring</a></strong>
+					<strong><a href="index.html">@lopatnov/javascripttostring</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2439,56 +2439,70 @@ img {
 			<a href="#javascripttostring" id="javascripttostring" style="color: inherit; text-decoration: none;">
 				<h1>JavaScriptToString</h1>
 			</a>
+			<p><a href="https://badge.fury.io/js/javascripttostring"><img src="https://badge.fury.io/js/javascripttostring.svg" alt="NPM version"></a>
+				<img src="https://img.shields.io/github/license/lopatnov/jsToString" alt="License">
+				<a href="https://travis-ci.org/lopatnov/jsToString"><img src="https://travis-ci.org/lopatnov/jsToString.png?branch=master" alt="Build Status"></a>
+			<a href="https://twitter.com/intent/tweet?text=Wow:&amp;url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fjavascripttostring"><img src="https://img.shields.io/twitter/url?url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fjavascripttostring" alt="Twitter"></a></p>
 			<p>JavaScript value to string runtime converter. It converts a runtime value into string a value.</p>
 			<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 				<h1>Install</h1>
 			</a>
 			<p>Node:</p>
-			<pre><code>npm <span class="hljs-selector-tag">i</span> javascripttostring</code></pre><p>Browser:</p>
-			<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"&lt;path to library&gt;/javascripttostring.umd.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+			<p><a href="//www.npmjs.com/package/javascripttostring">NPM repository</a></p>
+			<p><a href="https://www.npmjs.com/package/javascripttostring"><img src="https://nodei.co/npm/javascripttostring.png?downloads=true&downloadRank=true&stars=true" alt="https://nodei.co/npm/javascripttostring.png?downloads=true&amp;downloadRank=true&amp;stars=true"></a></p>
+			<pre><code class="language-shell">npm install javascripttostring</code></pre>
+			<p><a href="//github.com/lopatnov/jsToString/packages">GitHub repository</a></p>
+			<pre><code class="language-shell">npm install @lopatnov/javascripttostring</code></pre>
+			<p><a href="//lopatnov.github.io/jsToString/dist/javascripttostring.umd.js">Browser</a></p>
+			<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"//lopatnov.github.io/jsToString/dist/javascripttostring.umd.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
 			<a href="#import-package-to-the-project" id="import-package-to-the-project" style="color: inherit; text-decoration: none;">
 				<h2>Import package to the project</h2>
 			</a>
-			<pre><code><span class="hljs-keyword">import</span> javaScriptToString <span class="hljs-keyword">from</span> <span class="hljs-string">'javascripttostring'</span>;</code></pre>
+			<pre><code class="language-typescript"><span class="hljs-keyword">import</span> javaScriptToString <span class="hljs-keyword">from</span> <span class="hljs-string">'javascripttostring'</span>;</code></pre>
+			<p>or</p>
+			<pre><code class="language-javascript"><span class="hljs-keyword">var</span> javaScriptToString = <span class="hljs-built_in">require</span>(<span class="hljs-string">"javascripttostring"</span>);</code></pre>
 			<a href="#convert-javascript-values-into-string-values" id="convert-javascript-values-into-string-values" style="color: inherit; text-decoration: none;">
 				<h2>Convert JavaScript values into string values</h2>
 			</a>
-			<p><strong>javaScriptToString(value: any, options?: IJ2SOptions) =&gt; string</strong></p>
+			<pre><code class="language-typescript">javaScriptToString(value: <span class="hljs-built_in">any</span>, options?: IJ2SOptions) =&gt; <span class="hljs-built_in">string</span></code></pre>
 			<p>where</p>
-			<pre><code><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IJ2SOptions</span> {</span>
-  includeFunctionProperties?: <span class="hljs-keyword">boolean</span>; <span class="hljs-comment">// default true</span>
-  includeFunctionPrototype?: <span class="hljs-keyword">boolean</span>; <span class="hljs-comment">// default true</span>
-  includeBuffers?: <span class="hljs-keyword">boolean</span>; <span class="hljs-comment">// default true</span>
-  nestedObjectsAmount?: number; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
-  nestedArraysAmount?: number; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
-  nestedFunctionsAmount?: number; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
+			<pre><code class="language-typescript"><span class="hljs-keyword">interface</span> IJ2SOptions {
+  includeFunctionProperties?: <span class="hljs-built_in">boolean</span>; <span class="hljs-comment">// default true</span>
+  includeFunctionPrototype?: <span class="hljs-built_in">boolean</span>; <span class="hljs-comment">// default true</span>
+  includeBuffers?: <span class="hljs-built_in">boolean</span>; <span class="hljs-comment">// default true</span>
+  nestedObjectsAmount?: <span class="hljs-built_in">number</span>; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
+  nestedArraysAmount?: <span class="hljs-built_in">number</span>; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
+  nestedFunctionsAmount?: <span class="hljs-built_in">number</span>; <span class="hljs-comment">// default Number.POSITIVE_INFINITY</span>
 }</code></pre>
 			<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
 				<h1>Examples</h1>
 			</a>
-			<pre><code>let myStringOfString = javaScriptToString('Hello world');
-console.<span class="hljs-built_in">log</span>(myStringOfString);
-/* expected myStringOfString value: <span class="hljs-string">"\"</span>Hello world\<span class="hljs-string">""</span> */</code></pre><pre><code><span class="hljs-keyword">let</span> myStringOfArray = javaScriptToString([<span class="hljs-string">"Hello"</span>, <span class="hljs-string">"World"</span>, <span class="hljs-string">"."</span>, <span class="hljs-string">"How"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"you"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"?"</span>]);
-console.<span class="hljs-built_in">log</span>(myStringOfArray);
-/* expected myStringOfArray value: <span class="hljs-string">"[\"</span>Hello\<span class="hljs-string">",\"</span>World\<span class="hljs-string">",\"</span>.\<span class="hljs-string">",\"</span>How\<span class="hljs-string">",\"</span><span class="hljs-keyword">do</span>\<span class="hljs-string">",\"</span>you\<span class="hljs-string">",\"</span><span class="hljs-keyword">do</span>\<span class="hljs-string">",\"</span>?\<span class="hljs-string">"]"</span> */</code></pre><pre><code>let myObjectString = javaScriptToString({
+			<pre><code class="language-typescript"><span class="hljs-keyword">let</span> myStringOfString = javaScriptToString(<span class="hljs-string">'Hello world'</span>);
+<span class="hljs-built_in">console</span>.log(myStringOfString);
+<span class="hljs-comment">/* expected myStringOfString value: "\"Hello world\"" */</span></code></pre>
+			<pre><code class="language-typescript"><span class="hljs-keyword">let</span> myStringOfArray = javaScriptToString([<span class="hljs-string">"Hello"</span>, <span class="hljs-string">"World"</span>, <span class="hljs-string">"."</span>, <span class="hljs-string">"How"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"you"</span>, <span class="hljs-string">"do"</span>, <span class="hljs-string">"?"</span>]);
+<span class="hljs-built_in">console</span>.log(myStringOfArray);
+<span class="hljs-comment">/* expected myStringOfArray value: "[\"Hello\",\"World\",\".\",\"How\",\"do\",\"you\",\"do\",\"?\"]" */</span></code></pre>
+			<pre><code class="language-typescript"><span class="hljs-keyword">let</span> myObjectString = javaScriptToString({
     friend1: <span class="hljs-string">"Shurik"</span>,
     friend2: <span class="hljs-string">"Alex"</span>,
     friends: {
         friend3: <span class="hljs-number">123456</span>,
         friend4: {},
         friend5: [<span class="hljs-string">"Hola"</span>, <span class="hljs-string">"amigo"</span>],
-        friend6: () =&gt; {
-            console.<span class="hljs-built_in">log</span>(<span class="hljs-string">"How you doing?"</span>);
+        friend6: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"How you doing?"</span>);
         }
     }
 });
 
-console.<span class="hljs-built_in">log</span>(myObjectString);
-/* expected myObjectString value:
-<span class="hljs-string">"{friend1: \"</span>Shurik\<span class="hljs-string">",friend2: \"</span>Alex\<span class="hljs-string">",friends: {friend3: 123456,friend4: {},friend5: [\"</span>Hola\<span class="hljs-string">",\"</span>amigo\<span class="hljs-string">"],friend6: () =&gt; {</span>
-            console.<span class="hljs-built_in">log</span>(\<span class="hljs-string">"How you doing?\"</span>);
-        }}}<span class="hljs-string">"</span>
-*/</code></pre><pre><code><span class="hljs-keyword">let</span> myFunctionString = javaScriptToString(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a,b</span>) </span>{
+<span class="hljs-built_in">console</span>.log(myObjectString);
+<span class="hljs-comment">/* expected myObjectString value:
+"{friend1: \"Shurik\",friend2: \"Alex\",friends: {friend3: 123456,friend4: {},friend5: [\"Hola\",\"amigo\"],friend6: () =&gt; {
+            console.log(\"How you doing?\");
+        }}}"
+*/</span></code></pre>
+			<pre><code class="language-typescript"><span class="hljs-keyword">let</span> myFunctionString = javaScriptToString(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a,b</span>) </span>{
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Just a function"</span>);
 })
 
@@ -2497,58 +2511,47 @@ console.<span class="hljs-built_in">log</span>(myObjectString);
 "function(a,b) {
   console.log(\"Just a function\");
 }"
-*/</span></code></pre><pre><code>function Simple(title) {
-  this.title = title <span class="hljs-string">|| "</span>world<span class="hljs-string">";</span>
+*/</span></code></pre>
+			<pre><code class="language-typescript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Simple</span>(<span class="hljs-params">title</span>) </span>{
+  <span class="hljs-keyword">this</span>.title = title || <span class="hljs-string">"world"</span>;
 }
 
 Simple.count = <span class="hljs-number">0</span>;
 
-Simple.prototype.show = function(){
+Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
   Simple.count++;
-  console.<span class="hljs-built_in">log</span>('title = ', this.title);
-  console.<span class="hljs-built_in">log</span>('count = ', Simple.count);
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'title = '</span>, <span class="hljs-keyword">this</span>.title);
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'count = '</span>, Simple.count);
 }
-console.<span class="hljs-built_in">log</span>(javaScriptToString(Simple));
+<span class="hljs-built_in">console</span>.log(javaScriptToString(Simple));
 
-/* Expected:
+<span class="hljs-comment">/* Expected:
 
-<span class="hljs-string">"(function(){</span>
+"(function(){
  var Simple = function Simple(title) {
-  this.title = title <span class="hljs-string">|| \"</span>world\<span class="hljs-string">";</span>
+  this.title = title || \"world\";
 };
- Simple.count = <span class="hljs-number">0</span>;
+ Simple.count = 0;
 
  Simple.prototype.show = function(){
   Simple.count++;
-  console.<span class="hljs-built_in">log</span>('title = ', this.title);
-  console.<span class="hljs-built_in">log</span>('count = ', Simple.count);
+  console.log('title = ', this.title);
+  console.log('count = ', Simple.count);
 };
 
  return Simple;
-}())<span class="hljs-string">"</span>
+}())"
 
-*/</code></pre>
+*/</span></code></pre>
+			<a href="#demo" id="demo" style="color: inherit; text-decoration: none;">
+				<h1>Demo</h1>
+			</a>
+			<p>See, how it&#39;s working: <a href="https://runkit.com/lopatnov/javascripttostring-demo">https://runkit.com/lopatnov/javascripttostring-demo</a></p>
+			<p>Test it with a runkit: <a href="https://npm.runkit.com/javascripttostring">https://npm.runkit.com/javascripttostring</a></p>
 			<a href="#tbd" id="tbd" style="color: inherit; text-decoration: none;">
 				<h1>TBD</h1>
 			</a>
-			<pre><code>— Resolve <span class="hljs-meta">references</span> to parent elements <span class="hljs-meta">and</span> itself
-
-Example:
-
-var <span class="hljs-meta">x</span> = [1,2,3];
-<span class="hljs-meta">x</span>[0] = <span class="hljs-meta">x</span>;
-console<span class="hljs-meta">.log(</span>javaScriptToString(<span class="hljs-meta">x</span>));
-
-Actual <span class="hljs-meta">output</span>:
-[<span class="hljs-meta">null</span>, 2, 3]
-
-Expected <span class="hljs-meta">output</span>:
-(functi<span class="hljs-meta">on(</span>){
-  var <span class="hljs-meta">x</span> = [<span class="hljs-meta">null</span>, 2, 3];
-  <span class="hljs-meta">x</span>[0] = <span class="hljs-meta">x</span>;
-  <span class="hljs-meta">return</span> <span class="hljs-meta">x</span>;
-}())
-</code></pre>
+			<p>— <a href="https://github.com/lopatnov/jsToString/issues/1">Resolve references to parent elements and itself</a></p>
 			<a href="#rights-and-agreements" id="rights-and-agreements" style="color: inherit; text-decoration: none;">
 				<h1>Rights and Agreements</h1>
 			</a>
@@ -2602,7 +2605,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L229">javascripttostring.ts:229</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L229">javascripttostring.ts:229</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2631,7 +2634,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L95">javascripttostring.ts:95</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L95">javascripttostring.ts:95</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2660,7 +2663,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L239">javascripttostring.ts:239</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L239">javascripttostring.ts:239</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2689,7 +2692,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L81">javascripttostring.ts:81</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L81">javascripttostring.ts:81</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2712,7 +2715,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L88">javascripttostring.ts:88</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L88">javascripttostring.ts:88</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2735,7 +2738,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L184">javascripttostring.ts:184</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L184">javascripttostring.ts:184</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2767,7 +2770,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L202">javascripttostring.ts:202</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L202">javascripttostring.ts:202</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2796,7 +2799,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L363">javascripttostring.ts:363</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L363">javascripttostring.ts:363</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2833,7 +2836,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L141">javascripttostring.ts:141</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L141">javascripttostring.ts:141</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2862,7 +2865,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L19">javascripttostring.ts:19</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L19">javascripttostring.ts:19</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2885,7 +2888,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L163">javascripttostring.ts:163</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L163">javascripttostring.ts:163</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2914,7 +2917,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L125">javascripttostring.ts:125</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L125">javascripttostring.ts:125</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2943,7 +2946,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L254">javascripttostring.ts:254</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L254">javascripttostring.ts:254</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2980,7 +2983,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L310">javascripttostring.ts:310</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L310">javascripttostring.ts:310</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3017,7 +3020,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L59">javascripttostring.ts:59</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L59">javascripttostring.ts:59</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3040,7 +3043,7 @@ Expected <span class="hljs-meta">output</span>:
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/7adfbb8/src/javascripttostring.ts#L114">javascripttostring.ts:114</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/9ab2130/src/javascripttostring.ts#L114">javascripttostring.ts:114</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
