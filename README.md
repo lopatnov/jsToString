@@ -24,13 +24,13 @@ npm install @lopatnov/javascripttostring
 ## Import package to the project
 
 ```typescript
-import javaScriptToString from 'javascripttostring';
+import javaScriptToString from '@lopatnov/javascripttostring';
 ```
 
 or
 
 ```javascript
-var javaScriptToString = require("javascripttostring");
+var javaScriptToString = require("@lopatnov/javascripttostring");
 ```
 
 ## Convert JavaScript values into string values
@@ -139,7 +139,7 @@ console.log(javaScriptToString(Simple));
 
 See, how it's working: [https://runkit.com/lopatnov/javascripttostring-demo](https://runkit.com/lopatnov/javascripttostring-demo)
 
-Test it with a runkit: [https://npm.runkit.com/javascripttostring](https://npm.runkit.com/javascripttostring)
+Test it with a runkit: [https://npm.runkit.com/%40lopatnov%2Fjavascripttostring](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring)
 
 ## TBD
 
