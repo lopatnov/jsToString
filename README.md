@@ -1,25 +1,19 @@
 # JavaScriptToString
 
-[![NPM version](https://badge.fury.io/js/javascripttostring.svg)](https://badge.fury.io/js/javascripttostring)
+[![NPM version](https://badge.fury.io/js/%40lopatnov%2Fjavascripttostring.svg)](https://www.npmjs.com/package/@lopatnov/javascripttostring)
 ![License](https://img.shields.io/github/license/lopatnov/jsToString)
 [![Build Status](https://travis-ci.org/lopatnov/jsToString.png?branch=master)](https://travis-ci.org/lopatnov/jsToString)
-[![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fjavascripttostring)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Fjavascripttostring)
+[![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%40lopatnov%2Fjavascripttostring)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%40lopatnov%2Fjavascripttostring)
 
 JavaScript value to string runtime converter. It converts a runtime value into string a value.
 
-# Install
+## Install
 
 Node:
 
-[NPM repository](//www.npmjs.com/package/javascripttostring)
+[NPM repository](//www.npmjs.com/package/@lopatnov/javascripttostring)
 
-[![https://nodei.co/npm/javascripttostring.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/javascripttostring.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/javascripttostring)
-
-```shell
-npm install javascripttostring
-```
-
-[GitHub repository](//github.com/lopatnov/jsToString/packages)
+[![https://nodei.co/npm/@lopatnov/javascripttostring.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/@lopatnov/javascripttostring.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/@lopatnov/javascripttostring)
 
 ```shell
 npm install @lopatnov/javascripttostring
@@ -36,7 +30,9 @@ npm install @lopatnov/javascripttostring
 ```typescript
 import javaScriptToString from 'javascripttostring';
 ```
+
 or
+
 ```javascript
 var javaScriptToString = require("javascripttostring");
 ```
@@ -60,7 +56,7 @@ interface IJ2SOptions {
 }
 ```
 
-# Examples
+## Examples
 
 ```typescript
 let myStringOfString = javaScriptToString('Hello world');
@@ -143,17 +139,17 @@ console.log(javaScriptToString(Simple));
 */
 ```
 
-# Demo
+## Demo
 
 See, how it's working: [https://runkit.com/lopatnov/javascripttostring-demo](https://runkit.com/lopatnov/javascripttostring-demo)
 
 Test it with a runkit: [https://npm.runkit.com/javascripttostring](https://npm.runkit.com/javascripttostring)
 
-# TBD
+## TBD
 
 — [Resolve references to parent elements and itself](https://github.com/lopatnov/jsToString/issues/1)
 
-# Rights and Agreements
+## Rights and Agreements
 
 License [Apache-2.0](https://github.com/lopatnov/jsToString/blob/master/LICENSE)
 
