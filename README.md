@@ -3,7 +3,7 @@
 [![NPM version](https://badge.fury.io/js/%40lopatnov%2Fjavascripttostring.svg)](https://www.npmjs.com/package/@lopatnov/javascripttostring)
 ![License](https://img.shields.io/github/license/lopatnov/jsToString)
 [![Build Status](https://travis-ci.org/lopatnov/jsToString.png?branch=master)](https://travis-ci.org/lopatnov/jsToString)
-[![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%40lopatnov%2Fjavascripttostring)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%40lopatnov%2Fjavascripttostring)
+[![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40lopatnov%2Fjavascripttostring)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40lopatnov%2Fjavascripttostring)
 
 JavaScript value to string runtime converter. It converts a runtime value into string a value.
 
