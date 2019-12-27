@@ -1,7 +1,7 @@
 # JavaScriptToString
 
 [![NPM version](https://badge.fury.io/js/%40lopatnov%2Fjavascripttostring.svg)](https://www.npmjs.com/package/@lopatnov/javascripttostring)
-![License](https://img.shields.io/github/license/lopatnov/jsToString)
+[![License](https://img.shields.io/github/license/lopatnov/jsToString)](https://github.com/lopatnov/jsToString/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/lopatnov/jsToString.png?branch=master)](https://travis-ci.org/lopatnov/jsToString)
 [![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40lopatnov%2Fjavascripttostring)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40lopatnov%2Fjavascripttostring)
 
@@ -24,13 +24,13 @@ npm install @lopatnov/javascripttostring
 ## Import package to the project
 
 ```typescript
-import javaScriptToString from 'javascripttostring';
+import javaScriptToString from '@lopatnov/javascripttostring';
 ```
 
 or
 
 ```javascript
-var javaScriptToString = require("javascripttostring");
+var javaScriptToString = require("@lopatnov/javascripttostring");
 ```
 
 ## Convert JavaScript values into string values
@@ -139,7 +139,7 @@ console.log(javaScriptToString(Simple));
 
 See, how it's working: [https://runkit.com/lopatnov/javascripttostring-demo](https://runkit.com/lopatnov/javascripttostring-demo)
 
-Test it with a runkit: [https://npm.runkit.com/javascripttostring](https://npm.runkit.com/javascripttostring)
+Test it with a runkit: [https://npm.runkit.com/%40lopatnov%2Fjavascripttostring](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring)
 
 ## TBD
 
