@@ -1,6 +1,6 @@
 {
   "name": "@lopatnov/javascripttostring",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "license": "Apache-2.0",
   "author": "lopatnov",
   "description": "JavaScript value to string converter",
@@ -47,10 +47,10 @@
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.24.3",
     "ts-jest": "^24.1.0",
-    "typedoc": "^0.15.0",
+    "typedoc": "^0.17.3",
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "get-internal-type": "1.5.4"
+    "@lopatnov/get-internal-type": "^1.5.5"
   }
 }

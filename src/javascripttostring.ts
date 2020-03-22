@@ -1,4 +1,4 @@
-import getObjectType from "get-internal-type";
+import getObjectType from "@lopatnov/get-internal-type";
 
 export interface IJ2SOptions {
   includeFunctionProperties?: boolean; // default true
