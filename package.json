@@ -1,6 +1,6 @@
 {
   "name": "@lopatnov/javascripttostring",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "license": "Apache-2.0",
   "author": "lopatnov",
   "description": "JavaScript value to string converter",
