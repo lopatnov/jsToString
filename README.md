@@ -137,15 +137,27 @@ console.log(javaScriptToString(Simple));
 */
 ```
 
+```javascript
+var x = [1,2,3];
+x[0] = x;
+console.log(javaScriptToString(x));
+
+/*
+"(function(){ var ___j2s_0 = [null, 2, 3]; ___j2s_0['0'] = ___j2s_0;  return ___j2s_0; }())"
+*/
+```
+
 ## Demo
 
 See, how it's working: [https://runkit.com/lopatnov/javascripttostring-demo](https://runkit.com/lopatnov/javascripttostring-demo)
 
 Test it with a runkit: [https://npm.runkit.com/%40lopatnov%2Fjavascripttostring](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring)
 
-## TBD
+## Changelog
 
-— [Resolve references to parent elements and itself](https://github.com/lopatnov/jsToString/issues/1)
+| Version | Task |
+|--------:|:-----|
+|   1.7.0 | [Resolve references to parent elements and itself](https://github.com/lopatnov/jsToString/issues/1) |
 
 ## Rights and Agreements
 
