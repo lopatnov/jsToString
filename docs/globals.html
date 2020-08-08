@@ -2728,11 +2728,26 @@ img {
 		<li class=" tsd-kind-interface">
 			<a href="interfaces/ij2soptions.html" class="tsd-kind-icon">IJ2SOptions</a>
 		</li>
+		<li class=" tsd-kind-interface">
+			<a href="interfaces/refinstance.html" class="tsd-kind-icon">Ref<wbr>Instance</a>
+		</li>
+		<li class=" tsd-kind-variable">
+			<a href="globals.html#counter" class="tsd-kind-icon">counter</a>
+		</li>
+		<li class=" tsd-kind-variable">
+			<a href="globals.html#refs" class="tsd-kind-icon">refs</a>
+		</li>
 		<li class=" tsd-kind-function">
 			<a href="globals.html#arraybuffertostring" class="tsd-kind-icon">array<wbr>Buffer<wbr>ToString</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="globals.html#arraytostring" class="tsd-kind-icon">array<wbr>ToString</a>
+		</li>
+		<li class=" tsd-kind-function">
+			<a href="globals.html#attachactions" class="tsd-kind-icon">attach<wbr>Actions</a>
+		</li>
+		<li class=" tsd-kind-function">
+			<a href="globals.html#convertoaction" class="tsd-kind-icon">conver<wbr>ToAction</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="globals.html#dataviewtostring" class="tsd-kind-icon">data<wbr>View<wbr>ToString</a>
@@ -2748,6 +2763,9 @@ img {
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="globals.html#functiontostring" class="tsd-kind-icon">function<wbr>ToString</a>
+		</li>
+		<li class=" tsd-kind-function">
+			<a href="globals.html#getlocalrefs" class="tsd-kind-icon">get<wbr>Local<wbr>Refs</a>
 		</li>
 		<li class=" tsd-kind-function">
 			<a href="globals.html#javascripttostring" class="tsd-kind-icon">java<wbr>Script<wbr>ToString</a>
@@ -2913,6 +2931,14 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-interface"><a href="interfaces/ij2shistory.html" class="tsd-kind-icon">IJ2SHistory</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/ij2soptions.html" class="tsd-kind-icon">IJ2SOptions</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/refinstance.html" class="tsd-kind-icon">Ref<wbr>Instance</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Variables</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-variable"><a href="globals.html#counter" class="tsd-kind-icon">counter</a></li>
+							<li class="tsd-kind-variable"><a href="globals.html#refs" class="tsd-kind-icon">refs</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
@@ -2920,11 +2946,14 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function"><a href="globals.html#arraybuffertostring" class="tsd-kind-icon">array<wbr>Buffer<wbr>ToString</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#arraytostring" class="tsd-kind-icon">array<wbr>ToString</a></li>
+							<li class="tsd-kind-function"><a href="globals.html#attachactions" class="tsd-kind-icon">attach<wbr>Actions</a></li>
+							<li class="tsd-kind-function"><a href="globals.html#convertoaction" class="tsd-kind-icon">conver<wbr>ToAction</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#dataviewtostring" class="tsd-kind-icon">data<wbr>View<wbr>ToString</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#datetostring" class="tsd-kind-icon">date<wbr>ToString</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#errortostring" class="tsd-kind-icon">error<wbr>ToString</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#functionpropertiestostring" class="tsd-kind-icon">function<wbr>Properties<wbr>ToString</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#functiontostring" class="tsd-kind-icon">function<wbr>ToString</a></li>
+							<li class="tsd-kind-function"><a href="globals.html#getlocalrefs" class="tsd-kind-icon">get<wbr>Local<wbr>Refs</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#javascripttostring" class="tsd-kind-icon">java<wbr>Script<wbr>ToString</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#maptostring" class="tsd-kind-icon">map<wbr>ToString</a></li>
 							<li class="tsd-kind-function"><a href="globals.html#numbertostring" class="tsd-kind-icon">number<wbr>ToString</a></li>
@@ -2940,6 +2969,29 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Variables</h2>
+			<section class="tsd-panel tsd-member tsd-kind-variable">
+				<a name="counter" class="tsd-anchor"></a>
+				<h3>counter</h3>
+				<div class="tsd-signature tsd-kind-icon">counter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L18">javascripttostring.ts:18</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-variable">
+				<a name="refs" class="tsd-anchor"></a>
+				<h3>refs</h3>
+				<div class="tsd-signature tsd-kind-icon">refs<span class="tsd-signature-symbol">:</span> <a href="interfaces/refinstance.html" class="tsd-signature-type">RefInstance</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L17">javascripttostring.ts:17</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Functions</h2>
 			<section class="tsd-panel tsd-member tsd-kind-function">
 				<a name="arraybuffertostring" class="tsd-anchor"></a>
@@ -2951,7 +3003,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L229">javascripttostring.ts:229</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L284">javascripttostring.ts:284</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2980,7 +3032,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L95">javascripttostring.ts:95</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L103">javascripttostring.ts:103</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3000,6 +3052,58 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function">
+				<a name="attachactions" class="tsd-anchor"></a>
+				<h3>attach<wbr>Actions</h3>
+				<ul class="tsd-signatures tsd-kind-function">
+					<li class="tsd-signature tsd-kind-icon">attach<wbr>Actions<span class="tsd-signature-symbol">(</span>localRefs<span class="tsd-signature-symbol">: </span><a href="interfaces/refinstance.html" class="tsd-signature-type">RefInstance</a><span class="tsd-signature-symbol">[]</span>, result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L124">javascripttostring.ts:124</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>localRefs: <a href="interfaces/refinstance.html" class="tsd-signature-type">RefInstance</a><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+							<li>
+								<h5>result: <span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function">
+				<a name="convertoaction" class="tsd-anchor"></a>
+				<h3>conver<wbr>ToAction</h3>
+				<ul class="tsd-signatures tsd-kind-function">
+					<li class="tsd-signature tsd-kind-icon">conver<wbr>ToAction<span class="tsd-signature-symbol">(</span>localName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, r<span class="tsd-signature-symbol">: </span><a href="interfaces/refinstance.html" class="tsd-signature-type">RefInstance</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L138">javascripttostring.ts:138</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>localName: <span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li>
+								<h5>r: <a href="interfaces/refinstance.html" class="tsd-signature-type">RefInstance</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function">
 				<a name="dataviewtostring" class="tsd-anchor"></a>
 				<h3>data<wbr>View<wbr>ToString</h3>
 				<ul class="tsd-signatures tsd-kind-function">
@@ -3009,7 +3113,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L239">javascripttostring.ts:239</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L294">javascripttostring.ts:294</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3038,7 +3142,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L81">javascripttostring.ts:81</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L89">javascripttostring.ts:89</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3061,7 +3165,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L88">javascripttostring.ts:88</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L96">javascripttostring.ts:96</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3084,7 +3188,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L184">javascripttostring.ts:184</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L235">javascripttostring.ts:235</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3116,7 +3220,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L202">javascripttostring.ts:202</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L255">javascripttostring.ts:255</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3136,6 +3240,29 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function">
+				<a name="getlocalrefs" class="tsd-anchor"></a>
+				<h3>get<wbr>Local<wbr>Refs</h3>
+				<ul class="tsd-signatures tsd-kind-function">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Local<wbr>Refs<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/refinstance.html" class="tsd-signature-type">RefInstance</a><span class="tsd-signature-symbol">[]</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L120">javascripttostring.ts:120</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>value: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="interfaces/refinstance.html" class="tsd-signature-type">RefInstance</a><span class="tsd-signature-symbol">[]</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function">
 				<a name="javascripttostring" class="tsd-anchor"></a>
 				<h3>java<wbr>Script<wbr>ToString</h3>
 				<ul class="tsd-signatures tsd-kind-function">
@@ -3145,7 +3272,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L363">javascripttostring.ts:363</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L424">javascripttostring.ts:424</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3182,7 +3309,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L141">javascripttostring.ts:141</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L190">javascripttostring.ts:190</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3211,7 +3338,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L19">javascripttostring.ts:19</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L27">javascripttostring.ts:27</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3234,7 +3361,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L163">javascripttostring.ts:163</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L212">javascripttostring.ts:212</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3263,7 +3390,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L125">javascripttostring.ts:125</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L174">javascripttostring.ts:174</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3292,7 +3419,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L254">javascripttostring.ts:254</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L309">javascripttostring.ts:309</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3329,7 +3456,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L310">javascripttostring.ts:310</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L365">javascripttostring.ts:365</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3366,7 +3493,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L59">javascripttostring.ts:59</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L67">javascripttostring.ts:67</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3389,7 +3516,7 @@ Simple.prototype.show = <span class="hljs-function"><span class="hljs-keyword">f
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/6de63c1/src/javascripttostring.ts#L114">javascripttostring.ts:114</a></li>
+								<li>Defined in <a href="https://github.com/lopatnov/jsToString/blob/a6f4b7d/src/javascripttostring.ts#L163">javascripttostring.ts:163</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>

@@ -489,3 +489,93 @@ describe("Map to String", () => {
     expect(actual).toBe(expected);
   });
 });
+
+describe("Resolve references to itself", () => {
+  it("should resolve the array itself", () => {
+    var x: any = [1,2,3];
+    x[0] = x;
+
+    let actual = j2s(x);
+    let expected = Function(`return ${actual}`)();
+
+    expect(expected[0]).toBe(expected);
+    expect(expected[1]).toBe(2);
+    expect(expected[2]).toBe(3);
+    expect(expected.length).toBe(3);
+  });
+
+  it("should resolve the array inside arrays", () => {
+    var x: any = [[4,5,[6,7,8]],22,33];
+    x[0][2][1] = x;
+    x[0][2][2] = x;
+
+    let actual = j2s(x);
+    let expected = Function(`return ${actual}`)();
+
+    expect(expected[0][2][2]).toBe(expected);
+    expect(expected[0][2][1]).toBe(expected);
+    expect(expected[0][2][0]).toBe(6);
+    expect(expected[1]).toBe(22);
+    expect(expected[2]).toBe(33);
+    expect(expected.length).toBe(3);
+  });
+
+  it("should resolve the object itself", () => {
+    var x: any = { a: { b: {c: { hello: 'world' } } }};
+    x.a.b.c.hello = x;
+
+    let actual = j2s(x);
+    let expected = Function(`return ${actual}`)();
+
+    expect(expected).toBeTruthy();
+    expect(expected.a).toBeTruthy();
+    expect(expected.a.b).toBeTruthy();
+    expect(expected.a.b.c).toBeTruthy();
+    expect(expected.a.b.c.hello).toBe(expected);
+  });
+
+  it("should resolve objects and arrays", () => {
+    const y: any[] = ['an', 'array', null];
+    const x = {
+      a: 123,
+      b: 'an object',
+      c: y
+    };
+    y[2] = x;
+    const z = {
+      arr: [x]
+    };
+
+    let actual = j2s(z);
+    let expected = Function(`return ${actual}`)();
+
+    expect(expected).toBeTruthy();
+    expect(expected.arr[0].a).toBe(123);
+    expect(expected.arr[0].b).toBe('an object');
+    expect(Array.isArray(expected.arr[0].c)).toBeTruthy();
+    expect(expected.arr[0].c[0]).toBe('an');
+    expect(expected.arr[0].c[1]).toBe('array');
+    expect(expected.arr[0].c[2].a).toBe(123);
+    expect(expected.arr[0].c[2].c[2].a).toBe(123);
+  });
+
+  it("should resolve the function itself", () => {
+    function Narcissus() {
+      return 'narcissus';
+    }
+    Narcissus.itself = Narcissus;
+    Narcissus.prototype.me = Narcissus;
+    Narcissus.prototype.deep = {
+      arr: [Narcissus]
+    }
+
+    let actual = j2s(Narcissus);
+    let expected = Function(`return ${actual}`)();
+
+    expect(expected instanceof Function).toBeTruthy();
+    expect(expected()).toBe('narcissus');
+    expect(expected.itself).toBe(expected);
+    expect(expected.prototype.me).toBe(expected);
+    expect(expected.prototype.deep.arr[0]).toBe(expected);
+  });
+});

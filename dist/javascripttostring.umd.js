@@ -52,6 +52,8 @@
                 : typeof obj;
     }
 
+    var refs = [];
+    var counter = 0;
     function numberToString(value) {
         if (Number.isNaN(value)) {
             return "Number.NaN";
@@ -125,11 +127,54 @@
     function arrayToString(value, options, history) {
         if (value.length === 0)
             return "[]";
-        var zeroValue = value[0], strZeroValue = stringifyRef(value[0], options, history);
-        var arrayValues = value.reduce(function (x1, x2) {
-            return (x1 === zeroValue ? strZeroValue : x1) + ", " + stringifyRef(x2, options, history);
-        });
-        return "[" + arrayValues + "]";
+        var arrayValues = value.reduce(function (x1, x2, index) {
+            history.references.push(index.toString());
+            var str = !!x1 ? x1 + ", " : '';
+            str += stringifyRef(x2, options, history);
+            history.references.pop();
+            return str;
+        }, '');
+        return attachActions(getLocalRefs(value), "[" + arrayValues + "]");
+    }
+    function getLocalRefs(value) {
+        return refs.filter(function (x) { return x.source === value; });
+    }
+    function attachActions(localRefs, result) {
+        if (localRefs.length > 0) {
+            counter = (counter++) % Number.MAX_SAFE_INTEGER;
+            var localName_1 = "___j2s_" + counter;
+            var actions = localRefs.reduce(function (x1, x2) {
+                var action = converToAction(localName_1, x2);
+                refs.splice(refs.indexOf(x2), 1);
+                return x1 + action;
+            }, '');
+            return "(function(){ var " + localName_1 + " = " + result + "; " + actions + " return " + localName_1 + "; }())";
+        }
+        return result;
+    }
+    function converToAction(localName, r) {
+        var destIndex = r.historyRef.indexOf(r.source);
+        if (destIndex < 0) {
+            return '';
+        }
+        var dest = r.historyRef.slice(destIndex);
+        var sourceObj;
+        var path = '';
+        for (var i = 0; i < dest.length; i++) {
+            var destObj = dest[i];
+            if (destObj === r.source) {
+                path = localName;
+                sourceObj = r.source;
+            }
+            else if (typeof destObj === 'string') {
+                path += "['" + destObj.replace(/'/gi, '\\\'') + "']";
+                sourceObj = sourceObj[destObj];
+            }
+            else if (destObj !== sourceObj) {
+                return '';
+            }
+        }
+        return path + " = " + localName + "; ";
     }
     function typedArrayToString(value, options, history) {
         var arr = Array.from(value), arrString = arrayToString(arr, options, history), constructorName = value.constructor.name;
@@ -157,7 +202,9 @@
         var objectValues = [];
         for (var propertyName in value) {
             if (value.hasOwnProperty(propertyName)) {
+                history.references.push(propertyName);
                 var propertyValue = stringifyRef(value[propertyName], options, history);
+                history.references.pop();
                 if (propertyValue !== "undefined") {
                     objectValues.push(propertyName + ": " + propertyValue);
                 }
@@ -165,13 +212,15 @@
         }
         if (objectValues.length === 0)
             return "{}";
-        return "{\n" + objectValues.join(",\n") + "\n}";
+        return attachActions(getLocalRefs(value), "{\n" + objectValues.join(",\n") + "\n}");
     }
     function functionPropertiesToString(functionName, value, options, history) {
         var result = "";
         for (var propertyName in value) {
             if (value.hasOwnProperty(propertyName)) {
+                history.references.push(propertyName);
                 var propertyValue = stringifyRef(value[propertyName], options, history);
+                history.references.pop();
                 if (propertyValue !== "undefined") {
                     result += functionName + "." + propertyName + " = " + propertyValue + ";\n";
                 }
@@ -184,13 +233,15 @@
         var functionObject = options.includeFunctionProperties
             ? functionPropertiesToString(functionName, value, options, history)
             : "";
+        history.references.push('prototype');
         var functionPrototype = options.includeFunctionPrototype
             ? functionPropertiesToString(functionName + ".prototype", value.prototype, options, history)
             : "";
+        history.references.pop();
         if (!functionObject && !functionPrototype) {
             return String(value);
         }
-        return "(function(){\n var " + functionName + " = " + String(value) + ";\n " + functionObject + "\n " + functionPrototype + "\n return " + functionName + ";\n}())";
+        return attachActions(getLocalRefs(value), "(function(){\n var " + functionName + " = " + String(value) + ";\n " + functionObject + "\n " + functionPrototype + "\n return " + functionName + ";\n}())");
     }
     function arrayBufferToString(value, options, history) {
         if (!options.includeBuffers)
@@ -261,7 +312,8 @@
      * @param references the references to stringified objects
      */
     function stringifyRef(value, options, history) {
-        if (history.references.indexOf(value) < 0) {
+        var index = history.references.indexOf(value);
+        if (index < 0 || typeof (history.references[index]) === 'string') {
             var objectType = getInternalType(value);
             var referencesLength = history.references.length;
             history.references.push(value);
@@ -300,6 +352,12 @@
                     break;
             }
             return refString;
+        }
+        else {
+            refs.push({
+                historyRef: history.references.slice(0),
+                source: value
+            });
         }
         return "null";
     }

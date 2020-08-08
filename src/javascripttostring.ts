@@ -9,6 +9,14 @@ export interface IJ2SOptions {
   nestedFunctionsAmount?: number; // default Number.POSITIVE_INFINITY
 }
 
+interface RefInstance {
+  historyRef: Array<any>,
+  source: any
+}
+
+var refs: RefInstance[] = [];
+var counter = 0;
+
 interface IJ2SHistory {
   references: any[];
   nestedObjectsLeft: number;
@@ -98,17 +106,58 @@ function arrayToString(
   history: IJ2SHistory
 ): string {
   if (value.length === 0) return "[]";
-  let zeroValue = value[0],
-    strZeroValue = stringifyRef(value[0], options, history);
   let arrayValues = value.reduce(
-    (x1: any, x2: any) =>
-      `${x1 === zeroValue ? strZeroValue : x1}, ${stringifyRef(
-        x2,
-        options,
-        history
-      )}`
-  );
-  return `[${arrayValues}]`;
+    (x1: any, x2: any, index: number) => {
+      history.references.push(index.toString());
+      let str = !!x1 ? `${x1}, ` : '';
+      str += stringifyRef(x2,options,history);
+      history.references.pop();
+      return str;
+    }, '');
+  return attachActions(getLocalRefs(value), `[${arrayValues}]`);
+}
+
+function getLocalRefs(value: any) {
+  return refs.filter(x => x.source === value)
+}
+
+function attachActions(localRefs: RefInstance[], result: string) {
+  if (localRefs.length > 0) {
+    counter = (counter++) % Number.MAX_SAFE_INTEGER;
+    const localName = `___j2s_${counter}`;
+    const actions = localRefs.reduce((x1: string, x2: RefInstance) => {
+      const action = converToAction(localName, x2);
+      refs.splice(refs.indexOf(x2), 1);
+      return x1 + action;
+    }, '');
+    return `(function(){ var ${localName} = ${result}; ${actions} return ${localName}; }())`;
+  }
+  return result;
+}
+
+function converToAction(localName: string, r: RefInstance) {
+  const destIndex = r.historyRef.indexOf(r.source);
+  if (destIndex < 0) {
+    return '';
+  }
+
+  const dest = r.historyRef.slice(destIndex);
+  let sourceObj: any;
+  let path = '';
+  for (let i = 0; i < dest.length; i++) {
+    const destObj = dest[i];
+    if (destObj === r.source) {
+      path = localName;
+      sourceObj = r.source;
+    } else if (typeof destObj === 'string') {
+      path += `['${destObj.replace(/'/gi, '\\\'')}']`;
+      sourceObj = sourceObj[destObj];
+    } else if (destObj !== sourceObj) {
+      return '';
+    }
+  }
+
+  return `${path} = ${localName}; `;
 }
 
 function typedArrayToString(
@@ -169,7 +218,9 @@ function objectToString(
 
   for (let propertyName in value) {
     if (value.hasOwnProperty(propertyName)) {
+      history.references.push(propertyName);
       let propertyValue = stringifyRef(value[propertyName], options, history);
+      history.references.pop();
       if (propertyValue !== "undefined") {
         objectValues.push(`${propertyName}: ${propertyValue}`);
       }
@@ -178,7 +229,7 @@ function objectToString(
 
   if (objectValues.length === 0) return "{}";
 
-  return `{\n${objectValues.join(",\n")}\n}`;
+  return attachActions(getLocalRefs(value), `{\n${objectValues.join(",\n")}\n}`);
 }
 
 function functionPropertiesToString(
@@ -190,7 +241,9 @@ function functionPropertiesToString(
   let result = "";
   for (let propertyName in value) {
     if (value.hasOwnProperty(propertyName)) {
+      history.references.push(propertyName);
       let propertyValue = stringifyRef(value[propertyName], options, history);
+      history.references.pop();
       if (propertyValue !== "undefined") {
         result += `${functionName}.${propertyName} = ${propertyValue};\n`;
       }
@@ -208,6 +261,7 @@ function functionToString(
   let functionObject = options.includeFunctionProperties
     ? functionPropertiesToString(functionName, value, options, history)
     : "";
+  history.references.push('prototype');
   let functionPrototype = options.includeFunctionPrototype
     ? functionPropertiesToString(
         `${functionName}.prototype`,
@@ -216,14 +270,15 @@ function functionToString(
         history
       )
     : "";
+  history.references.pop();
 
   if (!functionObject && !functionPrototype) {
     return String(value);
   }
 
-  return `(function(){\n var ${functionName} = ${String(
+  return attachActions(getLocalRefs(value), `(function(){\n var ${functionName} = ${String(
     value
-  )};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`;
+  )};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`);
 }
 
 function arrayBufferToString(
@@ -312,7 +367,8 @@ function stringifyRef(
   options: IJ2SOptions,
   history: IJ2SHistory
 ): string {
-  if (history.references.indexOf(value) < 0) {
+  const index = history.references.indexOf(value);
+  if (index < 0 || typeof(history.references[index]) === 'string') {
     let objectType = getObjectType(value);
     let referencesLength = history.references.length;
     history.references.push(value);
@@ -351,6 +407,11 @@ function stringifyRef(
     }
 
     return refString;
+  } else {
+    refs.push({
+      historyRef: history.references.slice(0),
+      source: value
+    })
   }
   return "null";
 }
