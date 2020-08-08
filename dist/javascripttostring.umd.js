@@ -1,8 +1,8 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.javaScriptToString = factory());
-}(this, function () { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.javaScriptToString = factory());
+}(this, (function () { 'use strict';
 
     var types = {}, typesToString = types.toString, buildInList = [
         "Boolean",
@@ -338,5 +338,5 @@
 
     return javaScriptToString;
 
-}));
+})));
 //# sourceMappingURL=javascripttostring.umd.js.map

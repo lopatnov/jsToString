@@ -23,11 +23,13 @@ npm install @lopatnov/javascripttostring
 
 ## Import package to the project
 
+### TypeScript
+
 ```typescript
 import javaScriptToString from '@lopatnov/javascripttostring';
 ```
 
-or
+### JavaScript
 
 ```javascript
 var javaScriptToString = require("@lopatnov/javascripttostring");
@@ -149,4 +151,4 @@ Test it with a runkit: [https://npm.runkit.com/%40lopatnov%2Fjavascripttostring]
 
 License [Apache-2.0](https://github.com/lopatnov/jsToString/blob/master/LICENSE)
 
-Copyright 2019 Oleksandr Lopatnov
+Copyright 2019–2020 Oleksandr Lopatnov
