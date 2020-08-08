@@ -6,6 +6,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var get_internal_type_1 = __importDefault(require("@lopatnov/get-internal-type"));
 var refs = [];
 var counter = 0;
+function fillNativeFunctions(ext, obj, objName, fromPrototype) {
+    if (fromPrototype === void 0) { fromPrototype = true; }
+    var arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype : obj);
+    var protoPath = fromPrototype ? '.prototype.' : '.';
+    for (var _i = 0, arrNames_1 = arrNames; _i < arrNames_1.length; _i++) {
+        var name_1 = arrNames_1[_i];
+        if (['caller', 'callee', 'arguments'].indexOf(name_1) < 0) {
+            ext["" + objName + protoPath + name_1] = fromPrototype ? obj.prototype[name_1] : obj[name_1];
+        }
+    }
+}
+var nativeFunctions = (function () {
+    var functions = {};
+    fillNativeFunctions(functions, Array, 'Array', false);
+    fillNativeFunctions(functions, Array, 'Array');
+    fillNativeFunctions(functions, JSON, 'JSON', false);
+    fillNativeFunctions(functions, Object, 'Object', false);
+    fillNativeFunctions(functions, Object, 'Object');
+    fillNativeFunctions(functions, Function, 'Function', false);
+    fillNativeFunctions(functions, Function, 'Function');
+    fillNativeFunctions(functions, Date, 'Date', false);
+    fillNativeFunctions(functions, String, 'String');
+    functions.Function = Function;
+    return functions;
+}());
 function numberToString(value) {
     if (Number.isNaN(value)) {
         return "Number.NaN";
@@ -158,6 +183,9 @@ function objectToString(value, options, history) {
             var propertyValue = stringifyRef(value[propertyName], options, history);
             history.references.pop();
             if (propertyValue !== "undefined") {
+                if (!(/^[a-zA-Z]+$/).test(propertyName)) {
+                    propertyName = "\"" + propertyName + "\"";
+                }
                 objectValues.push(propertyName + ": " + propertyValue);
             }
         }
@@ -190,10 +218,18 @@ function functionToString(value, options, history) {
         ? functionPropertiesToString(functionName + ".prototype", value.prototype, options, history)
         : "";
     history.references.pop();
-    if (!functionObject && !functionPrototype) {
-        return String(value);
+    var functionStr = String(value);
+    if (functionStr.indexOf('[native code]') > -1 && functionStr.length < 100) {
+        for (var nfName in nativeFunctions) {
+            if (nativeFunctions[nfName] === value) {
+                functionStr = nfName;
+            }
+        }
     }
-    return attachActions(getLocalRefs(value), "(function(){\n var " + functionName + " = " + String(value) + ";\n " + functionObject + "\n " + functionPrototype + "\n return " + functionName + ";\n}())");
+    if (!functionObject && !functionPrototype) {
+        return functionStr;
+    }
+    return attachActions(getLocalRefs(value), "(function(){\n var " + functionName + " = " + String(functionStr) + ";\n " + functionObject + "\n " + functionPrototype + "\n return " + functionName + ";\n}())");
 }
 function arrayBufferToString(value, options, history) {
     if (!options.includeBuffers)

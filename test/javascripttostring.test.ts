@@ -362,6 +362,12 @@ describe("Function to String", () => {
     expect(actualClass.prototype.testMethod()).toBe("It works");
     expect(actualClass.prototype.testMethod.subTestMethod).not.toBeDefined();
   });
+  it("should convert native functions", () => {
+    let actual = j2s([].map);
+    let expected = 'Array.prototype.map';
+
+    expect(actual).toBe(expected);
+  });
 });
 
 describe("Object to String", () => {

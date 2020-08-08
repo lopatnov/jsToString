@@ -24,6 +24,31 @@ interface IJ2SHistory {
   nestedFunctionsLeft: number;
 }
 
+function fillNativeFunctions(ext: any, obj: any, objName: string, fromPrototype: boolean = true) {
+  const arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype: obj);
+  const protoPath = fromPrototype ? '.prototype.' : '.';
+  for (let name of arrNames) {
+    if (['caller', 'callee', 'arguments'].indexOf(name) < 0) {
+      ext[`${objName}${protoPath}${name}`] = fromPrototype ? obj.prototype[name as any] : obj[name as any];
+    }
+  }
+}
+
+const nativeFunctions = (function(){
+  const functions: any = {};
+  fillNativeFunctions(functions, Array, 'Array', false);
+  fillNativeFunctions(functions, Array, 'Array');
+  fillNativeFunctions(functions, JSON, 'JSON', false);
+  fillNativeFunctions(functions, Object, 'Object', false);
+  fillNativeFunctions(functions, Object, 'Object');
+  fillNativeFunctions(functions, Function, 'Function', false);
+  fillNativeFunctions(functions, Function, 'Function');
+  fillNativeFunctions(functions, Date, 'Date', false);
+  fillNativeFunctions(functions, String, 'String');
+  functions.Function = Function;
+  return functions;
+}());
+
 function numberToString(value: number): string {
   if (Number.isNaN(value)) {
     return "Number.NaN";
@@ -222,6 +247,9 @@ function objectToString(
       let propertyValue = stringifyRef(value[propertyName], options, history);
       history.references.pop();
       if (propertyValue !== "undefined") {
+        if (!(/^[a-zA-Z]+$/).test(propertyName)) {
+          propertyName = `"${propertyName}"`;
+        }
         objectValues.push(`${propertyName}: ${propertyValue}`);
       }
     }
@@ -272,12 +300,20 @@ function functionToString(
     : "";
   history.references.pop();
 
+  let functionStr = String(value);
+  if (functionStr.indexOf('[native code]') > -1 && functionStr.length < 100) {
+    for (const nfName in nativeFunctions) {
+      if (nativeFunctions[nfName] === value) {
+        functionStr = nfName
+      }
+    }
+  }
   if (!functionObject && !functionPrototype) {
-    return String(value);
+    return functionStr;
   }
 
   return attachActions(getLocalRefs(value), `(function(){\n var ${functionName} = ${String(
-    value
+    functionStr
   )};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`);
 }
 
