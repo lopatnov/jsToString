@@ -157,6 +157,8 @@ Test it with a runkit: [https://npm.runkit.com/%40lopatnov%2Fjavascripttostring]
 
 | Version | Task |
 |--------:|:-----|
+|   1.7.2 | Add recognition of native functions |
+|         | Add recognition of non-standard property names |
 |   1.7.0 | [Resolve references to parent elements and itself](https://github.com/lopatnov/jsToString/issues/1) |
 
 ## Rights and Agreements
