@@ -167,3 +167,4 @@ Test it with a runkit: [https://npm.runkit.com/%40lopatnov%2Fjavascripttostring]
 License [Apache-2.0](https://github.com/lopatnov/jsToString/blob/master/LICENSE)
 
 Copyright 2019–2021 Oleksandr Lopatnov
+
