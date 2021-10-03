@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.javaScriptToString = factory());
-})(this, (function () { 'use strict';
+}(this, (function () { 'use strict';
 
     var types={},typesToString=types.toString,buildInList=["Boolean","Number","String","Function","Array","Date","RegExp","Object","Error","Promise","Generator","GeneratorFunction","ArrayBuffer","DataView"],typedArrays=["Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"],maps=["Map","WeakMap"],sets=["Set","WeakSet"];function getInternalType(t){return null==t?t+"":"object"==typeof t||"function"==typeof t?types[typesToString.call(t)]||"object":typeof t}buildInList.forEach((function(t){types["[object "+t+"]"]=t.toLowerCase();})),maps.forEach((function(t){types["[object "+t+"]"]="map";})),sets.forEach((function(t){types["[object "+t+"]"]="set";})),typedArrays.forEach((function(t){types["[object "+t+"]"]="typedarray";}));
 
@@ -10,5 +10,5 @@
 
     return javaScriptToString;
 
-}));
-//# sourceMappingURL=javascripttostring.umd.js.map
+})));
+//# sourceMappingURL=javascripttostring.min.umd.js.map

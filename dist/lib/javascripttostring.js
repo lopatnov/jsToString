@@ -249,7 +249,7 @@ function dataViewToString(value, options, history) {
  * @param references the references to stringified objects
  */
 function stringify(value, options, history) {
-    switch (get_internal_type_1.default(value)) {
+    switch ((0, get_internal_type_1.default)(value)) {
         case "undefined":
             return "undefined";
         case "null":
@@ -302,7 +302,7 @@ function stringify(value, options, history) {
 function stringifyRef(value, options, history) {
     var index = history.references.indexOf(value);
     if (index < 0 || typeof (history.references[index]) === 'string') {
-        var objectType = get_internal_type_1.default(value);
+        var objectType = (0, get_internal_type_1.default)(value);
         var referencesLength = history.references.length;
         history.references.push(value);
         switch (objectType) {
