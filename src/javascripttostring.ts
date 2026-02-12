@@ -10,8 +10,8 @@ export interface IJ2SOptions {
 }
 
 interface RefInstance {
-  historyRef: Array<any>,
-  source: any
+  historyRef: Array<any>;
+  source: any;
 }
 
 var refs: RefInstance[] = [];
@@ -24,30 +24,30 @@ interface IJ2SHistory {
   nestedFunctionsLeft: number;
 }
 
-function fillNativeFunctions(ext: any, obj: any, objName: string, fromPrototype: boolean = true) {
-  const arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype: obj);
-  const protoPath = fromPrototype ? '.prototype.' : '.';
-  for (let name of arrNames) {
-    if (['caller', 'callee', 'arguments'].indexOf(name) < 0) {
+function fillNativeFunctions(ext: any, obj: any, objName: string, fromPrototype = true) {
+  const arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype : obj);
+  const protoPath = fromPrototype ? ".prototype." : ".";
+  for (const name of arrNames) {
+    if (["caller", "callee", "arguments"].indexOf(name) < 0) {
       ext[`${objName}${protoPath}${name}`] = fromPrototype ? obj.prototype[name as any] : obj[name as any];
     }
   }
 }
 
-const nativeFunctions = (function(){
+const nativeFunctions = (() => {
   const functions: any = {};
-  fillNativeFunctions(functions, Array, 'Array', false);
-  fillNativeFunctions(functions, Array, 'Array');
-  fillNativeFunctions(functions, JSON, 'JSON', false);
-  fillNativeFunctions(functions, Object, 'Object', false);
-  fillNativeFunctions(functions, Object, 'Object');
-  fillNativeFunctions(functions, Function, 'Function', false);
-  fillNativeFunctions(functions, Function, 'Function');
-  fillNativeFunctions(functions, Date, 'Date', false);
-  fillNativeFunctions(functions, String, 'String');
+  fillNativeFunctions(functions, Array, "Array", false);
+  fillNativeFunctions(functions, Array, "Array");
+  fillNativeFunctions(functions, JSON, "JSON", false);
+  fillNativeFunctions(functions, Object, "Object", false);
+  fillNativeFunctions(functions, Object, "Object");
+  fillNativeFunctions(functions, Function, "Function", false);
+  fillNativeFunctions(functions, Function, "Function");
+  fillNativeFunctions(functions, Date, "Date", false);
+  fillNativeFunctions(functions, String, "String");
   functions.Function = Function;
   return functions;
-}());
+})();
 
 function numberToString(value: number): string {
   if (Number.isNaN(value)) {
@@ -106,7 +106,7 @@ function symbolToString(value: any): string {
     case Symbol.unscopables:
       return value.description;
     default:
-      let description = value.description ? `"${value.description}"` : "";
+      const description = value.description ? `"${value.description}"` : "";
       return `Symbol(${description})`;
   }
 }
@@ -119,42 +119,37 @@ function dateToString(value: Date): string {
 }
 
 function errorToString(value: any): string {
-  let message = JSON.stringify(value.message),
+  const message = JSON.stringify(value.message),
     fileName = JSON.stringify(value.fileName),
     lineNumber = JSON.stringify(value.lineNumber);
   return `new Error(${message}, ${fileName}, ${lineNumber})`;
 }
 
-function arrayToString(
-  value: Array<any>,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
+function arrayToString(value: Array<any>, options: IJ2SOptions, history: IJ2SHistory): string {
   if (value.length === 0) return "[]";
-  let arrayValues = value.reduce(
-    (x1: any, x2: any, index: number) => {
-      history.references.push(index.toString());
-      let str = !!x1 ? `${x1}, ` : '';
-      str += stringifyRef(x2,options,history);
-      history.references.pop();
-      return str;
-    }, '');
+  const arrayValues = value.reduce((x1: any, x2: any, index: number) => {
+    history.references.push(index.toString());
+    let str = !!x1 ? `${x1}, ` : "";
+    str += stringifyRef(x2, options, history);
+    history.references.pop();
+    return str;
+  }, "");
   return attachActions(getLocalRefs(value), `[${arrayValues}]`);
 }
 
 function getLocalRefs(value: any) {
-  return refs.filter(x => x.source === value)
+  return refs.filter((x) => x.source === value);
 }
 
 function attachActions(localRefs: RefInstance[], result: string) {
   if (localRefs.length > 0) {
-    counter = (counter++) % Number.MAX_SAFE_INTEGER;
+    counter = counter++ % Number.MAX_SAFE_INTEGER;
     const localName = `___j2s_${counter}`;
     const actions = localRefs.reduce((x1: string, x2: RefInstance) => {
       const action = converToAction(localName, x2);
       refs.splice(refs.indexOf(x2), 1);
       return x1 + action;
-    }, '');
+    }, "");
     return `(function(){ var ${localName} = ${result}; ${actions} return ${localName}; }())`;
   }
   return result;
@@ -163,45 +158,37 @@ function attachActions(localRefs: RefInstance[], result: string) {
 function converToAction(localName: string, r: RefInstance) {
   const destIndex = r.historyRef.indexOf(r.source);
   if (destIndex < 0) {
-    return '';
+    return "";
   }
 
   const dest = r.historyRef.slice(destIndex);
   let sourceObj: any;
-  let path = '';
+  let path = "";
   for (let i = 0; i < dest.length; i++) {
     const destObj = dest[i];
     if (destObj === r.source) {
       path = localName;
       sourceObj = r.source;
-    } else if (typeof destObj === 'string') {
-      path += `['${destObj.replace(/'/gi, '\\\'')}']`;
+    } else if (typeof destObj === "string") {
+      path += `['${destObj.replace(/'/gi, "\\'")}']`;
       sourceObj = sourceObj[destObj];
     } else if (destObj !== sourceObj) {
-      return '';
+      return "";
     }
   }
 
   return `${path} = ${localName}; `;
 }
 
-function typedArrayToString(
-  value: any,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
-  let arr = Array.from(value),
+function typedArrayToString(value: any, options: IJ2SOptions, history: IJ2SHistory): string {
+  const arr = Array.from(value),
     arrString = arrayToString(arr, options, history),
     constructorName = value.constructor.name;
   return `new ${constructorName}(${arrString})`;
 }
 
-function setToString(
-  value: Set<any>,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
-  let setValues: string[] = [];
+function setToString(value: Set<any>, options: IJ2SOptions, history: IJ2SHistory): string {
+  const setValues: string[] = [];
 
   value.forEach((value1: any, value2: any, set: Set<any>) => {
     setValues.push(stringifyRef(value2, options, history));
@@ -212,21 +199,11 @@ function setToString(
   return `new Set([${setValues.join(", ")}])`;
 }
 
-function mapToString(
-  value: Map<any, any>,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
-  let mapValues: string[] = [];
+function mapToString(value: Map<any, any>, options: IJ2SOptions, history: IJ2SHistory): string {
+  const mapValues: string[] = [];
 
   value.forEach((indexValue: any, key: any) => {
-    mapValues.push(
-      `[${stringifyRef(key, options, history)}, ${stringifyRef(
-        indexValue,
-        options,
-        history
-      )}]`
-    );
+    mapValues.push(`[${stringifyRef(key, options, history)}, ${stringifyRef(indexValue, options, history)}]`);
   });
 
   if (mapValues.length === 0) return "new Map()";
@@ -234,20 +211,16 @@ function mapToString(
   return `new Map([${mapValues.join(", ")}])`;
 }
 
-function objectToString(
-  value: any,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
-  let objectValues = [];
+function objectToString(value: any, options: IJ2SOptions, history: IJ2SHistory): string {
+  const objectValues = [];
 
   for (let propertyName in value) {
     if (value.hasOwnProperty(propertyName)) {
       history.references.push(propertyName);
-      let propertyValue = stringifyRef(value[propertyName], options, history);
+      const propertyValue = stringifyRef(value[propertyName], options, history);
       history.references.pop();
       if (propertyValue !== "undefined") {
-        if (!(/^[a-zA-Z]+$/).test(propertyName)) {
+        if (!/^[a-zA-Z]+$/.test(propertyName)) {
           propertyName = `"${propertyName}"`;
         }
         objectValues.push(`${propertyName}: ${propertyValue}`);
@@ -264,13 +237,13 @@ function functionPropertiesToString(
   functionName: string,
   value: any,
   options: IJ2SOptions,
-  history: IJ2SHistory
+  history: IJ2SHistory,
 ): string {
   let result = "";
-  for (let propertyName in value) {
+  for (const propertyName in value) {
     if (value.hasOwnProperty(propertyName)) {
       history.references.push(propertyName);
-      let propertyValue = stringifyRef(value[propertyName], options, history);
+      const propertyValue = stringifyRef(value[propertyName], options, history);
       history.references.pop();
       if (propertyValue !== "undefined") {
         result += `${functionName}.${propertyName} = ${propertyValue};\n`;
@@ -280,31 +253,22 @@ function functionPropertiesToString(
   return result;
 }
 
-function functionToString(
-  value: any,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
-  let functionName = value.name || "anonymousFunction";
-  let functionObject = options.includeFunctionProperties
+function functionToString(value: any, options: IJ2SOptions, history: IJ2SHistory): string {
+  const functionName = value.name || "anonymousFunction";
+  const functionObject = options.includeFunctionProperties
     ? functionPropertiesToString(functionName, value, options, history)
     : "";
-  history.references.push('prototype');
-  let functionPrototype = options.includeFunctionPrototype
-    ? functionPropertiesToString(
-        `${functionName}.prototype`,
-        value.prototype,
-        options,
-        history
-      )
+  history.references.push("prototype");
+  const functionPrototype = options.includeFunctionPrototype
+    ? functionPropertiesToString(`${functionName}.prototype`, value.prototype, options, history)
     : "";
   history.references.pop();
 
   let functionStr = String(value);
-  if (functionStr.indexOf('[native code]') > -1 && functionStr.length < 100) {
+  if (functionStr.indexOf("[native code]") > -1 && functionStr.length < 100) {
     for (const nfName in nativeFunctions) {
       if (nativeFunctions[nfName] === value) {
-        functionStr = nfName
+        functionStr = nfName;
       }
     }
   }
@@ -312,28 +276,23 @@ function functionToString(
     return functionStr;
   }
 
-  return attachActions(getLocalRefs(value), `(function(){\n var ${functionName} = ${String(
-    functionStr
-  )};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`);
+  return attachActions(
+    getLocalRefs(value),
+    `(function(){\n var ${functionName} = ${String(
+      functionStr,
+    )};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`,
+  );
 }
 
-function arrayBufferToString(
-  value: ArrayBuffer,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
+function arrayBufferToString(value: ArrayBuffer, options: IJ2SOptions, history: IJ2SHistory): string {
   if (!options.includeBuffers) return "undefined";
-  let str = typedArrayToString(new Int8Array(value), options, history);
+  const str = typedArrayToString(new Int8Array(value), options, history);
   return `(${str}).buffer`;
 }
 
-function dataViewToString(
-  value: DataView,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
+function dataViewToString(value: DataView, options: IJ2SOptions, history: IJ2SHistory): string {
   if (!options.includeBuffers) return "undefined";
-  let bufString = arrayBufferToString(value.buffer, options, history);
+  const bufString = arrayBufferToString(value.buffer as ArrayBuffer, options, history);
   return `new DataView(${bufString}, ${value.byteOffset}, ${value.byteLength})`;
 }
 
@@ -342,11 +301,7 @@ function dataViewToString(
  * @param value the value, that converts to string
  * @param references the references to stringified objects
  */
-function stringify(
-  value: any,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
+function stringify(value: any, options: IJ2SOptions, history: IJ2SHistory): string {
   switch (getObjectType(value)) {
     case "undefined":
       return "undefined";
@@ -398,15 +353,11 @@ function stringify(
  * @param value the value, that converts to string
  * @param references the references to stringified objects
  */
-function stringifyRef(
-  value: any,
-  options: IJ2SOptions,
-  history: IJ2SHistory
-): string {
+function stringifyRef(value: any, options: IJ2SOptions, history: IJ2SHistory): string {
   const index = history.references.indexOf(value);
-  if (index < 0 || typeof(history.references[index]) === 'string') {
-    let objectType = getObjectType(value);
-    let referencesLength = history.references.length;
+  if (index < 0 || typeof history.references[index] === "string") {
+    const objectType = getObjectType(value);
+    const referencesLength = history.references.length;
     history.references.push(value);
     switch (objectType) {
       case "object":
@@ -425,7 +376,7 @@ function stringifyRef(
         break;
     }
 
-    let refString = stringify(value, options, history);
+    const refString = stringify(value, options, history);
 
     history.references.splice(referencesLength);
     switch (objectType) {
@@ -446,8 +397,8 @@ function stringifyRef(
   } else {
     refs.push({
       historyRef: history.references.slice(0),
-      source: value
-    })
+      source: value,
+    });
   }
   return "null";
 }
@@ -459,37 +410,32 @@ function stringifyRef(
  */
 function javaScriptToString(value: any, options?: IJ2SOptions): string {
   options = options || {};
-  let concreteOptions: IJ2SOptions = {
+  const concreteOptions: IJ2SOptions = {
     includeFunctionProperties:
-      options.includeFunctionProperties === undefined
-        ? true
-        : options.includeFunctionProperties,
-    includeFunctionPrototype:
-      options.includeFunctionPrototype === undefined
-        ? true
-        : options.includeFunctionPrototype,
-    includeBuffers:
-      options.includeBuffers === undefined ? true : options.includeBuffers,
+      options.includeFunctionProperties === undefined ? true : options.includeFunctionProperties,
+    includeFunctionPrototype: options.includeFunctionPrototype === undefined ? true : options.includeFunctionPrototype,
+    includeBuffers: options.includeBuffers === undefined ? true : options.includeBuffers,
     nestedObjectsAmount:
-      options.nestedObjectsAmount === undefined
-        ? Number.POSITIVE_INFINITY
-        : options.nestedObjectsAmount,
+      options.nestedObjectsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedObjectsAmount,
     nestedArraysAmount:
-      options.nestedArraysAmount === undefined
-        ? Number.POSITIVE_INFINITY
-        : options.nestedArraysAmount,
+      options.nestedArraysAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedArraysAmount,
     nestedFunctionsAmount:
-      options.nestedFunctionsAmount === undefined
-        ? Number.POSITIVE_INFINITY
-        : options.nestedFunctionsAmount
+      options.nestedFunctionsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedFunctionsAmount,
   };
 
-  return stringify(value, concreteOptions, {
+  // Clear global state before conversion to ensure thread safety
+  refs = [];
+  counter = 0;
+
+  const result = stringify(value, concreteOptions, {
     references: [value],
     nestedObjectsLeft: concreteOptions.nestedObjectsAmount as number,
     nestedArraysLeft: concreteOptions.nestedArraysAmount as number,
-    nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount as number
+    nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount as number,
   });
+
+  // Handle remaining circular references at the top level (Issue #1 fix)
+  return attachActions(getLocalRefs(value), result);
 }
 
 export default javaScriptToString;

@@ -9,28 +9,28 @@ var counter = 0;
 function fillNativeFunctions(ext, obj, objName, fromPrototype) {
     if (fromPrototype === void 0) { fromPrototype = true; }
     var arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype : obj);
-    var protoPath = fromPrototype ? '.prototype.' : '.';
+    var protoPath = fromPrototype ? ".prototype." : ".";
     for (var _i = 0, arrNames_1 = arrNames; _i < arrNames_1.length; _i++) {
         var name_1 = arrNames_1[_i];
-        if (['caller', 'callee', 'arguments'].indexOf(name_1) < 0) {
-            ext["" + objName + protoPath + name_1] = fromPrototype ? obj.prototype[name_1] : obj[name_1];
+        if (["caller", "callee", "arguments"].indexOf(name_1) < 0) {
+            ext["".concat(objName).concat(protoPath).concat(name_1)] = fromPrototype ? obj.prototype[name_1] : obj[name_1];
         }
     }
 }
 var nativeFunctions = (function () {
     var functions = {};
-    fillNativeFunctions(functions, Array, 'Array', false);
-    fillNativeFunctions(functions, Array, 'Array');
-    fillNativeFunctions(functions, JSON, 'JSON', false);
-    fillNativeFunctions(functions, Object, 'Object', false);
-    fillNativeFunctions(functions, Object, 'Object');
-    fillNativeFunctions(functions, Function, 'Function', false);
-    fillNativeFunctions(functions, Function, 'Function');
-    fillNativeFunctions(functions, Date, 'Date', false);
-    fillNativeFunctions(functions, String, 'String');
+    fillNativeFunctions(functions, Array, "Array", false);
+    fillNativeFunctions(functions, Array, "Array");
+    fillNativeFunctions(functions, JSON, "JSON", false);
+    fillNativeFunctions(functions, Object, "Object", false);
+    fillNativeFunctions(functions, Object, "Object");
+    fillNativeFunctions(functions, Function, "Function", false);
+    fillNativeFunctions(functions, Function, "Function");
+    fillNativeFunctions(functions, Date, "Date", false);
+    fillNativeFunctions(functions, String, "String");
     functions.Function = Function;
     return functions;
-}());
+})();
 function numberToString(value) {
     if (Number.isNaN(value)) {
         return "Number.NaN";
@@ -87,75 +87,75 @@ function symbolToString(value) {
         case Symbol.unscopables:
             return value.description;
         default:
-            var description = value.description ? "\"" + value.description + "\"" : "";
-            return "Symbol(" + description + ")";
+            var description = value.description ? "\"".concat(value.description, "\"") : "";
+            return "Symbol(".concat(description, ")");
     }
 }
 function dateToString(value) {
     if (isNaN(value.getTime())) {
-        return "new Date(" + value.toString() + ")";
+        return "new Date(".concat(value.toString(), ")");
     }
-    return "new Date(" + value.toISOString() + ")";
+    return "new Date(".concat(value.toISOString(), ")");
 }
 function errorToString(value) {
     var message = JSON.stringify(value.message), fileName = JSON.stringify(value.fileName), lineNumber = JSON.stringify(value.lineNumber);
-    return "new Error(" + message + ", " + fileName + ", " + lineNumber + ")";
+    return "new Error(".concat(message, ", ").concat(fileName, ", ").concat(lineNumber, ")");
 }
 function arrayToString(value, options, history) {
     if (value.length === 0)
         return "[]";
     var arrayValues = value.reduce(function (x1, x2, index) {
         history.references.push(index.toString());
-        var str = !!x1 ? x1 + ", " : '';
+        var str = !!x1 ? "".concat(x1, ", ") : "";
         str += stringifyRef(x2, options, history);
         history.references.pop();
         return str;
-    }, '');
-    return attachActions(getLocalRefs(value), "[" + arrayValues + "]");
+    }, "");
+    return attachActions(getLocalRefs(value), "[".concat(arrayValues, "]"));
 }
 function getLocalRefs(value) {
     return refs.filter(function (x) { return x.source === value; });
 }
 function attachActions(localRefs, result) {
     if (localRefs.length > 0) {
-        counter = (counter++) % Number.MAX_SAFE_INTEGER;
-        var localName_1 = "___j2s_" + counter;
+        counter = counter++ % Number.MAX_SAFE_INTEGER;
+        var localName_1 = "___j2s_".concat(counter);
         var actions = localRefs.reduce(function (x1, x2) {
             var action = converToAction(localName_1, x2);
             refs.splice(refs.indexOf(x2), 1);
             return x1 + action;
-        }, '');
-        return "(function(){ var " + localName_1 + " = " + result + "; " + actions + " return " + localName_1 + "; }())";
+        }, "");
+        return "(function(){ var ".concat(localName_1, " = ").concat(result, "; ").concat(actions, " return ").concat(localName_1, "; }())");
     }
     return result;
 }
 function converToAction(localName, r) {
     var destIndex = r.historyRef.indexOf(r.source);
     if (destIndex < 0) {
-        return '';
+        return "";
     }
     var dest = r.historyRef.slice(destIndex);
     var sourceObj;
-    var path = '';
+    var path = "";
     for (var i = 0; i < dest.length; i++) {
         var destObj = dest[i];
         if (destObj === r.source) {
             path = localName;
             sourceObj = r.source;
         }
-        else if (typeof destObj === 'string') {
-            path += "['" + destObj.replace(/'/gi, '\\\'') + "']";
+        else if (typeof destObj === "string") {
+            path += "['".concat(destObj.replace(/'/gi, "\\'"), "']");
             sourceObj = sourceObj[destObj];
         }
         else if (destObj !== sourceObj) {
-            return '';
+            return "";
         }
     }
-    return path + " = " + localName + "; ";
+    return "".concat(path, " = ").concat(localName, "; ");
 }
 function typedArrayToString(value, options, history) {
     var arr = Array.from(value), arrString = arrayToString(arr, options, history), constructorName = value.constructor.name;
-    return "new " + constructorName + "(" + arrString + ")";
+    return "new ".concat(constructorName, "(").concat(arrString, ")");
 }
 function setToString(value, options, history) {
     var setValues = [];
@@ -164,16 +164,16 @@ function setToString(value, options, history) {
     });
     if (setValues.length === 0)
         return "new Set()";
-    return "new Set([" + setValues.join(", ") + "])";
+    return "new Set([".concat(setValues.join(", "), "])");
 }
 function mapToString(value, options, history) {
     var mapValues = [];
     value.forEach(function (indexValue, key) {
-        mapValues.push("[" + stringifyRef(key, options, history) + ", " + stringifyRef(indexValue, options, history) + "]");
+        mapValues.push("[".concat(stringifyRef(key, options, history), ", ").concat(stringifyRef(indexValue, options, history), "]"));
     });
     if (mapValues.length === 0)
         return "new Map()";
-    return "new Map([" + mapValues.join(", ") + "])";
+    return "new Map([".concat(mapValues.join(", "), "])");
 }
 function objectToString(value, options, history) {
     var objectValues = [];
@@ -183,16 +183,16 @@ function objectToString(value, options, history) {
             var propertyValue = stringifyRef(value[propertyName], options, history);
             history.references.pop();
             if (propertyValue !== "undefined") {
-                if (!(/^[a-zA-Z]+$/).test(propertyName)) {
-                    propertyName = "\"" + propertyName + "\"";
+                if (!/^[a-zA-Z]+$/.test(propertyName)) {
+                    propertyName = "\"".concat(propertyName, "\"");
                 }
-                objectValues.push(propertyName + ": " + propertyValue);
+                objectValues.push("".concat(propertyName, ": ").concat(propertyValue));
             }
         }
     }
     if (objectValues.length === 0)
         return "{}";
-    return attachActions(getLocalRefs(value), "{\n" + objectValues.join(",\n") + "\n}");
+    return attachActions(getLocalRefs(value), "{\n".concat(objectValues.join(",\n"), "\n}"));
 }
 function functionPropertiesToString(functionName, value, options, history) {
     var result = "";
@@ -202,7 +202,7 @@ function functionPropertiesToString(functionName, value, options, history) {
             var propertyValue = stringifyRef(value[propertyName], options, history);
             history.references.pop();
             if (propertyValue !== "undefined") {
-                result += functionName + "." + propertyName + " = " + propertyValue + ";\n";
+                result += "".concat(functionName, ".").concat(propertyName, " = ").concat(propertyValue, ";\n");
             }
         }
     }
@@ -213,13 +213,13 @@ function functionToString(value, options, history) {
     var functionObject = options.includeFunctionProperties
         ? functionPropertiesToString(functionName, value, options, history)
         : "";
-    history.references.push('prototype');
+    history.references.push("prototype");
     var functionPrototype = options.includeFunctionPrototype
-        ? functionPropertiesToString(functionName + ".prototype", value.prototype, options, history)
+        ? functionPropertiesToString("".concat(functionName, ".prototype"), value.prototype, options, history)
         : "";
     history.references.pop();
     var functionStr = String(value);
-    if (functionStr.indexOf('[native code]') > -1 && functionStr.length < 100) {
+    if (functionStr.indexOf("[native code]") > -1 && functionStr.length < 100) {
         for (var nfName in nativeFunctions) {
             if (nativeFunctions[nfName] === value) {
                 functionStr = nfName;
@@ -229,19 +229,19 @@ function functionToString(value, options, history) {
     if (!functionObject && !functionPrototype) {
         return functionStr;
     }
-    return attachActions(getLocalRefs(value), "(function(){\n var " + functionName + " = " + String(functionStr) + ";\n " + functionObject + "\n " + functionPrototype + "\n return " + functionName + ";\n}())");
+    return attachActions(getLocalRefs(value), "(function(){\n var ".concat(functionName, " = ").concat(String(functionStr), ";\n ").concat(functionObject, "\n ").concat(functionPrototype, "\n return ").concat(functionName, ";\n}())"));
 }
 function arrayBufferToString(value, options, history) {
     if (!options.includeBuffers)
         return "undefined";
     var str = typedArrayToString(new Int8Array(value), options, history);
-    return "(" + str + ").buffer";
+    return "(".concat(str, ").buffer");
 }
 function dataViewToString(value, options, history) {
     if (!options.includeBuffers)
         return "undefined";
     var bufString = arrayBufferToString(value.buffer, options, history);
-    return "new DataView(" + bufString + ", " + value.byteOffset + ", " + value.byteLength + ")";
+    return "new DataView(".concat(bufString, ", ").concat(value.byteOffset, ", ").concat(value.byteLength, ")");
 }
 /**
  * Converts to string the value, if it wasn't before
@@ -263,7 +263,7 @@ function stringify(value, options, history) {
         case "number":
             return numberToString(value);
         case "bigint":
-            return "BigInt(" + value + ")";
+            return "BigInt(".concat(value, ")");
         case "symbol":
             return symbolToString(value);
         case "date":
@@ -301,7 +301,7 @@ function stringify(value, options, history) {
  */
 function stringifyRef(value, options, history) {
     var index = history.references.indexOf(value);
-    if (index < 0 || typeof (history.references[index]) === 'string') {
+    if (index < 0 || typeof history.references[index] === "string") {
         var objectType = (0, get_internal_type_1.default)(value);
         var referencesLength = history.references.length;
         history.references.push(value);
@@ -344,7 +344,7 @@ function stringifyRef(value, options, history) {
     else {
         refs.push({
             historyRef: history.references.slice(0),
-            source: value
+            source: value,
         });
     }
     return "null";
@@ -357,29 +357,24 @@ function stringifyRef(value, options, history) {
 function javaScriptToString(value, options) {
     options = options || {};
     var concreteOptions = {
-        includeFunctionProperties: options.includeFunctionProperties === undefined
-            ? true
-            : options.includeFunctionProperties,
-        includeFunctionPrototype: options.includeFunctionPrototype === undefined
-            ? true
-            : options.includeFunctionPrototype,
+        includeFunctionProperties: options.includeFunctionProperties === undefined ? true : options.includeFunctionProperties,
+        includeFunctionPrototype: options.includeFunctionPrototype === undefined ? true : options.includeFunctionPrototype,
         includeBuffers: options.includeBuffers === undefined ? true : options.includeBuffers,
-        nestedObjectsAmount: options.nestedObjectsAmount === undefined
-            ? Number.POSITIVE_INFINITY
-            : options.nestedObjectsAmount,
-        nestedArraysAmount: options.nestedArraysAmount === undefined
-            ? Number.POSITIVE_INFINITY
-            : options.nestedArraysAmount,
-        nestedFunctionsAmount: options.nestedFunctionsAmount === undefined
-            ? Number.POSITIVE_INFINITY
-            : options.nestedFunctionsAmount
+        nestedObjectsAmount: options.nestedObjectsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedObjectsAmount,
+        nestedArraysAmount: options.nestedArraysAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedArraysAmount,
+        nestedFunctionsAmount: options.nestedFunctionsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedFunctionsAmount,
     };
-    return stringify(value, concreteOptions, {
+    // Clear global state before conversion to ensure thread safety
+    refs = [];
+    counter = 0;
+    var result = stringify(value, concreteOptions, {
         references: [value],
         nestedObjectsLeft: concreteOptions.nestedObjectsAmount,
         nestedArraysLeft: concreteOptions.nestedArraysAmount,
-        nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount
+        nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount,
     });
+    // Handle remaining circular references at the top level (Issue #1 fix)
+    return attachActions(getLocalRefs(value), result);
 }
 exports.default = javaScriptToString;
 //# sourceMappingURL=javascripttostring.js.map
