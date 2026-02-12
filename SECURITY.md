@@ -8,8 +8,12 @@
 
 ## Reporting a Vulnerability
 
-Create an [issue][issue] to report a vulnerability, please.
+If you discover a security vulnerability, please report it responsibly:
 
-Go to <https://github.com/lopatnov/jsToString/issues>, create `New issue`, describe the vulnerability as well as possible. When I read the vulnerability description, I'll give a feedback on futher actions.
+1. Go to [GitHub Issues](https://github.com/lopatnov/jsToString/issues)
+2. Create a **New issue**
+3. Describe the vulnerability with as much detail as possible, including steps to reproduce
 
-[issue]: https://github.com/lopatnov/jsToString/issues
+We will review the report and respond as soon as possible.
+
+**Please do not open a public issue if the vulnerability is critical.** Instead, contact the maintainer directly via [LinkedIn](https://www.linkedin.com/in/lopatnov/).

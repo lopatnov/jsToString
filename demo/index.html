@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@lopatnov/javascripttostring — Live Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><span>javaScriptToString</span> — Live Demo</h1>
+      <p class="subtitle">Write a function that returns a value. It will be converted to source code string.</p>
+    </header>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Input — function body</span>
+        <div class="panel-tools">
+          <span class="badge badge-info" id="input-badge">0 chars</span>
+          <button type="button" class="btn-copy" id="copy-input-btn" title="Copy input">Copy</button>
+          <select id="examples" aria-label="Load example">
+            <option value="">Load example...</option>
+            <option value="simple-object">Simple Object</option>
+            <option value="nested-object">Nested Object</option>
+            <option value="array">Array</option>
+            <option value="function-props">Function with Properties</option>
+            <option value="circular-ref">Circular Reference</option>
+            <option value="cross-ref">Cross-Reference</option>
+            <option value="complex-graph">Complex Graph</option>
+            <option value="mixed-types">Mixed Types</option>
+          </select>
+        </div>
+      </div>
+      <textarea id="input" placeholder="// Write a function body that returns a value.&#10;// The return value will be passed to javaScriptToString().&#10;&#10;return { hello: 'world', numbers: [1, 2, 3] };"></textarea>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn-primary" id="run-btn">Convert to String</button>
+      <button type="button" class="btn-secondary" id="clear-btn">Clear</button>
+    </div>
+
+    <div class="panel panel-output">
+      <div class="panel-header">
+        <span class="panel-title">Output — javaScriptToString(result)</span>
+        <div class="panel-tools">
+          <span class="badge badge-info hidden" id="output-badge"></span>
+          <button type="button" class="btn-copy hidden" id="copy-output-btn" title="Copy output">Copy</button>
+        </div>
+      </div>
+      <div class="output-area empty" id="output">Click "Convert to String" to see the result</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Verification — eval back to value</span>
+        <span class="badge hidden" id="verify-badge"></span>
+      </div>
+      <div class="verify-area empty" id="verify">The output string will be evaluated back to verify correctness</div>
+    </div>
+
+    <footer>
+      <p>
+        <a href="https://www.npmjs.com/package/@lopatnov/javascripttostring">npm</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://github.com/lopatnov/jsToString">GitHub</a>
+        &nbsp;&middot;&nbsp;
+        &copy; 2019&ndash;2026 Oleksandr Lopatnov
+      </p>
+    </footer>
+  </div>
+
+  <script src="../dist/javascripttostring.umd.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
