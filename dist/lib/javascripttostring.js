@@ -1,10 +1,20 @@
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var get_internal_type_1 = __importDefault(require("@lopatnov/get-internal-type"));
 var refs = [];
+var crossRefs = [];
 var counter = 0;
 function fillNativeFunctions(ext, obj, objName, fromPrototype) {
     if (fromPrototype === void 0) { fromPrototype = true; }
@@ -105,9 +115,12 @@ function arrayToString(value, options, history) {
     if (value.length === 0)
         return "[]";
     var arrayValues = value.reduce(function (x1, x2, index) {
-        history.references.push(index.toString());
+        var key = index.toString();
+        history.references.push(key);
+        history.currentPath.push(key);
         var str = !!x1 ? "".concat(x1, ", ") : "";
         str += stringifyRef(x2, options, history);
+        history.currentPath.pop();
         history.references.pop();
         return str;
     }, "");
@@ -180,7 +193,9 @@ function objectToString(value, options, history) {
     for (var propertyName in value) {
         if (value.hasOwnProperty(propertyName)) {
             history.references.push(propertyName);
+            history.currentPath.push(propertyName);
             var propertyValue = stringifyRef(value[propertyName], options, history);
+            history.currentPath.pop();
             history.references.pop();
             if (propertyValue !== "undefined") {
                 if (!/^[a-zA-Z]+$/.test(propertyName)) {
@@ -199,7 +214,9 @@ function functionPropertiesToString(functionName, value, options, history) {
     for (var propertyName in value) {
         if (value.hasOwnProperty(propertyName)) {
             history.references.push(propertyName);
+            history.currentPath.push(propertyName);
             var propertyValue = stringifyRef(value[propertyName], options, history);
+            history.currentPath.pop();
             history.references.pop();
             if (propertyValue !== "undefined") {
                 result += "".concat(functionName, ".").concat(propertyName, " = ").concat(propertyValue, ";\n");
@@ -214,9 +231,11 @@ function functionToString(value, options, history) {
         ? functionPropertiesToString(functionName, value, options, history)
         : "";
     history.references.push("prototype");
+    history.currentPath.push("prototype");
     var functionPrototype = options.includeFunctionPrototype
         ? functionPropertiesToString("".concat(functionName, ".prototype"), value.prototype, options, history)
         : "";
+    history.currentPath.pop();
     history.references.pop();
     var functionStr = String(value);
     if (functionStr.indexOf("[native code]") > -1 && functionStr.length < 100) {
@@ -300,10 +319,23 @@ function stringify(value, options, history) {
  * @param references the references to stringified objects
  */
 function stringifyRef(value, options, history) {
+    var isRefType = (typeof value === "object" && value !== null) || typeof value === "function";
     var index = history.references.indexOf(value);
+    // Cross-reference: object was already stringified in a different branch
+    if (isRefType && history.visited.has(value) && index < 0) {
+        crossRefs.push({
+            destPath: __spreadArray([], history.currentPath, true),
+            sourcePath: history.visited.get(value) || [],
+        });
+        return "null";
+    }
     if (index < 0 || typeof history.references[index] === "string") {
         var objectType = (0, get_internal_type_1.default)(value);
         var referencesLength = history.references.length;
+        // Track first-seen path for reference types
+        if (isRefType && !history.visited.has(value)) {
+            history.visited.set(value, __spreadArray([], history.currentPath, true));
+        }
         history.references.push(value);
         switch (objectType) {
             case "object":
@@ -342,12 +374,28 @@ function stringifyRef(value, options, history) {
         return refString;
     }
     else {
+        // Circular reference: back-reference to an ancestor in current path
         refs.push({
             historyRef: history.references.slice(0),
             source: value,
         });
     }
     return "null";
+}
+function attachCrossRefActions(localCrossRefs, result) {
+    if (localCrossRefs.length === 0) {
+        return result;
+    }
+    counter = counter++ % Number.MAX_SAFE_INTEGER;
+    var localName = "___j2s_".concat(counter);
+    var actions = localCrossRefs
+        .map(function (cr) {
+        var destAccessor = cr.destPath.map(function (p) { return "['".concat(p.replace(/'/gi, "\\'"), "']"); }).join("");
+        var srcAccessor = cr.sourcePath.map(function (p) { return "['".concat(p.replace(/'/gi, "\\'"), "']"); }).join("");
+        return "".concat(localName).concat(destAccessor, " = ").concat(localName).concat(srcAccessor, "; ");
+    })
+        .join("");
+    return "(function(){ var ".concat(localName, " = ").concat(result, "; ").concat(actions, "return ").concat(localName, "; }())");
 }
 /**
  * Converts JavaScript value to string
@@ -364,17 +412,24 @@ function javaScriptToString(value, options) {
         nestedArraysAmount: options.nestedArraysAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedArraysAmount,
         nestedFunctionsAmount: options.nestedFunctionsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedFunctionsAmount,
     };
-    // Clear global state before conversion to ensure thread safety
+    // Clear global state before conversion
     refs = [];
+    crossRefs = [];
     counter = 0;
+    var visited = new Map();
+    visited.set(value, []);
     var result = stringify(value, concreteOptions, {
         references: [value],
         nestedObjectsLeft: concreteOptions.nestedObjectsAmount,
         nestedArraysLeft: concreteOptions.nestedArraysAmount,
         nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount,
+        visited: visited,
+        currentPath: [],
     });
-    // Handle remaining circular references at the top level (Issue #1 fix)
-    return attachActions(getLocalRefs(value), result);
+    // Handle circular references at the top level (Issue #1)
+    var circularResult = attachActions(getLocalRefs(value), result);
+    // Handle cross-references between different branches
+    return attachCrossRefActions(crossRefs, circularResult);
 }
 exports.default = javaScriptToString;
 //# sourceMappingURL=javascripttostring.js.map

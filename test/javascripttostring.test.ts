@@ -640,14 +640,8 @@ describe("Resolve references to itself", () => {
     expect(restored.children[1].parent).toBe(restored);
   });
 
-  // ============================================================================
-  // Known limitation: Cross-references between non-root nested objects
-  // The current implementation only handles circular references back to the root.
-  // These tests document expected behavior for future improvements.
-  // ============================================================================
-
-  // Future: Cross-reference between objects - nested object referenced from another branch
-  it.skip("should handle cross-references between nested objects (future)", () => {
+  // Cross-reference between objects - nested object referenced from another branch
+  it("should handle cross-references between nested objects (Issue #1)", () => {
     var a: any = { b: { c: "hello" } };
     var d: any = { e: a.b };
     a.f = d;
@@ -660,8 +654,8 @@ describe("Resolve references to itself", () => {
     expect(restored.f.e.c).toBe("hello");
   });
 
-  // Future: Multiple objects sharing the same nested reference
-  it.skip("should handle multiple references to same nested object (future)", () => {
+  // Multiple objects sharing the same nested reference
+  it("should handle multiple references to same nested object (Issue #1)", () => {
     var shared = { value: 42 };
     var obj: any = {
       first: shared,
@@ -679,8 +673,8 @@ describe("Resolve references to itself", () => {
     expect(restored.first.value).toBe(42);
   });
 
-  // Future: Array containing objects with cross-references between each other
-  it.skip("should handle array with cross-referencing objects (future)", () => {
+  // Array containing objects with cross-references between each other
+  it("should handle array with cross-referencing objects (Issue #1)", () => {
     var obj1: any = { id: 1 };
     var obj2: any = { id: 2, ref: obj1 };
     obj1.ref = obj2;
@@ -695,8 +689,8 @@ describe("Resolve references to itself", () => {
     expect(restored[1].ref).toBe(restored[0]);
   });
 
-  // Future: Complex graph structure with multiple interconnections
-  it.skip("should handle complex graph with multiple interconnections (future)", () => {
+  // Complex graph structure with multiple interconnections
+  it("should handle complex graph with multiple interconnections (Issue #1)", () => {
     var node1: any = { id: 1, connections: [] };
     var node2: any = { id: 2, connections: [] };
     var node3: any = { id: 3, connections: [] };
@@ -718,5 +712,291 @@ describe("Resolve references to itself", () => {
     expect(restored.nodes[0].connections[0]).toBe(restored.nodes[1]);
     expect(restored.nodes[0].connections[1]).toBe(restored.nodes[2]);
     expect(restored.nodes[1].connections[0]).toBe(restored.nodes[0]);
+  });
+
+  // Diamond pattern: A -> B -> D, A -> C -> D (D is shared)
+  it("should handle diamond-shaped references (Issue #1)", () => {
+    var d: any = { value: "diamond" };
+    var b: any = { ref: d };
+    var c: any = { ref: d };
+    var a: any = { left: b, right: c };
+
+    const actual = j2s(a);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.left.ref.value).toBe("diamond");
+    expect(restored.left.ref).toBe(restored.right.ref);
+  });
+
+  // Shared array between two object branches
+  it("should handle shared array between branches (Issue #1)", () => {
+    var items = [10, 20, 30];
+    var obj: any = {
+      source: items,
+      copy: items,
+    };
+
+    const actual = j2s(obj);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.source).toBe(restored.copy);
+    expect(restored.source[0]).toBe(10);
+    expect(restored.source.length).toBe(3);
+  });
+
+  // Nested self-reference (not root): inner object references itself
+  it("should handle nested object self-reference (Issue #1)", () => {
+    var inner: any = { name: "inner" };
+    inner.self = inner;
+    var outer = { data: inner };
+
+    const actual = j2s(outer);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.data.name).toBe("inner");
+    expect(restored.data.self).toBe(restored.data);
+  });
+
+  // Cross-reference + circular mix: A.b references C, C.back references A
+  it("should handle mixed circular and cross-references (Issue #1)", () => {
+    var a: any = { name: "A" };
+    var b: any = { name: "B" };
+    var c: any = { name: "C", back: a };
+    a.child = b;
+    b.friend = c;
+
+    const actual = j2s(a);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.name).toBe("A");
+    expect(restored.child.name).toBe("B");
+    expect(restored.child.friend.name).toBe("C");
+    expect(restored.child.friend.back).toBe(restored);
+  });
+
+  // Deep diamond: shared object at depth 3
+  it("should handle deeply nested shared reference (Issue #1)", () => {
+    var leaf = { x: 1, y: 2 };
+    var obj: any = {
+      a: { b: { c: leaf } },
+      d: { e: { f: leaf } },
+    };
+
+    const actual = j2s(obj);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.a.b.c).toBe(restored.d.e.f);
+    expect(restored.a.b.c.x).toBe(1);
+  });
+
+  // Array of arrays sharing a sub-array
+  it("should handle shared sub-arrays (Issue #1)", () => {
+    var shared = [1, 2, 3];
+    var arr: any = [shared, [shared, 4], shared];
+
+    const actual = j2s(arr);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored[0]).toBe(restored[2]);
+    expect(restored[1][0]).toBe(restored[0]);
+    expect(restored[0][0]).toBe(1);
+  });
+
+  // Circular chain through non-root: A -> B -> C -> B (not back to A)
+  it("should handle circular chain to non-root ancestor (Issue #1)", () => {
+    var a: any = { name: "A" };
+    var b: any = { name: "B" };
+    var c: any = { name: "C", back: b };
+    a.next = b;
+    b.next = c;
+
+    const actual = j2s(a);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.name).toBe("A");
+    expect(restored.next.name).toBe("B");
+    expect(restored.next.next.name).toBe("C");
+    expect(restored.next.next.back).toBe(restored.next);
+  });
+
+  // Property key with special characters in cross-reference path
+  it("should handle cross-references with special property names (Issue #1)", () => {
+    var shared = { ok: true };
+    var obj: any = {
+      "my-key": shared,
+      "other's": shared,
+    };
+
+    const actual = j2s(obj);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored["my-key"]).toBe(restored["other's"]);
+    expect(restored["my-key"].ok).toBe(true);
+  });
+
+  // Three-level tree: root -> [branch1, branch2], both branches share a leaf
+  it("should handle tree with shared leaves (Issue #1)", () => {
+    var leaf = { type: "leaf" };
+    var root: any = {
+      branches: [
+        { name: "b1", items: [leaf, { type: "other" }] },
+        { name: "b2", items: [{ type: "other2" }, leaf] },
+      ],
+    };
+
+    const actual = j2s(root);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.branches[0].items[0]).toBe(restored.branches[1].items[1]);
+    expect(restored.branches[0].items[0].type).toBe("leaf");
+  });
+
+  // Object referencing root from deep nesting + cross-ref
+  it("should handle root circular ref combined with cross-ref (Issue #1)", () => {
+    var shared = { val: 99 };
+    var root: any = {
+      a: { ref: shared },
+      b: { ref: shared },
+    };
+    root.a.root = root;
+
+    const actual = j2s(root);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.a.root).toBe(restored);
+    expect(restored.a.ref).toBe(restored.b.ref);
+    expect(restored.a.ref.val).toBe(99);
+  });
+
+  // Object -> function -> array: shared function referenced from multiple places
+  it("should handle shared function between object branches (Issue #1)", () => {
+    var handler = function greet(name: string) {
+      return "hello " + name;
+    };
+    var obj: any = {
+      a: { action: handler },
+      b: { action: handler },
+    };
+
+    const actual = j2s(obj);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.a.action).toBe(restored.b.action);
+    expect(restored.a.action("world")).toBe("hello world");
+  });
+
+  // Object containing function with properties that reference back
+  it("should handle function with property referencing parent object (Issue #1)", () => {
+    var obj: any = { name: "container" };
+    var fn: any = function process() {
+      return 42;
+    };
+    fn.owner = obj;
+    obj.run = fn;
+
+    const actual = j2s(obj);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.name).toBe("container");
+    expect(restored.run()).toBe(42);
+    expect(restored.run.owner).toBe(restored);
+  });
+
+  // Mixed: object -> array -> function -> object cross-refs
+  it("should handle object-array-function chain with cross-refs (Issue #1)", () => {
+    var config = { debug: true };
+    var fn = function log(msg: string) {
+      return msg;
+    };
+    var pipeline: any = {
+      steps: [fn, config],
+      settings: config,
+      handler: fn,
+    };
+
+    const actual = j2s(pipeline);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.steps[0]).toBe(restored.handler);
+    expect(restored.steps[1]).toBe(restored.settings);
+    expect(restored.handler("test")).toBe("test");
+    expect(restored.settings.debug).toBe(true);
+  });
+
+  // Array with functions referencing shared objects
+  it("should handle array of functions sharing an object (Issue #1)", () => {
+    var state = { count: 0 };
+    var inc: any = function increment() {
+      return 1;
+    };
+    inc.state = state;
+    var dec: any = function decrement() {
+      return -1;
+    };
+    dec.state = state;
+    var arr = [inc, dec];
+
+    const actual = j2s(arr);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored[0].state).toBe(restored[1].state);
+    expect(restored[0].state.count).toBe(0);
+    expect(restored[0]()).toBe(1);
+    expect(restored[1]()).toBe(-1);
+  });
+
+  // Deeply nested: object -> array -> object -> function -> back to array
+  it("should handle deep mixed nesting with circular ref (Issue #1)", () => {
+    var arr: any[] = [];
+    var inner: any = {
+      process: function doWork() {
+        return "done";
+      },
+    };
+    inner.process.list = arr;
+    var root: any = { items: arr };
+    arr.push(inner);
+
+    const actual = j2s(root);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.items[0].process()).toBe("done");
+    expect(restored.items[0].process.list).toBe(restored.items);
+  });
+
+  // Function referencing itself via a property (function self-ref)
+  it("should handle function self-reference via property (Issue #1)", () => {
+    var fn: any = function recursive() {
+      return 1;
+    };
+    fn.self = fn;
+    var obj = { action: fn };
+
+    const actual = j2s(obj);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.action()).toBe(1);
+    expect(restored.action.self).toBe(restored.action);
+  });
+
+  // Two functions referencing each other
+  it("should handle mutually referencing functions (Issue #1)", () => {
+    var fnA: any = function a() {
+      return "A";
+    };
+    var fnB: any = function b() {
+      return "B";
+    };
+    fnA.partner = fnB;
+    fnB.partner = fnA;
+    var obj = { first: fnA, second: fnB };
+
+    const actual = j2s(obj);
+    const restored = Function(`return ${actual}`)();
+
+    expect(restored.first()).toBe("A");
+    expect(restored.second()).toBe("B");
+    expect(restored.first.partner).toBe(restored.second);
+    expect(restored.second.partner).toBe(restored.first);
   });
 });

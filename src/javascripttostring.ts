@@ -14,7 +14,13 @@ interface RefInstance {
   source: any;
 }
 
+interface CrossRefInstance {
+  destPath: string[];
+  sourcePath: string[];
+}
+
 var refs: RefInstance[] = [];
+var crossRefs: CrossRefInstance[] = [];
 var counter = 0;
 
 interface IJ2SHistory {
@@ -22,6 +28,8 @@ interface IJ2SHistory {
   nestedObjectsLeft: number;
   nestedArraysLeft: number;
   nestedFunctionsLeft: number;
+  visited: Map<any, string[]>;
+  currentPath: string[];
 }
 
 function fillNativeFunctions(ext: any, obj: any, objName: string, fromPrototype = true) {
@@ -128,9 +136,12 @@ function errorToString(value: any): string {
 function arrayToString(value: Array<any>, options: IJ2SOptions, history: IJ2SHistory): string {
   if (value.length === 0) return "[]";
   const arrayValues = value.reduce((x1: any, x2: any, index: number) => {
-    history.references.push(index.toString());
+    const key = index.toString();
+    history.references.push(key);
+    history.currentPath.push(key);
     let str = !!x1 ? `${x1}, ` : "";
     str += stringifyRef(x2, options, history);
+    history.currentPath.pop();
     history.references.pop();
     return str;
   }, "");
@@ -217,7 +228,9 @@ function objectToString(value: any, options: IJ2SOptions, history: IJ2SHistory):
   for (let propertyName in value) {
     if (value.hasOwnProperty(propertyName)) {
       history.references.push(propertyName);
+      history.currentPath.push(propertyName);
       const propertyValue = stringifyRef(value[propertyName], options, history);
+      history.currentPath.pop();
       history.references.pop();
       if (propertyValue !== "undefined") {
         if (!/^[a-zA-Z]+$/.test(propertyName)) {
@@ -243,7 +256,9 @@ function functionPropertiesToString(
   for (const propertyName in value) {
     if (value.hasOwnProperty(propertyName)) {
       history.references.push(propertyName);
+      history.currentPath.push(propertyName);
       const propertyValue = stringifyRef(value[propertyName], options, history);
+      history.currentPath.pop();
       history.references.pop();
       if (propertyValue !== "undefined") {
         result += `${functionName}.${propertyName} = ${propertyValue};\n`;
@@ -259,9 +274,11 @@ function functionToString(value: any, options: IJ2SOptions, history: IJ2SHistory
     ? functionPropertiesToString(functionName, value, options, history)
     : "";
   history.references.push("prototype");
+  history.currentPath.push("prototype");
   const functionPrototype = options.includeFunctionPrototype
     ? functionPropertiesToString(`${functionName}.prototype`, value.prototype, options, history)
     : "";
+  history.currentPath.pop();
   history.references.pop();
 
   let functionStr = String(value);
@@ -354,10 +371,27 @@ function stringify(value: any, options: IJ2SOptions, history: IJ2SHistory): stri
  * @param references the references to stringified objects
  */
 function stringifyRef(value: any, options: IJ2SOptions, history: IJ2SHistory): string {
+  const isRefType = (typeof value === "object" && value !== null) || typeof value === "function";
   const index = history.references.indexOf(value);
+
+  // Cross-reference: object was already stringified in a different branch
+  if (isRefType && history.visited.has(value) && index < 0) {
+    crossRefs.push({
+      destPath: [...history.currentPath],
+      sourcePath: history.visited.get(value) || [],
+    });
+    return "null";
+  }
+
   if (index < 0 || typeof history.references[index] === "string") {
     const objectType = getObjectType(value);
     const referencesLength = history.references.length;
+
+    // Track first-seen path for reference types
+    if (isRefType && !history.visited.has(value)) {
+      history.visited.set(value, [...history.currentPath]);
+    }
+
     history.references.push(value);
     switch (objectType) {
       case "object":
@@ -395,12 +429,29 @@ function stringifyRef(value: any, options: IJ2SOptions, history: IJ2SHistory): s
 
     return refString;
   } else {
+    // Circular reference: back-reference to an ancestor in current path
     refs.push({
       historyRef: history.references.slice(0),
       source: value,
     });
   }
   return "null";
+}
+
+function attachCrossRefActions(localCrossRefs: CrossRefInstance[], result: string): string {
+  if (localCrossRefs.length === 0) {
+    return result;
+  }
+  counter = counter++ % Number.MAX_SAFE_INTEGER;
+  const localName = `___j2s_${counter}`;
+  const actions = localCrossRefs
+    .map((cr) => {
+      const destAccessor = cr.destPath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
+      const srcAccessor = cr.sourcePath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
+      return `${localName}${destAccessor} = ${localName}${srcAccessor}; `;
+    })
+    .join("");
+  return `(function(){ var ${localName} = ${result}; ${actions}return ${localName}; }())`;
 }
 
 /**
@@ -423,19 +474,28 @@ function javaScriptToString(value: any, options?: IJ2SOptions): string {
       options.nestedFunctionsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedFunctionsAmount,
   };
 
-  // Clear global state before conversion to ensure thread safety
+  // Clear global state before conversion
   refs = [];
+  crossRefs = [];
   counter = 0;
+
+  const visited = new Map<any, string[]>();
+  visited.set(value, []);
 
   const result = stringify(value, concreteOptions, {
     references: [value],
     nestedObjectsLeft: concreteOptions.nestedObjectsAmount as number,
     nestedArraysLeft: concreteOptions.nestedArraysAmount as number,
     nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount as number,
+    visited,
+    currentPath: [],
   });
 
-  // Handle remaining circular references at the top level (Issue #1 fix)
-  return attachActions(getLocalRefs(value), result);
+  // Handle circular references at the top level (Issue #1)
+  const circularResult = attachActions(getLocalRefs(value), result);
+
+  // Handle cross-references between different branches
+  return attachCrossRefActions(crossRefs, circularResult);
 }
 
 export default javaScriptToString;
