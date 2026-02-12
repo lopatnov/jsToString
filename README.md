@@ -8,16 +8,6 @@
 
 A TypeScript library that converts any JavaScript runtime value into its string source code representation. Supports objects, arrays, functions, circular references, cross-references, and more.
 
-## Features
-
-- Full TypeScript support with type definitions
-- Multiple output formats: CommonJS, ES Modules, UMD
-- Handles circular references (self-referencing objects/arrays)
-- Handles cross-references (shared objects between branches)
-- Converts functions with their properties and prototypes
-- Supports built-in types: Date, RegExp, Error, Map, Set, TypedArrays, Symbols, BigInt
-- Configurable nesting depth for objects, arrays, and functions
-
 ## Installation
 
 ```bash
@@ -144,7 +134,13 @@ var shared = { value: 42 };
 var obj = { a: shared, b: shared };
 
 javaScriptToString(obj);
-// Generates code where obj.a === obj.b (same reference)
+// Generates code where obj.a === obj.b (same reference), like:
+// (function(){ var ___j2s_0 = {
+// a: {
+//   value: 42
+// },
+// b: null
+// }; ___j2s_0['b'] = ___j2s_0['a']; return ___j2s_0; }())
 ```
 
 ### Restoring Values
@@ -181,9 +177,11 @@ console.log(restored.name);             // "test"
 | ArrayBuffer | `new ArrayBuffer(8)` |
 | DataView | `new DataView(buffer)` |
 
-## Demo
+## Links
 
 - **Live Demo:** [https://runkit.com/lopatnov/javascripttostring-demo](https://runkit.com/lopatnov/javascripttostring-demo)
+- **Demo** [./demo/index.html](./demo/index.html)
+- **Generated Docs** [./docs/index.html](./docs/index.html)
 - **Try it:** [https://npm.runkit.com/@lopatnov/javascripttostring](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring)
 
 ## Contributing
