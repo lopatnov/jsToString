@@ -140,9 +140,93 @@ describe("RegExp to String", () => {
 describe("Error to String", () => {
   it("should convert Error", () => {
     const actual = j2s(new Error("A mistake"));
-    const expected = 'new Error("A mistake", undefined, undefined)';
+    const expected = 'new Error("A mistake")';
 
     expect(actual).toBe(expected);
+  });
+  it("should eval Error back", () => {
+    const err = new Error("test error");
+    const str = j2s(err);
+    const restored = Function("return " + str)();
+
+    expect(restored).toBeInstanceOf(Error);
+    expect(restored.message).toBe("test error");
+  });
+  it("should convert TypeError", () => {
+    const actual = j2s(new TypeError("bad type"));
+    expect(actual).toBe('new TypeError("bad type")');
+    const restored = Function("return " + actual)();
+    expect(restored).toBeInstanceOf(TypeError);
+    expect(restored.message).toBe("bad type");
+  });
+  it("should convert RangeError", () => {
+    const actual = j2s(new RangeError("out of range"));
+    expect(actual).toBe('new RangeError("out of range")');
+    const restored = Function("return " + actual)();
+    expect(restored).toBeInstanceOf(RangeError);
+    expect(restored.message).toBe("out of range");
+  });
+  it("should convert ReferenceError", () => {
+    const actual = j2s(new ReferenceError("not defined"));
+    expect(actual).toBe('new ReferenceError("not defined")');
+    const restored = Function("return " + actual)();
+    expect(restored).toBeInstanceOf(ReferenceError);
+    expect(restored.message).toBe("not defined");
+  });
+});
+
+describe("Date to String", () => {
+  it("should convert valid Date and eval back", () => {
+    const date = new Date("2026-01-15T10:30:00.000Z");
+    const str = j2s(date);
+    const restored = Function("return " + str)();
+
+    expect(restored).toBeInstanceOf(Date);
+    expect(restored.toISOString()).toBe("2026-01-15T10:30:00.000Z");
+  });
+  it("should convert invalid Date", () => {
+    const date = new Date("not a date");
+    const str = j2s(date);
+    const restored = Function("return " + str)();
+
+    expect(restored).toBeInstanceOf(Date);
+    expect(isNaN(restored.getTime())).toBe(true);
+  });
+});
+
+describe("Edge cases", () => {
+  it("should convert NaN", () => {
+    const str = j2s(NaN);
+    expect(str).toBe("Number.NaN");
+    const restored = Function("return " + str)();
+    expect(Number.isNaN(restored)).toBe(true);
+  });
+  it("should convert Infinity", () => {
+    const str = j2s(Infinity);
+    expect(str).toBe("Number.POSITIVE_INFINITY");
+  });
+  it("should convert -Infinity", () => {
+    const str = j2s(-Infinity);
+    expect(str).toBe("Number.NEGATIVE_INFINITY");
+  });
+  it("should handle property names with special characters", () => {
+    const obj = { "key-with-dash": 1, "key.with.dot": 2, normal: 3, _under: 4, $dollar: 5 };
+    const str = j2s(obj);
+    const restored = Function("return " + str)();
+
+    expect(restored["key-with-dash"]).toBe(1);
+    expect(restored["key.with.dot"]).toBe(2);
+    expect(restored.normal).toBe(3);
+    expect(restored._under).toBe(4);
+    expect(restored.$dollar).toBe(5);
+  });
+  it("should handle property names with quotes", () => {
+    const obj: any = {};
+    obj['key"quote'] = 42;
+    const str = j2s(obj);
+    const restored = Function("return " + str)();
+
+    expect(restored['key"quote']).toBe(42);
   });
 });
 

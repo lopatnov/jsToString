@@ -18,7 +18,8 @@ export default {
       file: pkg.browser,
       name: camelCase(libraryName),
       format: 'umd',
-      sourcemap: true
+      sourcemap: true,
+      plugins: [uglify({ sourceMap: true })]
     },
     {
       file: pkg.module,
@@ -56,8 +57,5 @@ export default {
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
     resolve(),
-    uglify({
-      sourceMap: true
-    }),
   ],
 };

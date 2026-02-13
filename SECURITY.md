@@ -9,8 +9,8 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please report it responsibly:
+If you discover a security vulnerability, please report it responsibly through GitHub's private vulnerability reporting:
 
-1. Go to [GitHub Issues](https://github.com/lopatnov/jsToString/issues)
-2. Create a **New issue**
-3. Describe the vulnerability with as much detail as possible, including steps to reproduce
+1. Go to the [Security tab](https://github.com/lopatnov/jsToString/security) of this repository
+2. Click **"Report a vulnerability"**
+3. Fill in the details of the vulnerability

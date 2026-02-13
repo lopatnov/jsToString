@@ -1,4 +1,4 @@
-var j2s = require("../dist/javascripttostring.umd.js");
+var j2s = require("../src/javascripttostring").default;
 
 describe("Function to String", () => {
   it("should convert generator function", () => {

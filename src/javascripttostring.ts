@@ -104,7 +104,6 @@ function symbolToString(value: any): string {
     case Symbol.isConcatSpreadable:
     case Symbol.iterator:
     case Symbol.match:
-    case Symbol.prototype:
     case Symbol.replace:
     case Symbol.search:
     case Symbol.species:
@@ -113,6 +112,8 @@ function symbolToString(value: any): string {
     case Symbol.toStringTag:
     case Symbol.unscopables:
       return value.description;
+    case Symbol.prototype:
+      return "Symbol.prototype";
     default:
       const description = value.description ? `"${value.description}"` : "";
       return `Symbol(${description})`;
@@ -121,16 +122,22 @@ function symbolToString(value: any): string {
 
 function dateToString(value: Date): string {
   if (isNaN(value.getTime())) {
-    return `new Date(${value.toString()})`;
+    return "new Date(NaN)";
   }
-  return `new Date(${value.toISOString()})`;
+  return `new Date("${value.toISOString()}")`;
 }
 
 function errorToString(value: any): string {
-  const message = JSON.stringify(value.message),
-    fileName = JSON.stringify(value.fileName),
-    lineNumber = JSON.stringify(value.lineNumber);
-  return `new Error(${message}, ${fileName}, ${lineNumber})`;
+  const message = JSON.stringify(value.message);
+  const errorClass = value.constructor?.name || "Error";
+  const knownErrors = [
+    "Error", "TypeError", "RangeError", "ReferenceError",
+    "SyntaxError", "URIError", "EvalError"
+  ];
+  if (knownErrors.includes(errorClass)) {
+    return `new ${errorClass}(${message})`;
+  }
+  return `new Error(${message})`;
 }
 
 function arrayToString(value: Array<any>, options: IJ2SOptions, history: IJ2SHistory): string {
@@ -154,7 +161,7 @@ function getLocalRefs(value: any) {
 
 function attachActions(localRefs: RefInstance[], result: string) {
   if (localRefs.length > 0) {
-    counter = counter++ % Number.MAX_SAFE_INTEGER;
+    counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
     const localName = `___j2s_${counter}`;
     const actions = localRefs.reduce((x1: string, x2: RefInstance) => {
       const action = converToAction(localName, x2);
@@ -233,8 +240,9 @@ function objectToString(value: any, options: IJ2SOptions, history: IJ2SHistory):
       history.currentPath.pop();
       history.references.pop();
       if (propertyValue !== "undefined") {
-        if (!/^[a-zA-Z]+$/.test(propertyName)) {
-          propertyName = `"${propertyName}"`;
+        if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propertyName)) {
+          const escaped = propertyName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+          propertyName = `"${escaped}"`;
         }
         objectValues.push(`${propertyName}: ${propertyValue}`);
       }
@@ -442,7 +450,7 @@ function attachCrossRefActions(localCrossRefs: CrossRefInstance[], result: strin
   if (localCrossRefs.length === 0) {
     return result;
   }
-  counter = counter++ % Number.MAX_SAFE_INTEGER;
+  counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
   const localName = `___j2s_${counter}`;
   const actions = localCrossRefs
     .map((cr) => {

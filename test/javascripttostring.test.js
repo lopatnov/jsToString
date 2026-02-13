@@ -117,8 +117,16 @@ describe("RegExp to String", () => {
 describe("Error to String", () => {
     it("should convert Error", () => {
         const actual = (0, javascripttostring_1.default)(new Error("A mistake"));
-        const expected = 'new Error("A mistake", undefined, undefined)';
+        const expected = 'new Error("A mistake")';
         expect(actual).toBe(expected);
+    });
+    it("should convert TypeError", () => {
+        const actual = (0, javascripttostring_1.default)(new TypeError("bad type"));
+        expect(actual).toBe('new TypeError("bad type")');
+    });
+    it("should convert RangeError", () => {
+        const actual = (0, javascripttostring_1.default)(new RangeError("out of range"));
+        expect(actual).toBe('new RangeError("out of range")');
     });
 });
 describe("Array to String", () => {

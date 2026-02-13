@@ -17,8 +17,7 @@ npm install @lopatnov/javascripttostring
 ### Browser (CDN)
 
 ```html
-<!-- Development version -->
-<script src="https://lopatnov.github.io/jsToString/dist/javascripttostring.umd.js"></script>
+<script src="https://unpkg.com/@lopatnov/javascripttostring"></script>
 ```
 
 ## Usage

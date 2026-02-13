@@ -1,6 +1,478 @@
-var types={},typesToString=types.toString,buildInList=["Boolean","Number","String","Function","Array","Date","RegExp","Object","Error","Promise","Generator","GeneratorFunction","ArrayBuffer","DataView"],typedArrays=["Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"],maps=["Map","WeakMap"],sets=["Set","WeakSet"];function getInternalType(t){return null==t?t+"":"object"==typeof t||"function"==typeof t?types[typesToString.call(t)]||"object":typeof t}buildInList.forEach(function(t){types["[object "+t+"]"]=t.toLowerCase();}),maps.forEach(function(t){types["[object "+t+"]"]="map";}),sets.forEach(function(t){types["[object "+t+"]"]="set";}),typedArrays.forEach(function(t){types["[object "+t+"]"]="typedarray";});
+var types = {}, typesToString = types.toString, buildInList = [
+    "Boolean",
+    "Number",
+    "String",
+    "Function",
+    "Array",
+    "Date",
+    "RegExp",
+    "Object",
+    "Error",
+    "Promise",
+    "Generator",
+    "GeneratorFunction",
+    "ArrayBuffer",
+    "DataView"
+], typedArrays = [
+    "Int8Array",
+    "Uint8Array",
+    "Uint8ClampedArray",
+    "Int16Array",
+    "Uint16Array",
+    "Int32Array",
+    "Uint32Array",
+    "Float32Array",
+    "Float64Array",
+    "BigInt64Array",
+    "BigUint64Array"
+], maps = ["Map", "WeakMap"], sets = ["Set", "WeakSet"];
+buildInList.forEach(function (name) {
+    types["[object " + name + "]"] = name.toLowerCase();
+});
+maps.forEach(function (name) {
+    types["[object " + name + "]"] = "map";
+});
+sets.forEach(function (name) {
+    types["[object " + name + "]"] = "set";
+});
+typedArrays.forEach(function (name) {
+    types["[object " + name + "]"] = "typedarray";
+});
+function getInternalType(obj) {
+    return obj == null
+        ? obj + ""
+        : typeof obj === "object" || typeof obj === "function"
+            ? types[typesToString.call(obj)] || "object"
+            : typeof obj;
+}
 
-var refs=[],crossRefs=[],counter=0;function fillNativeFunctions(e,t,n,r=true){const o=Object.getOwnPropertyNames(r?t.prototype:t),s=r?".prototype.":".";for(const i of o)["caller","callee","arguments"].indexOf(i)<0&&(e[`${n}${s}${i}`]=r?t.prototype[i]:t[i]);}const nativeFunctions=(()=>{const e={};return fillNativeFunctions(e,Array,"Array",false),fillNativeFunctions(e,Array,"Array"),fillNativeFunctions(e,JSON,"JSON",false),fillNativeFunctions(e,Object,"Object",false),fillNativeFunctions(e,Object,"Object"),fillNativeFunctions(e,Function,"Function",false),fillNativeFunctions(e,Function,"Function"),fillNativeFunctions(e,Date,"Date",false),fillNativeFunctions(e,String,"String"),e.Function=Function,e})();function numberToString(e){if(Number.isNaN(e))return "Number.NaN";switch(e){case Number.POSITIVE_INFINITY:return "Number.POSITIVE_INFINITY";case Number.NEGATIVE_INFINITY:return "Number.NEGATIVE_INFINITY";case Number.EPSILON:return "Number.EPSILON";case Number.MAX_SAFE_INTEGER:return "Number.MAX_SAFE_INTEGER";case Number.MIN_SAFE_INTEGER:return "Number.MIN_SAFE_INTEGER";case Number.MAX_VALUE:return "Number.MAX_VALUE";case Number.MIN_VALUE:return "Number.MIN_VALUE";case Math.PI:return "Math.PI";case Math.E:return "Math.E";case Math.LN10:return "Math.LN10";case Math.LN2:return "Math.LN2";case Math.LOG10E:return "Math.LOG10E";case Math.LOG2E:return "Math.LOG2E";case Math.SQRT1_2:return "Math.SQRT1_2";case Math.SQRT2:return "Math.SQRT2";default:return String(e)}}function symbolToString(e){switch(e){case Symbol.asyncIterator:case Symbol.hasInstance:case Symbol.isConcatSpreadable:case Symbol.iterator:case Symbol.match:case Symbol.prototype:case Symbol.replace:case Symbol.search:case Symbol.species:case Symbol.split:case Symbol.toPrimitive:case Symbol.toStringTag:case Symbol.unscopables:return e.description;default:return `Symbol(${e.description?`"${e.description}"`:""})`}}function dateToString(e){return isNaN(e.getTime())?`new Date(${e.toString()})`:`new Date(${e.toISOString()})`}function errorToString(e){return `new Error(${JSON.stringify(e.message)}, ${JSON.stringify(e.fileName)}, ${JSON.stringify(e.lineNumber)})`}function arrayToString(e,t,n){if(0===e.length)return "[]";const r=e.reduce((e,r,o)=>{const s=o.toString();n.references.push(s),n.currentPath.push(s);let i=e?`${e}, `:"";return i+=stringifyRef(r,t,n),n.currentPath.pop(),n.references.pop(),i},"");return attachActions(getLocalRefs(e),`[${r}]`)}function getLocalRefs(e){return refs.filter(t=>t.source===e)}function attachActions(e,t){if(e.length>0){const n=`___j2s_${counter=counter++%Number.MAX_SAFE_INTEGER}`,r=e.reduce((e,t)=>{const r=converToAction(n,t);return refs.splice(refs.indexOf(t),1),e+r},"");return `(function(){ var ${n} = ${t}; ${r} return ${n}; }())`}return t}function converToAction(e,t){const n=t.historyRef.indexOf(t.source);if(n<0)return "";const r=t.historyRef.slice(n);let o,s="";for(let n=0;n<r.length;n++){const i=r[n];if(i===t.source)s=e,o=t.source;else if("string"==typeof i)s+=`['${i.replace(/'/gi,"\\'")}']`,o=o[i];else if(i!==o)return ""}return `${s} = ${e}; `}function typedArrayToString(e,t,n){const r=arrayToString(Array.from(e),t,n);return `new ${e.constructor.name}(${r})`}function setToString(e,t,n){const r=[];return e.forEach((e,o)=>{r.push(stringifyRef(o,t,n));}),0===r.length?"new Set()":`new Set([${r.join(", ")}])`}function mapToString(e,t,n){const r=[];return e.forEach((e,o)=>{r.push(`[${stringifyRef(o,t,n)}, ${stringifyRef(e,t,n)}]`);}),0===r.length?"new Map()":`new Map([${r.join(", ")}])`}function objectToString(e,t,n){const r=[];for(let o in e)if(e.hasOwnProperty(o)){n.references.push(o),n.currentPath.push(o);const s=stringifyRef(e[o],t,n);n.currentPath.pop(),n.references.pop(),"undefined"!==s&&(/^[a-zA-Z]+$/.test(o)||(o=`"${o}"`),r.push(`${o}: ${s}`));}return 0===r.length?"{}":attachActions(getLocalRefs(e),`{\n${r.join(",\n")}\n}`)}function functionPropertiesToString(e,t,n,r){let o="";for(const s in t)if(t.hasOwnProperty(s)){r.references.push(s),r.currentPath.push(s);const i=stringifyRef(t[s],n,r);r.currentPath.pop(),r.references.pop(),"undefined"!==i&&(o+=`${e}.${s} = ${i};\n`);}return o}function functionToString(e,t,n){const r=e.name||"anonymousFunction",o=t.includeFunctionProperties?functionPropertiesToString(r,e,t,n):"";n.references.push("prototype"),n.currentPath.push("prototype");const s=t.includeFunctionPrototype?functionPropertiesToString(`${r}.prototype`,e.prototype,t,n):"";n.currentPath.pop(),n.references.pop();let i=String(e);if(i.indexOf("[native code]")>-1&&i.length<100)for(const t in nativeFunctions)nativeFunctions[t]===e&&(i=t);return o||s?attachActions(getLocalRefs(e),`(function(){\n var ${r} = ${String(i)};\n ${o}\n ${s}\n return ${r};\n}())`):i}function arrayBufferToString(e,t,n){if(!t.includeBuffers)return "undefined";return `(${typedArrayToString(new Int8Array(e),t,n)}).buffer`}function dataViewToString(e,t,n){if(!t.includeBuffers)return "undefined";return `new DataView(${arrayBufferToString(e.buffer,t,n)}, ${e.byteOffset}, ${e.byteLength})`}function stringify(e,t,n){switch(getInternalType(e)){case "undefined":case "promise":case "generator":return "undefined";case "null":return "null";case "boolean":case "regexp":return String(e);case "string":default:return JSON.stringify(e);case "number":return numberToString(e);case "bigint":return `BigInt(${e})`;case "symbol":return symbolToString(e);case "date":return dateToString(e);case "error":return errorToString(e);case "array":return arrayToString(e,t,n);case "typedarray":return typedArrayToString(e,t,n);case "set":return setToString(e,t,n);case "map":return mapToString(e,t,n);case "object":return objectToString(e,t,n);case "function":case "generatorfunction":return functionToString(e,t,n);case "arraybuffer":return arrayBufferToString(e,t,n);case "dataview":return dataViewToString(e,t,n)}}function stringifyRef(e,t,n){const r="object"==typeof e&&null!==e||"function"==typeof e,o=n.references.indexOf(e);if(r&&n.visited.has(e)&&o<0)return crossRefs.push({destPath:[...n.currentPath],sourcePath:n.visited.get(e)||[]}),"null";if(o<0||"string"==typeof n.references[o]){const o=getInternalType(e),s=n.references.length;switch(r&&!n.visited.has(e)&&n.visited.set(e,[...n.currentPath]),n.references.push(e),o){case "object":if(n.nestedObjectsLeft<=0)return "undefined";n.nestedObjectsLeft--;break;case "array":case "typedarray":if(n.nestedArraysLeft<=0)return "undefined";n.nestedArraysLeft--;break;case "function":case "generatorfunction":if(n.nestedFunctionsLeft<=0)return "undefined";n.nestedFunctionsLeft--;}const i=stringify(e,t,n);switch(n.references.splice(s),o){case "object":n.nestedObjectsLeft++;break;case "array":case "typedarray":n.nestedArraysLeft++;break;case "function":case "generatorfunction":n.nestedFunctionsLeft++;}return i}return refs.push({historyRef:n.references.slice(0),source:e}),"null"}function attachCrossRefActions(e,t){if(0===e.length)return t;const n=`___j2s_${counter=counter++%Number.MAX_SAFE_INTEGER}`,r=e.map(e=>{const t=e.destPath.map(e=>`['${e.replace(/'/gi,"\\'")}']`).join(""),r=e.sourcePath.map(e=>`['${e.replace(/'/gi,"\\'")}']`).join("");return `${n}${t} = ${n}${r}; `}).join("");return `(function(){ var ${n} = ${t}; ${r}return ${n}; }())`}function javaScriptToString(e,t){const n={includeFunctionProperties:void 0===(t=t||{}).includeFunctionProperties||t.includeFunctionProperties,includeFunctionPrototype:void 0===t.includeFunctionPrototype||t.includeFunctionPrototype,includeBuffers:void 0===t.includeBuffers||t.includeBuffers,nestedObjectsAmount:void 0===t.nestedObjectsAmount?Number.POSITIVE_INFINITY:t.nestedObjectsAmount,nestedArraysAmount:void 0===t.nestedArraysAmount?Number.POSITIVE_INFINITY:t.nestedArraysAmount,nestedFunctionsAmount:void 0===t.nestedFunctionsAmount?Number.POSITIVE_INFINITY:t.nestedFunctionsAmount};refs=[],crossRefs=[],counter=0;const r=new Map;r.set(e,[]);const o=stringify(e,n,{references:[e],nestedObjectsLeft:n.nestedObjectsAmount,nestedArraysLeft:n.nestedArraysAmount,nestedFunctionsLeft:n.nestedFunctionsAmount,visited:r,currentPath:[]}),s=attachActions(getLocalRefs(e),o);return attachCrossRefActions(crossRefs,s)}
+var refs = [];
+var crossRefs = [];
+var counter = 0;
+function fillNativeFunctions(ext, obj, objName, fromPrototype = true) {
+    const arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype : obj);
+    const protoPath = fromPrototype ? ".prototype." : ".";
+    for (const name of arrNames) {
+        if (["caller", "callee", "arguments"].indexOf(name) < 0) {
+            ext[`${objName}${protoPath}${name}`] = fromPrototype ? obj.prototype[name] : obj[name];
+        }
+    }
+}
+const nativeFunctions = (() => {
+    const functions = {};
+    fillNativeFunctions(functions, Array, "Array", false);
+    fillNativeFunctions(functions, Array, "Array");
+    fillNativeFunctions(functions, JSON, "JSON", false);
+    fillNativeFunctions(functions, Object, "Object", false);
+    fillNativeFunctions(functions, Object, "Object");
+    fillNativeFunctions(functions, Function, "Function", false);
+    fillNativeFunctions(functions, Function, "Function");
+    fillNativeFunctions(functions, Date, "Date", false);
+    fillNativeFunctions(functions, String, "String");
+    functions.Function = Function;
+    return functions;
+})();
+function numberToString(value) {
+    if (Number.isNaN(value)) {
+        return "Number.NaN";
+    }
+    switch (value) {
+        case Number.POSITIVE_INFINITY:
+            return "Number.POSITIVE_INFINITY";
+        case Number.NEGATIVE_INFINITY:
+            return "Number.NEGATIVE_INFINITY";
+        case Number.EPSILON:
+            return "Number.EPSILON";
+        case Number.MAX_SAFE_INTEGER:
+            return "Number.MAX_SAFE_INTEGER";
+        case Number.MIN_SAFE_INTEGER:
+            return "Number.MIN_SAFE_INTEGER";
+        case Number.MAX_VALUE:
+            return "Number.MAX_VALUE";
+        case Number.MIN_VALUE:
+            return "Number.MIN_VALUE";
+        case Math.PI:
+            return "Math.PI";
+        case Math.E:
+            return "Math.E";
+        case Math.LN10:
+            return "Math.LN10";
+        case Math.LN2:
+            return "Math.LN2";
+        case Math.LOG10E:
+            return "Math.LOG10E";
+        case Math.LOG2E:
+            return "Math.LOG2E";
+        case Math.SQRT1_2:
+            return "Math.SQRT1_2";
+        case Math.SQRT2:
+            return "Math.SQRT2";
+        default:
+            return String(value);
+    }
+}
+function symbolToString(value) {
+    switch (value) {
+        case Symbol.asyncIterator:
+        case Symbol.hasInstance:
+        case Symbol.isConcatSpreadable:
+        case Symbol.iterator:
+        case Symbol.match:
+        case Symbol.replace:
+        case Symbol.search:
+        case Symbol.species:
+        case Symbol.split:
+        case Symbol.toPrimitive:
+        case Symbol.toStringTag:
+        case Symbol.unscopables:
+            return value.description;
+        case Symbol.prototype:
+            return "Symbol.prototype";
+        default:
+            const description = value.description ? `"${value.description}"` : "";
+            return `Symbol(${description})`;
+    }
+}
+function dateToString(value) {
+    if (isNaN(value.getTime())) {
+        return "new Date(NaN)";
+    }
+    return `new Date("${value.toISOString()}")`;
+}
+function errorToString(value) {
+    var _a;
+    const message = JSON.stringify(value.message);
+    const errorClass = ((_a = value.constructor) === null || _a === void 0 ? void 0 : _a.name) || "Error";
+    const knownErrors = [
+        "Error", "TypeError", "RangeError", "ReferenceError",
+        "SyntaxError", "URIError", "EvalError"
+    ];
+    if (knownErrors.includes(errorClass)) {
+        return `new ${errorClass}(${message})`;
+    }
+    return `new Error(${message})`;
+}
+function arrayToString(value, options, history) {
+    if (value.length === 0)
+        return "[]";
+    const arrayValues = value.reduce((x1, x2, index) => {
+        const key = index.toString();
+        history.references.push(key);
+        history.currentPath.push(key);
+        let str = !!x1 ? `${x1}, ` : "";
+        str += stringifyRef(x2, options, history);
+        history.currentPath.pop();
+        history.references.pop();
+        return str;
+    }, "");
+    return attachActions(getLocalRefs(value), `[${arrayValues}]`);
+}
+function getLocalRefs(value) {
+    return refs.filter((x) => x.source === value);
+}
+function attachActions(localRefs, result) {
+    if (localRefs.length > 0) {
+        counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
+        const localName = `___j2s_${counter}`;
+        const actions = localRefs.reduce((x1, x2) => {
+            const action = converToAction(localName, x2);
+            refs.splice(refs.indexOf(x2), 1);
+            return x1 + action;
+        }, "");
+        return `(function(){ var ${localName} = ${result}; ${actions} return ${localName}; }())`;
+    }
+    return result;
+}
+function converToAction(localName, r) {
+    const destIndex = r.historyRef.indexOf(r.source);
+    if (destIndex < 0) {
+        return "";
+    }
+    const dest = r.historyRef.slice(destIndex);
+    let sourceObj;
+    let path = "";
+    for (let i = 0; i < dest.length; i++) {
+        const destObj = dest[i];
+        if (destObj === r.source) {
+            path = localName;
+            sourceObj = r.source;
+        }
+        else if (typeof destObj === "string") {
+            path += `['${destObj.replace(/'/gi, "\\'")}']`;
+            sourceObj = sourceObj[destObj];
+        }
+        else if (destObj !== sourceObj) {
+            return "";
+        }
+    }
+    return `${path} = ${localName}; `;
+}
+function typedArrayToString(value, options, history) {
+    const arr = Array.from(value), arrString = arrayToString(arr, options, history), constructorName = value.constructor.name;
+    return `new ${constructorName}(${arrString})`;
+}
+function setToString(value, options, history) {
+    const setValues = [];
+    value.forEach((_, value2) => {
+        setValues.push(stringifyRef(value2, options, history));
+    });
+    if (setValues.length === 0)
+        return "new Set()";
+    return `new Set([${setValues.join(", ")}])`;
+}
+function mapToString(value, options, history) {
+    const mapValues = [];
+    value.forEach((indexValue, key) => {
+        mapValues.push(`[${stringifyRef(key, options, history)}, ${stringifyRef(indexValue, options, history)}]`);
+    });
+    if (mapValues.length === 0)
+        return "new Map()";
+    return `new Map([${mapValues.join(", ")}])`;
+}
+function objectToString(value, options, history) {
+    const objectValues = [];
+    for (let propertyName in value) {
+        if (value.hasOwnProperty(propertyName)) {
+            history.references.push(propertyName);
+            history.currentPath.push(propertyName);
+            const propertyValue = stringifyRef(value[propertyName], options, history);
+            history.currentPath.pop();
+            history.references.pop();
+            if (propertyValue !== "undefined") {
+                if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propertyName)) {
+                    const escaped = propertyName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+                    propertyName = `"${escaped}"`;
+                }
+                objectValues.push(`${propertyName}: ${propertyValue}`);
+            }
+        }
+    }
+    if (objectValues.length === 0)
+        return "{}";
+    return attachActions(getLocalRefs(value), `{\n${objectValues.join(",\n")}\n}`);
+}
+function functionPropertiesToString(functionName, value, options, history) {
+    let result = "";
+    for (const propertyName in value) {
+        if (value.hasOwnProperty(propertyName)) {
+            history.references.push(propertyName);
+            history.currentPath.push(propertyName);
+            const propertyValue = stringifyRef(value[propertyName], options, history);
+            history.currentPath.pop();
+            history.references.pop();
+            if (propertyValue !== "undefined") {
+                result += `${functionName}.${propertyName} = ${propertyValue};\n`;
+            }
+        }
+    }
+    return result;
+}
+function functionToString(value, options, history) {
+    const functionName = value.name || "anonymousFunction";
+    const functionObject = options.includeFunctionProperties
+        ? functionPropertiesToString(functionName, value, options, history)
+        : "";
+    history.references.push("prototype");
+    history.currentPath.push("prototype");
+    const functionPrototype = options.includeFunctionPrototype
+        ? functionPropertiesToString(`${functionName}.prototype`, value.prototype, options, history)
+        : "";
+    history.currentPath.pop();
+    history.references.pop();
+    let functionStr = String(value);
+    if (functionStr.indexOf("[native code]") > -1 && functionStr.length < 100) {
+        for (const nfName in nativeFunctions) {
+            if (nativeFunctions[nfName] === value) {
+                functionStr = nfName;
+            }
+        }
+    }
+    if (!functionObject && !functionPrototype) {
+        return functionStr;
+    }
+    return attachActions(getLocalRefs(value), `(function(){\n var ${functionName} = ${String(functionStr)};\n ${functionObject}\n ${functionPrototype}\n return ${functionName};\n}())`);
+}
+function arrayBufferToString(value, options, history) {
+    if (!options.includeBuffers)
+        return "undefined";
+    const str = typedArrayToString(new Int8Array(value), options, history);
+    return `(${str}).buffer`;
+}
+function dataViewToString(value, options, history) {
+    if (!options.includeBuffers)
+        return "undefined";
+    const bufString = arrayBufferToString(value.buffer, options, history);
+    return `new DataView(${bufString}, ${value.byteOffset}, ${value.byteLength})`;
+}
+/**
+ * Converts to string the value, if it wasn't before
+ * @param value the value, that converts to string
+ * @param references the references to stringified objects
+ */
+function stringify(value, options, history) {
+    switch (getInternalType(value)) {
+        case "undefined":
+            return "undefined";
+        case "null":
+            return "null";
+        case "boolean":
+            return String(value);
+        case "regexp":
+            return String(value);
+        case "string":
+            return JSON.stringify(value);
+        case "number":
+            return numberToString(value);
+        case "bigint":
+            return `BigInt(${value})`;
+        case "symbol":
+            return symbolToString(value);
+        case "date":
+            return dateToString(value);
+        case "error":
+            return errorToString(value);
+        case "array":
+            return arrayToString(value, options, history);
+        case "typedarray":
+            return typedArrayToString(value, options, history);
+        case "set":
+            return setToString(value, options, history);
+        case "map":
+            return mapToString(value, options, history);
+        case "object":
+            return objectToString(value, options, history);
+        case "function":
+        case "generatorfunction":
+            return functionToString(value, options, history);
+        case "arraybuffer":
+            return arrayBufferToString(value, options, history);
+        case "dataview":
+            return dataViewToString(value, options, history);
+        case "promise":
+        case "generator":
+            return "undefined";
+        default:
+            return JSON.stringify(value);
+    }
+}
+/**
+ * Stringify the value, if it wasn't before
+ * @param value the value, that converts to string
+ * @param references the references to stringified objects
+ */
+function stringifyRef(value, options, history) {
+    const isRefType = (typeof value === "object" && value !== null) || typeof value === "function";
+    const index = history.references.indexOf(value);
+    // Cross-reference: object was already stringified in a different branch
+    if (isRefType && history.visited.has(value) && index < 0) {
+        crossRefs.push({
+            destPath: [...history.currentPath],
+            sourcePath: history.visited.get(value) || [],
+        });
+        return "null";
+    }
+    if (index < 0 || typeof history.references[index] === "string") {
+        const objectType = getInternalType(value);
+        const referencesLength = history.references.length;
+        // Track first-seen path for reference types
+        if (isRefType && !history.visited.has(value)) {
+            history.visited.set(value, [...history.currentPath]);
+        }
+        history.references.push(value);
+        switch (objectType) {
+            case "object":
+                if (history.nestedObjectsLeft <= 0)
+                    return "undefined";
+                history.nestedObjectsLeft--;
+                break;
+            case "array":
+            case "typedarray":
+                if (history.nestedArraysLeft <= 0)
+                    return "undefined";
+                history.nestedArraysLeft--;
+                break;
+            case "function":
+            case "generatorfunction":
+                if (history.nestedFunctionsLeft <= 0)
+                    return "undefined";
+                history.nestedFunctionsLeft--;
+                break;
+        }
+        const refString = stringify(value, options, history);
+        history.references.splice(referencesLength);
+        switch (objectType) {
+            case "object":
+                history.nestedObjectsLeft++;
+                break;
+            case "array":
+            case "typedarray":
+                history.nestedArraysLeft++;
+                break;
+            case "function":
+            case "generatorfunction":
+                history.nestedFunctionsLeft++;
+                break;
+        }
+        return refString;
+    }
+    else {
+        // Circular reference: back-reference to an ancestor in current path
+        refs.push({
+            historyRef: history.references.slice(0),
+            source: value,
+        });
+    }
+    return "null";
+}
+function attachCrossRefActions(localCrossRefs, result) {
+    if (localCrossRefs.length === 0) {
+        return result;
+    }
+    counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
+    const localName = `___j2s_${counter}`;
+    const actions = localCrossRefs
+        .map((cr) => {
+        const destAccessor = cr.destPath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
+        const srcAccessor = cr.sourcePath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
+        return `${localName}${destAccessor} = ${localName}${srcAccessor}; `;
+    })
+        .join("");
+    return `(function(){ var ${localName} = ${result}; ${actions}return ${localName}; }())`;
+}
+/**
+ * Converts JavaScript value to string
+ * @param value the value of any type
+ * @param options [optional] The options of conversion
+ */
+function javaScriptToString(value, options) {
+    options = options || {};
+    const concreteOptions = {
+        includeFunctionProperties: options.includeFunctionProperties === undefined ? true : options.includeFunctionProperties,
+        includeFunctionPrototype: options.includeFunctionPrototype === undefined ? true : options.includeFunctionPrototype,
+        includeBuffers: options.includeBuffers === undefined ? true : options.includeBuffers,
+        nestedObjectsAmount: options.nestedObjectsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedObjectsAmount,
+        nestedArraysAmount: options.nestedArraysAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedArraysAmount,
+        nestedFunctionsAmount: options.nestedFunctionsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedFunctionsAmount,
+    };
+    // Clear global state before conversion
+    refs = [];
+    crossRefs = [];
+    counter = 0;
+    const visited = new Map();
+    visited.set(value, []);
+    const result = stringify(value, concreteOptions, {
+        references: [value],
+        nestedObjectsLeft: concreteOptions.nestedObjectsAmount,
+        nestedArraysLeft: concreteOptions.nestedArraysAmount,
+        nestedFunctionsLeft: concreteOptions.nestedFunctionsAmount,
+        visited,
+        currentPath: [],
+    });
+    // Handle circular references at the top level (Issue #1)
+    const circularResult = attachActions(getLocalRefs(value), result);
+    // Handle cross-references between different branches
+    return attachCrossRefActions(crossRefs, circularResult);
+}
 
 export { javaScriptToString as default };
 //# sourceMappingURL=javascripttostring.es5.js.map
