@@ -151,10 +151,7 @@ function regexpToString(value: RegExp): string {
 function errorToString(value: any): string {
   const message = JSON.stringify(value.message);
   const errorClass = value.constructor?.name || "Error";
-  const knownErrors = [
-    "Error", "TypeError", "RangeError", "ReferenceError",
-    "SyntaxError", "URIError", "EvalError"
-  ];
+  const knownErrors = ["Error", "TypeError", "RangeError", "ReferenceError", "SyntaxError", "URIError", "EvalError"];
   if (knownErrors.includes(errorClass)) {
     return `new ${errorClass}(${message})`;
   }

@@ -44,7 +44,6 @@
     "includes": [
       "**/src/**/*.ts",
       "**/test/**/*.ts",
-      "**/test/**/*.js",
       "!**/dist/**",
       "!**/node_modules/**",
       "!**/docs/**",

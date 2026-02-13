@@ -268,13 +268,15 @@ describe("Edge cases", () => {
     expect(str).toBe("/hello/i");
   });
   it("should handle function properties with special names", () => {
-    function myFn() { return 1; }
+    function myFn() {
+      return 1;
+    }
     (myFn as any)["my-prop"] = 42;
-    (myFn as any)["normal"] = 10;
+    (myFn as any).normal = 10;
     const str = j2s(myFn);
     const restored = Function("return " + str)();
     expect(restored["my-prop"]).toBe(42);
-    expect(restored["normal"]).toBe(10);
+    expect(restored.normal).toBe(10);
   });
   it("should handle Object.create(null)", () => {
     const obj = Object.create(null);
@@ -431,9 +433,15 @@ describe("Function to String", () => {
   it("should work with includeFunctionProperties = false", () => {
     function TestConstructor() {}
     (TestConstructor as any).Test1 = "Completed";
-    TestConstructor.prototype.testMethod = function() { return "It works"; };
-    TestConstructor.prototype.testMethod.subTestMethod = function() { return "It not works"; };
-    TestConstructor.prototype.testMethod.prototype.subTestMethod = function() { return "It works too"; };
+    // biome-ignore lint/complexity/useArrowFunction: needs .prototype (arrow functions have none)
+    TestConstructor.prototype.testMethod = function () {
+      return "It works";
+    };
+    TestConstructor.prototype.testMethod.subTestMethod = () => "It not works";
+    // biome-ignore lint/complexity/useArrowFunction: needs .prototype (arrow functions have none)
+    TestConstructor.prototype.testMethod.prototype.subTestMethod = function () {
+      return "It works too";
+    };
 
     const stringFunction = j2s(TestConstructor, {
       includeFunctionProperties: false,
