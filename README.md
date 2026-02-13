@@ -150,28 +150,28 @@ Combine with [@lopatnov/worker-from-string](https://www.npmjs.com/package/@lopat
 import javaScriptToString from "@lopatnov/javascripttostring";
 import workerFromString from "@lopatnov/worker-from-string";
 
-// Define a computation function
-const fibonacci = function(n) {
-  if (n <= 1) return n;
-  let a = 0, b = 1;
-  for (let i = 2; i <= n; i++) {
-    [a, b] = [b, a + b];
-  }
-  return b;
-};
+// Function with attached lookup data
+function classify(value) {
+  const range = classify.ranges.find(r => value >= r.min && value < r.max);
+  return range ? range.label : "unknown";
+}
+classify.ranges = [
+  { min: 0, max: 30, label: "cold" },
+  { min: 30, max: 60, label: "warm" },
+  { min: 60, max: 100, label: "hot" },
+];
 
 // Serialize and send to a worker
-const fnString = javaScriptToString(fibonacci);
+// javaScriptToString preserves the function AND its properties:
+const code = javaScriptToString(classify);
 
 const worker = workerFromString(`
-  const fibonacci = ${fnString};
-  self.onmessage = function(e) {
-    postMessage({ input: e.data, result: fibonacci(e.data) });
-  };
+  const classify = ${code};
+  self.onmessage = (e) => postMessage(classify(e.data));
 `);
 
-worker.onmessage = (e) => console.log(e.data); // { input: 40, result: 102334155 }
-worker.postMessage(40);
+worker.onmessage = (e) => console.log(e.data);
+worker.postMessage(45); // "warm"
 ```
 
 ### Restoring Values
