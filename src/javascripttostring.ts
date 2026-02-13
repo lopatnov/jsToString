@@ -61,6 +61,9 @@ function numberToString(value: number): string {
   if (Number.isNaN(value)) {
     return "Number.NaN";
   }
+  if (Object.is(value, -0)) {
+    return "-0";
+  }
   switch (value) {
     case Number.POSITIVE_INFINITY:
       return "Number.POSITIVE_INFINITY";
@@ -115,7 +118,11 @@ function symbolToString(value: any): string {
     case Symbol.prototype:
       return "Symbol.prototype";
     default:
-      const description = value.description ? `"${value.description}"` : "";
+      const registryKey = Symbol.keyFor(value);
+      if (registryKey !== undefined) {
+        return `Symbol.for(${JSON.stringify(registryKey)})`;
+      }
+      const description = value.description !== undefined ? JSON.stringify(value.description) : "";
       return `Symbol(${description})`;
   }
 }
@@ -125,6 +132,14 @@ function dateToString(value: Date): string {
     return "new Date(NaN)";
   }
   return `new Date("${value.toISOString()}")`;
+}
+
+function regexpToString(value: RegExp): string {
+  const str = String(value);
+  if (value.lastIndex !== 0) {
+    return `(function(){ var r = ${str}; r.lastIndex = ${value.lastIndex}; return r; }())`;
+  }
+  return str;
 }
 
 function errorToString(value: any): string {
@@ -142,17 +157,20 @@ function errorToString(value: any): string {
 
 function arrayToString(value: Array<any>, options: IJ2SOptions, history: IJ2SHistory): string {
   if (value.length === 0) return "[]";
-  const arrayValues = value.reduce((x1: any, x2: any, index: number) => {
-    const key = index.toString();
-    history.references.push(key);
-    history.currentPath.push(key);
-    let str = !!x1 ? `${x1}, ` : "";
-    str += stringifyRef(x2, options, history);
-    history.currentPath.pop();
-    history.references.pop();
-    return str;
-  }, "");
-  return attachActions(getLocalRefs(value), `[${arrayValues}]`);
+  const parts: string[] = [];
+  for (let i = 0; i < value.length; i++) {
+    if (!(i in value)) {
+      parts.push("");
+    } else {
+      const key = i.toString();
+      history.references.push(key);
+      history.currentPath.push(key);
+      parts.push(stringifyRef(value[i], options, history));
+      history.currentPath.pop();
+      history.references.pop();
+    }
+  }
+  return attachActions(getLocalRefs(value), `[${parts.join(", ")}]`);
 }
 
 function getLocalRefs(value: any) {
@@ -233,7 +251,7 @@ function objectToString(value: any, options: IJ2SOptions, history: IJ2SHistory):
   const objectValues = [];
 
   for (let propertyName in value) {
-    if (value.hasOwnProperty(propertyName)) {
+    if (Object.prototype.hasOwnProperty.call(value, propertyName)) {
       history.references.push(propertyName);
       history.currentPath.push(propertyName);
       const propertyValue = stringifyRef(value[propertyName], options, history);
@@ -262,14 +280,19 @@ function functionPropertiesToString(
 ): string {
   let result = "";
   for (const propertyName in value) {
-    if (value.hasOwnProperty(propertyName)) {
+    if (Object.prototype.hasOwnProperty.call(value, propertyName)) {
       history.references.push(propertyName);
       history.currentPath.push(propertyName);
       const propertyValue = stringifyRef(value[propertyName], options, history);
       history.currentPath.pop();
       history.references.pop();
       if (propertyValue !== "undefined") {
-        result += `${functionName}.${propertyName} = ${propertyValue};\n`;
+        if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propertyName)) {
+          result += `${functionName}.${propertyName} = ${propertyValue};\n`;
+        } else {
+          const escaped = propertyName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+          result += `${functionName}["${escaped}"] = ${propertyValue};\n`;
+        }
       }
     }
   }
@@ -335,7 +358,7 @@ function stringify(value: any, options: IJ2SOptions, history: IJ2SHistory): stri
     case "boolean":
       return String(value);
     case "regexp":
-      return String(value);
+      return regexpToString(value);
     case "string":
       return JSON.stringify(value);
     case "number":

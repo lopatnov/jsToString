@@ -228,6 +228,71 @@ describe("Edge cases", () => {
 
     expect(restored['key"quote']).toBe(42);
   });
+  it("should convert negative zero", () => {
+    const str = j2s(-0);
+    expect(str).toBe("-0");
+    const restored = Function("return " + str)();
+    expect(Object.is(restored, -0)).toBe(true);
+  });
+  it("should handle sparse arrays", () => {
+    const arr = new Array(3);
+    arr[0] = 1;
+    arr[2] = 3;
+    const str = j2s(arr);
+    const restored = Function("return " + str)();
+    expect(restored.length).toBe(3);
+    expect(restored[0]).toBe(1);
+    expect(1 in restored).toBe(false);
+    expect(restored[2]).toBe(3);
+  });
+  it("should handle Symbol.for() registry symbols", () => {
+    const sym = Symbol.for("myGlobalKey");
+    const str = j2s(sym);
+    expect(str).toBe('Symbol.for("myGlobalKey")');
+    const restored = Function("return " + str)();
+    expect(restored).toBe(Symbol.for("myGlobalKey"));
+  });
+  it("should handle RegExp with lastIndex", () => {
+    const re = /test/g;
+    re.lastIndex = 4;
+    const str = j2s(re);
+    expect(str).toContain("lastIndex = 4");
+    const restored = Function("return " + str)();
+    expect(restored.lastIndex).toBe(4);
+    expect(restored.source).toBe("test");
+    expect(restored.flags).toBe("g");
+  });
+  it("should handle RegExp without lastIndex", () => {
+    const re = /hello/i;
+    const str = j2s(re);
+    expect(str).toBe("/hello/i");
+  });
+  it("should handle function properties with special names", () => {
+    function myFn() { return 1; }
+    (myFn as any)["my-prop"] = 42;
+    (myFn as any)["normal"] = 10;
+    const str = j2s(myFn);
+    const restored = Function("return " + str)();
+    expect(restored["my-prop"]).toBe(42);
+    expect(restored["normal"]).toBe(10);
+  });
+  it("should handle Object.create(null)", () => {
+    const obj = Object.create(null);
+    obj.foo = "bar";
+    obj.num = 42;
+    const str = j2s(obj);
+    const restored = Function("return " + str)();
+    expect(restored.foo).toBe("bar");
+    expect(restored.num).toBe(42);
+  });
+  it("should distinguish Symbol('') from Symbol()", () => {
+    const s1 = Symbol("");
+    const s2 = Symbol();
+    const str1 = j2s(s1);
+    const str2 = j2s(s2);
+    expect(str1).toBe('Symbol("")');
+    expect(str2).toBe("Symbol()");
+  });
 });
 
 describe("Array to String", () => {
