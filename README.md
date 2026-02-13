@@ -143,6 +143,38 @@ javaScriptToString(obj);
 // }; ___j2s_0['b'] = ___j2s_0['a']; return ___j2s_0; }())
 ```
 
+### Using with Web Workers
+
+Combine with [@lopatnov/worker-from-string](https://www.npmjs.com/package/@lopatnov/worker-from-string) to serialize functions and data for execution in a Web Worker:
+
+```typescript
+import javaScriptToString from "@lopatnov/javascripttostring";
+import workerFromString from "@lopatnov/worker-from-string";
+
+// Define a computation function
+const fibonacci = function(n) {
+  if (n <= 1) return n;
+  let a = 0, b = 1;
+  for (let i = 2; i <= n; i++) {
+    [a, b] = [b, a + b];
+  }
+  return b;
+};
+
+// Serialize and send to a worker
+const fnString = javaScriptToString(fibonacci);
+
+const worker = workerFromString(`
+  const fibonacci = ${fnString};
+  self.onmessage = function(e) {
+    postMessage({ input: e.data, result: fibonacci(e.data) });
+  };
+`);
+
+worker.onmessage = (e) => console.log(e.data); // { input: 40, result: 102334155 }
+worker.postMessage(40);
+```
+
 ### Restoring Values
 
 The generated string can be evaluated back to a working JavaScript value:
@@ -177,12 +209,28 @@ console.log(restored.name);             // "test"
 | ArrayBuffer | `new ArrayBuffer(8)` |
 | DataView | `new DataView(buffer)` |
 
-## Links
+## Demo
 
-- **Live Demo:** [https://runkit.com/lopatnov/javascripttostring-demo](https://runkit.com/lopatnov/javascripttostring-demo)
-- **Demo** [./demo/index.html](./demo/index.html)
-- **Generated Docs** [./docs/index.html](./docs/index.html)
-- **Try it:** [https://npm.runkit.com/@lopatnov/javascripttostring](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring)
+Try the library interactively:
+
+| | Link |
+|---|---|
+| Interactive Demo | [demo/index.html](./demo/index.html) |
+| RunKit Playground | [runkit.com](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring) |
+
+## Documentation
+
+| | Link |
+|---|---|
+| API Reference | [docs/index.html](./docs/index.html) |
+| Changelog | [CHANGELOG.md](./CHANGELOG.md) |
+
+## Related Packages
+
+| Package | Description |
+|---|---|
+| [@lopatnov/worker-from-string](https://www.npmjs.com/package/@lopatnov/worker-from-string) | Create Web Workers from strings — pairs well with `javaScriptToString` |
+| [@lopatnov/get-internal-type](https://www.npmjs.com/package/@lopatnov/get-internal-type) | Runtime type detection used internally by this library |
 
 ## Contributing
 

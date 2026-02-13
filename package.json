@@ -21,9 +21,18 @@
     "TypeScript",
     "JavaScript"
   ],
-  "main": "dist/javascripttostring.umd.js",
+  "main": "dist/lib/javascripttostring.js",
   "module": "dist/javascripttostring.es5.js",
+  "browser": "dist/javascripttostring.umd.js",
   "typings": "dist/types/javascripttostring.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/javascripttostring.d.ts",
+      "import": "./dist/javascripttostring.es5.js",
+      "require": "./dist/lib/javascripttostring.js",
+      "default": "./dist/lib/javascripttostring.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -41,7 +50,7 @@
     "url": "https://github.com/lopatnov/jsToString/issues"
   },
   "scripts": {
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript && typedoc --out docs --entryPointStrategy expand src",
+    "build": "tsc --emitDeclarationOnly && rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript && typedoc --out docs --entryPointStrategy expand src",
     "configure-npm": "node ./set-registry.js -s https://registry.npmjs.org",
     "configure-gpr": "node ./set-registry.js -s https://npm.pkg.github.com",
     "test": "jest",

@@ -201,7 +201,7 @@ function typedArrayToString(value: any, options: IJ2SOptions, history: IJ2SHisto
 function setToString(value: Set<any>, options: IJ2SOptions, history: IJ2SHistory): string {
   const setValues: string[] = [];
 
-  value.forEach((value1: any, value2: any, set: Set<any>) => {
+  value.forEach((_: any, value2: any) => {
     setValues.push(stringifyRef(value2, options, history));
   });
 

@@ -192,6 +192,88 @@ button {
 
 .panel-output { margin-top: 1.5rem; }
 
+.panel-options { margin-bottom: 1rem; }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.1s ease;
+  border-bottom: 1px solid #1e293b;
+  border-right: 1px solid #1e293b;
+}
+.option-item:hover { background: #1a2536; }
+
+.option-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.option-name {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.78rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.option-desc {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.option-number {
+  cursor: default;
+}
+
+.option-number input[type="number"] {
+  width: 80px;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  outline: none;
+  text-align: center;
+  flex-shrink: 0;
+}
+.option-number input[type="number"]:focus { border-color: #2563eb; }
+.option-number input[type="number"]::placeholder { color: #475569; font-style: italic; }
+
+.btn-reset {
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.btn-reset:hover { background: #334155; color: #e2e8f0; border-color: #64748b; }
+
 .hidden { display: none; }
 
 footer {
@@ -213,4 +295,6 @@ footer a:hover { text-decoration: underline; }
   textarea { min-height: 180px; font-size: 0.8rem; }
   .actions { flex-direction: column; }
   button, .examples-dropdown select { width: 100%; }
+  .options-grid { grid-template-columns: 1fr; }
+  .option-item { border-right: none; }
 }

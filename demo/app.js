@@ -7,6 +7,12 @@ var verifyBadge = document.getElementById("verify-badge");
 var copyInputBtn = document.getElementById("copy-input-btn");
 var copyOutputBtn = document.getElementById("copy-output-btn");
 var examplesEl = document.getElementById("examples");
+var optFuncProps = document.getElementById("opt-func-props");
+var optFuncProto = document.getElementById("opt-func-proto");
+var optBuffers = document.getElementById("opt-buffers");
+var optNestedObjects = document.getElementById("opt-nested-objects");
+var optNestedArrays = document.getElementById("opt-nested-arrays");
+var optNestedFunctions = document.getElementById("opt-nested-functions");
 
 var examples = {
   "simple-object": 'return {\n  name: "Alex",\n  age: 30,\n  active: true\n};',
@@ -35,6 +41,31 @@ examplesEl.addEventListener("change", function () {
     this.value = "";
   }
 });
+
+function getOptions() {
+  var opts = {};
+  opts.includeFunctionProperties = optFuncProps.checked;
+  opts.includeFunctionPrototype = optFuncProto.checked;
+  opts.includeBuffers = optBuffers.checked;
+  var no = optNestedObjects.value;
+  if (no !== "") opts.nestedObjectsAmount = parseInt(no, 10);
+  var na = optNestedArrays.value;
+  if (na !== "") opts.nestedArraysAmount = parseInt(na, 10);
+  var nf = optNestedFunctions.value;
+  if (nf !== "") opts.nestedFunctionsAmount = parseInt(nf, 10);
+  return opts;
+}
+
+function resetOptions() {
+  optFuncProps.checked = true;
+  optFuncProto.checked = true;
+  optBuffers.checked = true;
+  optNestedObjects.value = "";
+  optNestedArrays.value = "";
+  optNestedFunctions.value = "";
+}
+
+document.getElementById("reset-options-btn").addEventListener("click", resetOptions);
 
 document.getElementById("run-btn").addEventListener("click", run);
 document.getElementById("clear-btn").addEventListener("click", function () {
@@ -102,7 +133,7 @@ function run() {
 
   var str;
   try {
-    str = javaScriptToString(value);
+    str = javaScriptToString(value, getOptions());
   } catch (err) {
     showOutput("javaScriptToString error:\n" + err.message, true);
     showVerify("", true, "Skipped — conversion error");

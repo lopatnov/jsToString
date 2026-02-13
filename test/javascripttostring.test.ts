@@ -282,9 +282,9 @@ describe("Function to String", () => {
   it("should work with includeFunctionProperties = false", () => {
     function TestConstructor() {}
     (TestConstructor as any).Test1 = "Completed";
-    TestConstructor.prototype.testMethod = () => "It works";
-    TestConstructor.prototype.testMethod.subTestMethod = () => "It not works";
-    TestConstructor.prototype.testMethod.prototype.subTestMethod = () => "It works too";
+    TestConstructor.prototype.testMethod = function() { return "It works"; };
+    TestConstructor.prototype.testMethod.subTestMethod = function() { return "It not works"; };
+    TestConstructor.prototype.testMethod.prototype.subTestMethod = function() { return "It works too"; };
 
     const stringFunction = j2s(TestConstructor, {
       includeFunctionProperties: false,

@@ -15,7 +15,7 @@ export default {
   input: `src/${libraryName.toLowerCase()}.ts`,
   output: [
     {
-      file: pkg.main,
+      file: pkg.browser,
       name: camelCase(libraryName),
       format: 'umd',
       sourcemap: true
@@ -24,6 +24,12 @@ export default {
       file: pkg.module,
       format: 'es',
       sourcemap: true
+    },
+    {
+      file: pkg.main,
+      format: 'cjs',
+      sourcemap: true,
+      exports: 'default'
     },
   ],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
