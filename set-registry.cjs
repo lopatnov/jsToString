@@ -17,4 +17,4 @@ if (!!registry) {
     delete pkg.publishConfig.registry;
 }
 
-fs.writeFileSync("package.json", JSON.stringify(pkg, null, 4));
+fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));

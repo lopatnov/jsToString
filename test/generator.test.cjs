@@ -1,4 +1,4 @@
-var j2s = require("../dist/javascripttostring.umd.js");
+var j2s = require("../src/javascripttostring").default;
 
 describe("Function to String", () => {
   it("should convert generator function", () => {
@@ -7,8 +7,8 @@ describe("Function to String", () => {
       yield i + 10;
     }
 
-    let stringFunction = j2s(generator);
-    let actual = Function("return " + stringFunction)();
+    const stringFunction = j2s(generator);
+    const actual = Function("return " + stringFunction)();
     var gen = actual(10);
 
     expect(gen.next().value).toBe(10);

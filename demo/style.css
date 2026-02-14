@@ -1,0 +1,300 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+}
+
+h1 span { color: #38bdf8; }
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.panel {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.panel-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+textarea {
+  width: 100%;
+  min-height: 220px;
+  padding: 1.25rem;
+  background: #0f172a;
+  color: #e2e8f0;
+  border: none;
+  outline: none;
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  resize: vertical;
+  tab-size: 2;
+}
+
+textarea::placeholder { color: #475569; }
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+.btn-primary:hover { background: #1d4ed8; }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-secondary {
+  background: #334155;
+  color: #cbd5e1;
+}
+.btn-secondary:hover { background: #475569; }
+
+.panel-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-copy {
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.btn-copy:hover { background: #334155; color: #e2e8f0; border-color: #64748b; }
+.btn-copy.copied { background: #065f46; color: #6ee7b7; border-color: #065f46; }
+
+.panel-tools select {
+  appearance: none;
+  padding: 0.35rem 2rem 0.35rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  background: #1e293b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E") no-repeat right 0.5rem center;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+.panel-tools select:hover { border-color: #64748b; }
+
+.output-area {
+  padding: 1.25rem;
+  background: #0f172a;
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 80px;
+  color: #a5f3fc;
+}
+
+.output-area.error {
+  color: #fca5a5;
+}
+
+.output-area.empty {
+  color: #475569;
+  font-style: italic;
+  font-family: inherit;
+}
+
+.verify-area {
+  padding: 1.25rem;
+  background: #0f172a;
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 60px;
+  color: #86efac;
+}
+
+.verify-area.error { color: #fca5a5; }
+.verify-area.empty { color: #475569; font-style: italic; font-family: inherit; }
+
+.badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-success { background: #065f46; color: #6ee7b7; }
+.badge-error { background: #7f1d1d; color: #fca5a5; }
+.badge-info { background: #1e3a5f; color: #93c5fd; }
+
+.panel-output { margin-top: 1.5rem; }
+
+.panel-options { margin-bottom: 1rem; }
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.1s ease;
+  border-bottom: 1px solid #1e293b;
+  border-right: 1px solid #1e293b;
+}
+.option-item:hover { background: #1a2536; }
+
+.option-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.option-name {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.78rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.option-desc {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.option-number {
+  cursor: default;
+}
+
+.option-number input[type="number"] {
+  width: 80px;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  outline: none;
+  text-align: center;
+  flex-shrink: 0;
+}
+.option-number input[type="number"]:focus { border-color: #2563eb; }
+.option-number input[type="number"]::placeholder { color: #475569; font-style: italic; }
+
+.btn-reset {
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.btn-reset:hover { background: #334155; color: #e2e8f0; border-color: #64748b; }
+
+.hidden { display: none; }
+
+footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+footer a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  body { padding: 1rem 0.5rem; }
+  h1 { font-size: 1.3rem; }
+  textarea { min-height: 180px; font-size: 0.8rem; }
+  .actions { flex-direction: column; }
+  button, .examples-dropdown select { width: 100%; }
+  .options-grid { grid-template-columns: 1fr; }
+  .option-item { border-right: none; }
+}
