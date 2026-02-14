@@ -51,7 +51,7 @@
     "url": "https://github.com/lopatnov/jsToString/issues"
   },
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript && typedoc --out docs --entryPointStrategy expand src",
+    "build": "tsc --emitDeclarationOnly && rollup -c rollup.config.js && typedoc --out docs --entryPointStrategy expand src",
     "configure-npm": "node ./set-registry.cjs -s https://registry.npmjs.org",
     "configure-gpr": "node ./set-registry.cjs -s https://npm.pkg.github.com",
     "test": "jest",
