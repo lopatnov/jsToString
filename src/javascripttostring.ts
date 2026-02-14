@@ -38,6 +38,16 @@ interface IJ2SHistory {
   currentPath: string[];
 }
 
+const identifierRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/;
+
+function propertyAccessor(name: string): string {
+  if (identifierRegex.test(name)) {
+    return `.${name}`;
+  }
+  const escaped = name.replace(/\\/g, "\\\\").replace(/'/gi, "\\'");
+  return `['${escaped}']`;
+}
+
 function fillNativeFunctions(ext: any, obj: any, objName: string, fromPrototype = true) {
   const arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype : obj);
   const protoPath = fromPrototype ? ".prototype." : ".";
@@ -183,7 +193,7 @@ function getLocalRefs(value: any) {
 function attachActions(localRefs: RefInstance[], result: string) {
   if (localRefs.length > 0) {
     counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
-    const localName = `___j2s_${counter}`;
+    const localName = `___ref${counter}`;
     const actions = localRefs.reduce((x1: string, x2: RefInstance) => {
       const action = converToAction(localName, x2);
       refs.splice(refs.indexOf(x2), 1);
@@ -209,7 +219,7 @@ function converToAction(localName: string, r: RefInstance) {
       path = localName;
       sourceObj = r.source;
     } else if (typeof destObj === "string") {
-      path += `['${destObj.replace(/'/gi, "\\'")}']`;
+      path += propertyAccessor(destObj);
       sourceObj = sourceObj[destObj];
     } else if (destObj !== sourceObj) {
       return "";
@@ -261,7 +271,7 @@ function objectToString(value: any, options: IJ2SOptions, history: IJ2SHistory):
       history.currentPath.pop();
       history.references.pop();
       if (propertyValue !== "undefined") {
-        if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propertyName)) {
+        if (!identifierRegex.test(propertyName)) {
           const escaped = propertyName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
           propertyName = `"${escaped}"`;
         }
@@ -290,12 +300,7 @@ function functionPropertiesToString(
       history.currentPath.pop();
       history.references.pop();
       if (propertyValue !== "undefined") {
-        if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propertyName)) {
-          result += `${functionName}.${propertyName} = ${propertyValue};\n`;
-        } else {
-          const escaped = propertyName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-          result += `${functionName}["${escaped}"] = ${propertyValue};\n`;
-        }
+        result += `${functionName}${propertyAccessor(propertyName)} = ${propertyValue};\n`;
       }
     }
   }
@@ -477,11 +482,11 @@ function attachCrossRefActions(localCrossRefs: CrossRefInstance[], result: strin
     return result;
   }
   counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
-  const localName = `___j2s_${counter}`;
+  const localName = `___ref${counter}`;
   const actions = localCrossRefs
     .map((cr) => {
-      const destAccessor = cr.destPath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
-      const srcAccessor = cr.sourcePath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
+      const destAccessor = cr.destPath.map(propertyAccessor).join("");
+      const srcAccessor = cr.sourcePath.map(propertyAccessor).join("");
       return `${localName}${destAccessor} = ${localName}${srcAccessor}; `;
     })
     .join("");

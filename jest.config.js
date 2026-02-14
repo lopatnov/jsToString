@@ -1,7 +1,7 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
-module.exports = {
+export default {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
 
@@ -35,6 +35,11 @@ module.exports = {
 
   // The test environment that will be used for testing
   testEnvironment: "node",
+
+  // Match test files including .cjs
+  testMatch: [
+    "**/?(*.)+(spec|test).+(ts|tsx|js|cjs)"
+  ],
 
   // A map from regular expressions to paths to transformers
   transform: {

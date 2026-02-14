@@ -51,6 +51,14 @@ function getInternalType(obj) {
 var refs = [];
 var crossRefs = [];
 var counter = 0;
+const identifierRegex = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/;
+function propertyAccessor(name) {
+    if (identifierRegex.test(name)) {
+        return `.${name}`;
+    }
+    const escaped = name.replace(/\\/g, "\\\\").replace(/'/gi, "\\'");
+    return `['${escaped}']`;
+}
 function fillNativeFunctions(ext, obj, objName, fromPrototype = true) {
     const arrNames = Object.getOwnPropertyNames(fromPrototype ? obj.prototype : obj);
     const protoPath = fromPrototype ? ".prototype." : ".";
@@ -159,10 +167,7 @@ function errorToString(value) {
     var _a;
     const message = JSON.stringify(value.message);
     const errorClass = ((_a = value.constructor) === null || _a === void 0 ? void 0 : _a.name) || "Error";
-    const knownErrors = [
-        "Error", "TypeError", "RangeError", "ReferenceError",
-        "SyntaxError", "URIError", "EvalError"
-    ];
+    const knownErrors = ["Error", "TypeError", "RangeError", "ReferenceError", "SyntaxError", "URIError", "EvalError"];
     if (knownErrors.includes(errorClass)) {
         return `new ${errorClass}(${message})`;
     }
@@ -193,7 +198,7 @@ function getLocalRefs(value) {
 function attachActions(localRefs, result) {
     if (localRefs.length > 0) {
         counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
-        const localName = `___j2s_${counter}`;
+        const localName = `___ref${counter}`;
         const actions = localRefs.reduce((x1, x2) => {
             const action = converToAction(localName, x2);
             refs.splice(refs.indexOf(x2), 1);
@@ -218,7 +223,7 @@ function converToAction(localName, r) {
             sourceObj = r.source;
         }
         else if (typeof destObj === "string") {
-            path += `['${destObj.replace(/'/gi, "\\'")}']`;
+            path += propertyAccessor(destObj);
             sourceObj = sourceObj[destObj];
         }
         else if (destObj !== sourceObj) {
@@ -259,7 +264,7 @@ function objectToString(value, options, history) {
             history.currentPath.pop();
             history.references.pop();
             if (propertyValue !== "undefined") {
-                if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propertyName)) {
+                if (!identifierRegex.test(propertyName)) {
                     const escaped = propertyName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
                     propertyName = `"${escaped}"`;
                 }
@@ -281,13 +286,7 @@ function functionPropertiesToString(functionName, value, options, history) {
             history.currentPath.pop();
             history.references.pop();
             if (propertyValue !== "undefined") {
-                if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(propertyName)) {
-                    result += `${functionName}.${propertyName} = ${propertyValue};\n`;
-                }
-                else {
-                    const escaped = propertyName.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-                    result += `${functionName}["${escaped}"] = ${propertyValue};\n`;
-                }
+                result += `${functionName}${propertyAccessor(propertyName)} = ${propertyValue};\n`;
             }
         }
     }
@@ -455,11 +454,11 @@ function attachCrossRefActions(localCrossRefs, result) {
         return result;
     }
     counter = (counter + 1) % Number.MAX_SAFE_INTEGER;
-    const localName = `___j2s_${counter}`;
+    const localName = `___ref${counter}`;
     const actions = localCrossRefs
         .map((cr) => {
-        const destAccessor = cr.destPath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
-        const srcAccessor = cr.sourcePath.map((p) => `['${p.replace(/'/gi, "\\'")}']`).join("");
+        const destAccessor = cr.destPath.map(propertyAccessor).join("");
+        const srcAccessor = cr.sourcePath.map(propertyAccessor).join("");
         return `${localName}${destAccessor} = ${localName}${srcAccessor}; `;
     })
         .join("");
@@ -501,4 +500,4 @@ function javaScriptToString(value, options) {
 }
 
 module.exports = javaScriptToString;
-//# sourceMappingURL=javascripttostring.js.map
+//# sourceMappingURL=javascripttostring.cjs.map

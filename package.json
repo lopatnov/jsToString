@@ -1,6 +1,7 @@
 {
   "name": "@lopatnov/javascripttostring",
   "version": "2.0.0",
+  "type": "module",
   "license": "Apache-2.0",
   "author": "lopatnov",
   "description": "A TypeScript library that converts any JavaScript runtime value into its string source code representation, including objects, arrays, functions, circular references, and cross-references",
@@ -21,16 +22,16 @@
     "TypeScript",
     "JavaScript"
   ],
-  "main": "dist/lib/javascripttostring.js",
-  "module": "dist/javascripttostring.es5.js",
+  "main": "dist/lib/javascripttostring.cjs",
+  "module": "dist/javascripttostring.es5.mjs",
   "browser": "dist/javascripttostring.umd.js",
   "typings": "dist/types/javascripttostring.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/javascripttostring.d.ts",
-      "import": "./dist/javascripttostring.es5.js",
-      "require": "./dist/lib/javascripttostring.js",
-      "default": "./dist/lib/javascripttostring.js"
+      "import": "./dist/javascripttostring.es5.mjs",
+      "require": "./dist/lib/javascripttostring.cjs",
+      "default": "./dist/lib/javascripttostring.cjs"
     }
   },
   "files": [
@@ -51,8 +52,8 @@
   },
   "scripts": {
     "build": "tsc --emitDeclarationOnly && rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript && typedoc --out docs --entryPointStrategy expand src",
-    "configure-npm": "node ./set-registry.js -s https://registry.npmjs.org",
-    "configure-gpr": "node ./set-registry.js -s https://npm.pkg.github.com",
+    "configure-npm": "node ./set-registry.cjs -s https://registry.npmjs.org",
+    "configure-gpr": "node ./set-registry.cjs -s https://npm.pkg.github.com",
     "test": "jest",
     "lint": "biome lint src test",
     "lint:fix": "biome lint --write src test",
