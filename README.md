@@ -63,6 +63,7 @@ Converts a JavaScript value to its string source code representation.
 | `nestedObjectsAmount` | `number` | `Infinity` | Max depth for nested objects |
 | `nestedArraysAmount` | `number` | `Infinity` | Max depth for nested arrays |
 | `nestedFunctionsAmount` | `number` | `Infinity` | Max depth for nested functions |
+| `throwOnNonSerializable` | `boolean` | `false` | Throw an error for non-serializable values (Promise, Generator, WeakRef, WeakMap, WeakSet, FinalizationRegistry) |
 
 ## Examples
 
@@ -121,7 +122,7 @@ var x = [1, 2, 3];
 x[0] = x;
 
 javaScriptToString(x);
-// '(function(){ var ___j2s_0 = [null, 2, 3]; ___j2s_0['0'] = ___j2s_0; return ___j2s_0; }())'
+// '(function(){ var ___ref1 = [null, 2, 3]; ___ref1[0] = ___ref1; return ___ref1; }())'
 ```
 
 ### Cross-References
@@ -133,13 +134,11 @@ var shared = { value: 42 };
 var obj = { a: shared, b: shared };
 
 javaScriptToString(obj);
-// Generates code where obj.a === obj.b (same reference), like:
-// (function(){ var ___j2s_0 = {
-// a: {
-//   value: 42
-// },
-// b: null
-// }; ___j2s_0['b'] = ___j2s_0['a']; return ___j2s_0; }())
+// Generates code where obj.a === obj.b (same reference):
+// (function(){ var ___ref1 = {
+//   a: { value: 42 },
+//   b: null
+// }; ___ref1.b = ___ref1.a; return ___ref1; }())
 ```
 
 ### Using with Web Workers
@@ -191,22 +190,29 @@ console.log(restored.name);             // "test"
 
 ## Supported Types
 
-| Type | Example |
-|------|---------|
-| Primitives | `string`, `number`, `boolean`, `undefined`, `null` |
-| BigInt | `BigInt(123)` |
-| Symbol | `Symbol("description")` |
-| RegExp | `/pattern/gi` |
-| Date | `new Date()` |
-| Error | `new Error("message")` |
-| Array | `[1, 2, 3]` |
-| Object | `{ key: "value" }` |
-| Function | `function() {}`, `() => {}` |
-| Map | `new Map([["key", "value"]])` |
-| Set | `new Set([1, 2, 3])` |
-| TypedArray | `Int8Array`, `Float64Array`, etc. |
-| ArrayBuffer | `new ArrayBuffer(8)` |
-| DataView | `new DataView(buffer)` |
+| Type | Example | Notes |
+|------|---------|-------|
+| Primitives | `string`, `number`, `boolean`, `undefined`, `null` | Including `-0` and `NaN` |
+| BigInt | `BigInt(123)` | |
+| Symbol | `Symbol("desc")`, `Symbol.for("key")` | Registry symbols preserved |
+| RegExp | `/pattern/gi` | `lastIndex` preserved when non-zero |
+| Date | `new Date("...")` | Invalid dates → `new Date(NaN)` |
+| Error | `new Error()`, `new TypeError()` | TypeError, RangeError, ReferenceError, SyntaxError, URIError, EvalError |
+| Array | `[1, 2, 3]` | Sparse arrays preserved |
+| Object | `{ key: "value" }` | Including `Object.create(null)` |
+| Function | `function() {}`, `() => {}`, `async function() {}` | Properties and prototype included |
+| Generator Function | `function*() {}`, `async function*() {}` | |
+| Map | `new Map([["key", "value"]])` | |
+| Set | `new Set([1, 2, 3])` | |
+| TypedArray | `Int8Array`, `Float64Array`, etc. | |
+| ArrayBuffer | `new ArrayBuffer(8)`, `SharedArrayBuffer` | |
+| DataView | `new DataView(buffer)` | |
+
+### Non-serializable Types
+
+The following types cannot be serialized and return `"undefined"` by default. Use `throwOnNonSerializable: true` to throw an error instead:
+
+`Promise`, `Generator`, `WeakRef`, `WeakMap`, `WeakSet`, `FinalizationRegistry`
 
 ## Demo
 

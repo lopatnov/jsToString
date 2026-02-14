@@ -11,6 +11,8 @@ export interface IJ2SOptions {
     nestedArraysAmount?: number;
     /** Max depth for nested functions. @defaultValue Number.POSITIVE_INFINITY */
     nestedFunctionsAmount?: number;
+    /** Throw an error when a non-serializable value is encountered (Promise, Generator, WeakRef, WeakMap, WeakSet, FinalizationRegistry). @defaultValue false */
+    throwOnNonSerializable?: boolean;
 }
 /**
  * Converts JavaScript value to string

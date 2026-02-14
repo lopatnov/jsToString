@@ -98,6 +98,12 @@
 <td><code>Infinity</code></td>
 <td>Max depth for nested functions</td>
 </tr>
+<tr>
+<td><code>throwOnNonSerializable</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Throw an error for non-serializable values (Promise, Generator, WeakRef, WeakMap, WeakSet, FinalizationRegistry)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="examples" class="tsd-anchor-link">Examples<a href="#examples" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
@@ -119,12 +125,12 @@
 
 <h3 id="circular-references" class="tsd-anchor-link">Circular References<a href="#circular-references" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p>Objects that reference themselves are fully supported:</p>
-<pre><code class="typescript"><span class="hl-10">var</span><span class="hl-1"> </span><span class="hl-9">x</span><span class="hl-1"> = [</span><span class="hl-13">1</span><span class="hl-1">, </span><span class="hl-13">2</span><span class="hl-1">, </span><span class="hl-13">3</span><span class="hl-1">];</span><br/><span class="hl-9">x</span><span class="hl-1">[</span><span class="hl-13">0</span><span class="hl-1">] = </span><span class="hl-9">x</span><span class="hl-1">;</span><br/><br/><span class="hl-0">javaScriptToString</span><span class="hl-1">(</span><span class="hl-9">x</span><span class="hl-1">);</span><br/><span class="hl-12">// &#39;(function(){ var ___j2s_0 = [null, 2, 3]; ___j2s_0[&#39;0&#39;] = ___j2s_0; return ___j2s_0; }())&#39;</span>
+<pre><code class="typescript"><span class="hl-10">var</span><span class="hl-1"> </span><span class="hl-9">x</span><span class="hl-1"> = [</span><span class="hl-13">1</span><span class="hl-1">, </span><span class="hl-13">2</span><span class="hl-1">, </span><span class="hl-13">3</span><span class="hl-1">];</span><br/><span class="hl-9">x</span><span class="hl-1">[</span><span class="hl-13">0</span><span class="hl-1">] = </span><span class="hl-9">x</span><span class="hl-1">;</span><br/><br/><span class="hl-0">javaScriptToString</span><span class="hl-1">(</span><span class="hl-9">x</span><span class="hl-1">);</span><br/><span class="hl-12">// &#39;(function(){ var ___ref1 = [null, 2, 3]; ___ref1[0] = ___ref1; return ___ref1; }())&#39;</span>
 </code><button type="button">Copy</button></pre>
 
 <h3 id="cross-references" class="tsd-anchor-link">Cross-References<a href="#cross-references" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <p>Objects shared between different branches are preserved as references:</p>
-<pre><code class="typescript"><span class="hl-10">var</span><span class="hl-1"> </span><span class="hl-9">shared</span><span class="hl-1"> = { </span><span class="hl-9">value:</span><span class="hl-1"> </span><span class="hl-13">42</span><span class="hl-1"> };</span><br/><span class="hl-10">var</span><span class="hl-1"> </span><span class="hl-9">obj</span><span class="hl-1"> = { </span><span class="hl-9">a:</span><span class="hl-1"> </span><span class="hl-9">shared</span><span class="hl-1">, </span><span class="hl-9">b:</span><span class="hl-1"> </span><span class="hl-9">shared</span><span class="hl-1"> };</span><br/><br/><span class="hl-0">javaScriptToString</span><span class="hl-1">(</span><span class="hl-9">obj</span><span class="hl-1">);</span><br/><span class="hl-12">// Generates code where obj.a === obj.b (same reference), like:</span><br/><span class="hl-12">// (function(){ var ___j2s_0 = {</span><br/><span class="hl-12">// a: {</span><br/><span class="hl-12">//   value: 42</span><br/><span class="hl-12">// },</span><br/><span class="hl-12">// b: null</span><br/><span class="hl-12">// }; ___j2s_0[&#39;b&#39;] = ___j2s_0[&#39;a&#39;]; return ___j2s_0; }())</span>
+<pre><code class="typescript"><span class="hl-10">var</span><span class="hl-1"> </span><span class="hl-9">shared</span><span class="hl-1"> = { </span><span class="hl-9">value:</span><span class="hl-1"> </span><span class="hl-13">42</span><span class="hl-1"> };</span><br/><span class="hl-10">var</span><span class="hl-1"> </span><span class="hl-9">obj</span><span class="hl-1"> = { </span><span class="hl-9">a:</span><span class="hl-1"> </span><span class="hl-9">shared</span><span class="hl-1">, </span><span class="hl-9">b:</span><span class="hl-1"> </span><span class="hl-9">shared</span><span class="hl-1"> };</span><br/><br/><span class="hl-0">javaScriptToString</span><span class="hl-1">(</span><span class="hl-9">obj</span><span class="hl-1">);</span><br/><span class="hl-12">// Generates code where obj.a === obj.b (same reference):</span><br/><span class="hl-12">// (function(){ var ___ref1 = {</span><br/><span class="hl-12">//   a: { value: 42 },</span><br/><span class="hl-12">//   b: null</span><br/><span class="hl-12">// }; ___ref1.b = ___ref1.a; return ___ref1; }())</span>
 </code><button type="button">Copy</button></pre>
 
 <h3 id="using-with-web-workers" class="tsd-anchor-link">Using with Web Workers<a href="#using-with-web-workers" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
@@ -143,67 +149,90 @@
 <tr>
 <th>Type</th>
 <th>Example</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Primitives</td>
 <td><code>string</code>, <code>number</code>, <code>boolean</code>, <code>undefined</code>, <code>null</code></td>
+<td>Including <code>-0</code> and <code>NaN</code></td>
 </tr>
 <tr>
 <td>BigInt</td>
 <td><code>BigInt(123)</code></td>
+<td></td>
 </tr>
 <tr>
 <td>Symbol</td>
-<td><code>Symbol(&quot;description&quot;)</code></td>
+<td><code>Symbol(&quot;desc&quot;)</code>, <code>Symbol.for(&quot;key&quot;)</code></td>
+<td>Registry symbols preserved</td>
 </tr>
 <tr>
 <td>RegExp</td>
 <td><code>/pattern/gi</code></td>
+<td><code>lastIndex</code> preserved when non-zero</td>
 </tr>
 <tr>
 <td>Date</td>
-<td><code>new Date()</code></td>
+<td><code>new Date(&quot;...&quot;)</code></td>
+<td>Invalid dates → <code>new Date(NaN)</code></td>
 </tr>
 <tr>
 <td>Error</td>
-<td><code>new Error(&quot;message&quot;)</code></td>
+<td><code>new Error()</code>, <code>new TypeError()</code></td>
+<td>TypeError, RangeError, ReferenceError, SyntaxError, URIError, EvalError</td>
 </tr>
 <tr>
 <td>Array</td>
 <td><code>[1, 2, 3]</code></td>
+<td>Sparse arrays preserved</td>
 </tr>
 <tr>
 <td>Object</td>
 <td><code>{ key: &quot;value&quot; }</code></td>
+<td>Including <code>Object.create(null)</code></td>
 </tr>
 <tr>
 <td>Function</td>
-<td><code>function() {}</code>, <code>() =&gt; {}</code></td>
+<td><code>function() {}</code>, <code>() =&gt; {}</code>, <code>async function() {}</code></td>
+<td>Properties and prototype included</td>
+</tr>
+<tr>
+<td>Generator Function</td>
+<td><code>function*() {}</code>, <code>async function*() {}</code></td>
+<td></td>
 </tr>
 <tr>
 <td>Map</td>
 <td><code>new Map([[&quot;key&quot;, &quot;value&quot;]])</code></td>
+<td></td>
 </tr>
 <tr>
 <td>Set</td>
 <td><code>new Set([1, 2, 3])</code></td>
+<td></td>
 </tr>
 <tr>
 <td>TypedArray</td>
 <td><code>Int8Array</code>, <code>Float64Array</code>, etc.</td>
+<td></td>
 </tr>
 <tr>
 <td>ArrayBuffer</td>
-<td><code>new ArrayBuffer(8)</code></td>
+<td><code>new ArrayBuffer(8)</code>, <code>SharedArrayBuffer</code></td>
+<td></td>
 </tr>
 <tr>
 <td>DataView</td>
 <td><code>new DataView(buffer)</code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
+<h3 id="non-serializable-types" class="tsd-anchor-link">Non-serializable Types<a href="#non-serializable-types" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>The following types cannot be serialized and return <code>&quot;undefined&quot;</code> by default. Use <code>throwOnNonSerializable: true</code> to throw an error instead:</p>
+<p><code>Promise</code>, <code>Generator</code>, <code>WeakRef</code>, <code>WeakMap</code>, <code>WeakSet</code>, <code>FinalizationRegistry</code></p>
 <h2 id="demo" class="tsd-anchor-link">Demo<a href="#demo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
 <p>Try the library interactively:</p>
 <table>
@@ -273,4 +302,4 @@
 <p><a href="https://www.linkedin.com/in/lopatnov/"><img src="https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&amp;logo=linkedin" alt="LinkedIn"></a>
 <a href="https://github.com/lopatnov"><img src="https://img.shields.io/badge/GitHub-Follow-black?style=flat&amp;logo=github" alt="GitHub"></a></p>
 <p>If you find this project useful, please consider giving it a star on GitHub!</p>
-</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#lopatnovjavascripttostring"><span>@lopatnov/javascripttostring</span></a><ul><li><a href="#installation"><span>Installation</span></a></li><li><ul><li><a href="#browser-cdn"><span>Browser (<wbr/>CDN)</span></a></li></ul></li><li><a href="#usage"><span>Usage</span></a></li><li><ul><li><a href="#es-modules"><span>ES <wbr/>Modules</span></a></li><li><a href="#commonjs"><span>Common<wbr/>JS</span></a></li><li><a href="#browser-umd"><span>Browser (<wbr/>UMD)</span></a></li></ul></li><li><a href="#api"><span>API</span></a></li><li><ul><li><a href="#javascripttostringvalue-options-string"><span>java<wbr/>Script<wbr/>To<wbr/>String(value, options?): string</span></a></li><li><a href="#options"><span>Options</span></a></li></ul></li><li><a href="#examples"><span>Examples</span></a></li><li><ul><li><a href="#primitives"><span>Primitives</span></a></li><li><a href="#arrays"><span>Arrays</span></a></li><li><a href="#objects"><span>Objects</span></a></li><li><a href="#functions-with-properties"><span>Functions with <wbr/>Properties</span></a></li><li><a href="#circular-references"><span>Circular <wbr/>References</span></a></li><li><a href="#cross-references"><span>Cross-<wbr/>References</span></a></li><li><a href="#using-with-web-workers"><span>Using with <wbr/>Web <wbr/>Workers</span></a></li><li><a href="#restoring-values"><span>Restoring <wbr/>Values</span></a></li></ul></li><li><a href="#supported-types"><span>Supported <wbr/>Types</span></a></li><li><a href="#demo"><span>Demo</span></a></li><li><a href="#documentation"><span>Documentation</span></a></li><li><a href="#related-packages"><span>Related <wbr/>Packages</span></a></li><li><a href="#contributing"><span>Contributing</span></a></li><li><a href="#license"><span>License</span></a></li><li><ul><li><a href="#author"><span>Author</span></a></li></ul></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">@lopatnov/javascripttostring</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#lopatnovjavascripttostring"><span>@lopatnov/javascripttostring</span></a><ul><li><a href="#installation"><span>Installation</span></a></li><li><ul><li><a href="#browser-cdn"><span>Browser (<wbr/>CDN)</span></a></li></ul></li><li><a href="#usage"><span>Usage</span></a></li><li><ul><li><a href="#es-modules"><span>ES <wbr/>Modules</span></a></li><li><a href="#commonjs"><span>Common<wbr/>JS</span></a></li><li><a href="#browser-umd"><span>Browser (<wbr/>UMD)</span></a></li></ul></li><li><a href="#api"><span>API</span></a></li><li><ul><li><a href="#javascripttostringvalue-options-string"><span>java<wbr/>Script<wbr/>To<wbr/>String(value, options?): string</span></a></li><li><a href="#options"><span>Options</span></a></li></ul></li><li><a href="#examples"><span>Examples</span></a></li><li><ul><li><a href="#primitives"><span>Primitives</span></a></li><li><a href="#arrays"><span>Arrays</span></a></li><li><a href="#objects"><span>Objects</span></a></li><li><a href="#functions-with-properties"><span>Functions with <wbr/>Properties</span></a></li><li><a href="#circular-references"><span>Circular <wbr/>References</span></a></li><li><a href="#cross-references"><span>Cross-<wbr/>References</span></a></li><li><a href="#using-with-web-workers"><span>Using with <wbr/>Web <wbr/>Workers</span></a></li><li><a href="#restoring-values"><span>Restoring <wbr/>Values</span></a></li></ul></li><li><a href="#supported-types"><span>Supported <wbr/>Types</span></a></li><li><ul><li><a href="#non-serializable-types"><span>Non-<wbr/>serializable <wbr/>Types</span></a></li></ul></li><li><a href="#demo"><span>Demo</span></a></li><li><a href="#documentation"><span>Documentation</span></a></li><li><a href="#related-packages"><span>Related <wbr/>Packages</span></a></li><li><a href="#contributing"><span>Contributing</span></a></li><li><a href="#license"><span>License</span></a></li><li><ul><li><a href="#author"><span>Author</span></a></li></ul></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">@lopatnov/javascripttostring</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>

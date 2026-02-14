@@ -13,6 +13,8 @@ export interface IJ2SOptions {
   nestedArraysAmount?: number;
   /** Max depth for nested functions. @defaultValue Number.POSITIVE_INFINITY */
   nestedFunctionsAmount?: number;
+  /** Throw an error when a non-serializable value is encountered (Promise, Generator, WeakRef, WeakMap, WeakSet, FinalizationRegistry). @defaultValue false */
+  throwOnNonSerializable?: boolean;
 }
 
 interface RefInstance {
@@ -384,8 +386,20 @@ function stringify(value: any, options: IJ2SOptions, history: IJ2SHistory): stri
     case "typedarray":
       return typedArrayToString(value, options, history);
     case "set":
+      if (value instanceof WeakSet) {
+        if (options.throwOnNonSerializable) {
+          throw new Error("Non-serializable value: WeakSet");
+        }
+        return "undefined";
+      }
       return setToString(value, options, history);
     case "map":
+      if (value instanceof WeakMap) {
+        if (options.throwOnNonSerializable) {
+          throw new Error("Non-serializable value: WeakMap");
+        }
+        return "undefined";
+      }
       return mapToString(value, options, history);
     case "object":
       return objectToString(value, options, history);
@@ -398,6 +412,13 @@ function stringify(value: any, options: IJ2SOptions, history: IJ2SHistory): stri
       return dataViewToString(value, options, history);
     case "promise":
     case "generator":
+    case "weakref":
+    case "weakmap":
+    case "weakset":
+    case "finalizationregistry":
+      if (options.throwOnNonSerializable) {
+        throw new Error(`Non-serializable value: ${getObjectType(value)}`);
+      }
       return "undefined";
     default:
       return JSON.stringify(value);
@@ -511,6 +532,7 @@ function javaScriptToString(value: any, options?: IJ2SOptions): string {
       options.nestedArraysAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedArraysAmount,
     nestedFunctionsAmount:
       options.nestedFunctionsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedFunctionsAmount,
+    throwOnNonSerializable: options.throwOnNonSerializable === undefined ? false : options.throwOnNonSerializable,
   };
 
   // Clear global state before conversion

@@ -23,13 +23,13 @@
     "JavaScript"
   ],
   "main": "dist/lib/javascripttostring.cjs",
-  "module": "dist/javascripttostring.es5.mjs",
+  "module": "dist/javascripttostring.esm.mjs",
   "browser": "dist/javascripttostring.umd.js",
   "typings": "dist/types/javascripttostring.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/javascripttostring.d.ts",
-      "import": "./dist/javascripttostring.es5.mjs",
+      "import": "./dist/javascripttostring.esm.mjs",
       "require": "./dist/lib/javascripttostring.cjs",
       "default": "./dist/lib/javascripttostring.cjs"
     }
@@ -82,6 +82,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@lopatnov/get-internal-type": "^1.5.7"
+    "@lopatnov/get-internal-type": "^2.0.0"
   }
 }

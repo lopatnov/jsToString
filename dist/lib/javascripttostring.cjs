@@ -1,21 +1,28 @@
 'use strict';
 
-var types = {}, typesToString = types.toString, buildInList = [
+const types = {};
+const typesToString = Object.prototype.toString;
+const builtInList = [
     "Boolean",
     "Number",
     "String",
-    "Function",
     "Array",
     "Date",
     "RegExp",
     "Object",
     "Error",
     "Promise",
-    "Generator",
-    "GeneratorFunction",
-    "ArrayBuffer",
-    "DataView"
-], typedArrays = [
+    "DataView",
+    "WeakRef",
+    "FinalizationRegistry"
+];
+const functions = ["Function", "AsyncFunction"];
+const generators = ["Generator", "AsyncGenerator"];
+const generatorFunctions = ["GeneratorFunction", "AsyncGeneratorFunction"];
+const arrayBuffers = ["ArrayBuffer", "SharedArrayBuffer"];
+const maps = ["Map", "WeakMap"];
+const sets = ["Set", "WeakSet"];
+const typedArrays = [
     "Int8Array",
     "Uint8Array",
     "Uint8ClampedArray",
@@ -27,9 +34,21 @@ var types = {}, typesToString = types.toString, buildInList = [
     "Float64Array",
     "BigInt64Array",
     "BigUint64Array"
-], maps = ["Map", "WeakMap"], sets = ["Set", "WeakSet"];
-buildInList.forEach(function (name) {
+];
+builtInList.forEach(function (name) {
     types["[object " + name + "]"] = name.toLowerCase();
+});
+functions.forEach(function (name) {
+    types["[object " + name + "]"] = "function";
+});
+generators.forEach(function (name) {
+    types["[object " + name + "]"] = "generator";
+});
+generatorFunctions.forEach(function (name) {
+    types["[object " + name + "]"] = "generatorfunction";
+});
+arrayBuffers.forEach(function (name) {
+    types["[object " + name + "]"] = "arraybuffer";
 });
 maps.forEach(function (name) {
     types["[object " + name + "]"] = "map";
@@ -361,8 +380,20 @@ function stringify(value, options, history) {
         case "typedarray":
             return typedArrayToString(value, options, history);
         case "set":
+            if (value instanceof WeakSet) {
+                if (options.throwOnNonSerializable) {
+                    throw new Error("Non-serializable value: WeakSet");
+                }
+                return "undefined";
+            }
             return setToString(value, options, history);
         case "map":
+            if (value instanceof WeakMap) {
+                if (options.throwOnNonSerializable) {
+                    throw new Error("Non-serializable value: WeakMap");
+                }
+                return "undefined";
+            }
             return mapToString(value, options, history);
         case "object":
             return objectToString(value, options, history);
@@ -375,6 +406,13 @@ function stringify(value, options, history) {
             return dataViewToString(value, options, history);
         case "promise":
         case "generator":
+        case "weakref":
+        case "weakmap":
+        case "weakset":
+        case "finalizationregistry":
+            if (options.throwOnNonSerializable) {
+                throw new Error(`Non-serializable value: ${getInternalType(value)}`);
+            }
             return "undefined";
         default:
             return JSON.stringify(value);
@@ -478,6 +516,7 @@ function javaScriptToString(value, options) {
         nestedObjectsAmount: options.nestedObjectsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedObjectsAmount,
         nestedArraysAmount: options.nestedArraysAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedArraysAmount,
         nestedFunctionsAmount: options.nestedFunctionsAmount === undefined ? Number.POSITIVE_INFINITY : options.nestedFunctionsAmount,
+        throwOnNonSerializable: options.throwOnNonSerializable === undefined ? false : options.throwOnNonSerializable,
     };
     // Clear global state before conversion
     refs = [];
