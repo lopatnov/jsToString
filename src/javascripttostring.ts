@@ -46,6 +46,9 @@ function propertyAccessor(name: string): string {
   if (identifierRegex.test(name)) {
     return `.${name}`;
   }
+  if (/^\d+$/.test(name)) {
+    return `[${name}]`;
+  }
   const escaped = name.replace(/\\/g, "\\\\").replace(/'/gi, "\\'");
   return `['${escaped}']`;
 }
