@@ -3,10 +3,24 @@
 [![npm](https://img.shields.io/npm/dt/@lopatnov/javascripttostring)](https://www.npmjs.com/package/@lopatnov/javascripttostring)
 [![NPM version](https://badge.fury.io/js/%40lopatnov%2Fjavascripttostring.svg)](https://www.npmjs.com/package/@lopatnov/javascripttostring)
 [![License](https://img.shields.io/github/license/lopatnov/jsToString)](https://github.com/lopatnov/jsToString/blob/master/LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![GitHub stars](https://img.shields.io/github/stars/lopatnov/jsToString)](https://github.com/lopatnov/jsToString/stargazers)
 
 A TypeScript library that converts any JavaScript runtime value into its string source code representation. Supports objects, arrays, functions, circular references, cross-references, and more.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [API](#api)
+- [Examples](#examples)
+- [Supported Types](#supported-types)
+- [Demo](#demo)
+- [Documentation](#documentation)
+- [Related Packages](#related-packages)
+- [Contributing](#contributing)
+- [Built With](#built-with)
+- [License](#license)
 
 ## Installation
 
@@ -17,7 +31,7 @@ npm install @lopatnov/javascripttostring
 ### Browser (CDN)
 
 ```html
-<script src="https://unpkg.com/@lopatnov/javascripttostring"></script>
+<script src="https://unpkg.com/@lopatnov/javascripttostring/dist/javascripttostring.umd.js"></script>
 ```
 
 ## Usage
@@ -218,17 +232,13 @@ The following types cannot be serialized and return `"undefined"` by default. Us
 
 Try the library interactively:
 
-| | Link |
-|---|---|
-| Interactive Demo | [demo/index.html](./demo/index.html) |
-| RunKit Playground | [runkit.com](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring) |
+- [Interactive Demo](./demo/index.html)
+- [RunKit Playground](https://npm.runkit.com/%40lopatnov%2Fjavascripttostring)
 
 ## Documentation
 
-| | Link |
-|---|---|
-| API Reference | [docs/index.html](./docs/index.html) |
-| Changelog | [CHANGELOG.md](./CHANGELOG.md) |
+- [API Reference](./docs/index.html)
+- [Changelog](./CHANGELOG.md)
 
 ## Related Packages
 
@@ -239,21 +249,24 @@ Try the library interactively:
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
-## License
-
-[Apache-2.0](LICENSE)
-
-Copyright 2019-2026 Oleksandr Lopatnov
+- Bug reports → [open an issue](https://github.com/lopatnov/jsToString/issues)
+- Found it useful? A [star on GitHub](https://github.com/lopatnov/jsToString) helps others discover the project
 
 ---
 
-### Author
+## Built With
 
-**Oleksandr Lopatnov**
+- [TypeScript](https://www.typescriptlang.org/) — strict typing throughout
+- [Rollup](https://rollupjs.org/) — bundled to ESM, CJS, and UMD formats
+- [Biome](https://biomejs.dev/) — linting and formatting
+- [Vitest](https://vitest.dev/) — unit testing
+- [TypeDoc](https://typedoc.org/) — API documentation generation
+- [@lopatnov/get-internal-type](https://github.com/lopatnov/get-internal-type) — reliable runtime type detection
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/lopatnov/)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/lopatnov)
+---
 
-If you find this project useful, please consider giving it a star on GitHub!
+## License
+
+[Apache-2.0](https://github.com/lopatnov/jsToString/blob/master/LICENSE) © 2019–2026 [Oleksandr Lopatnov](https://github.com/lopatnov) · [LinkedIn](https://www.linkedin.com/in/lopatnov/)

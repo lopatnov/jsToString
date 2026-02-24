@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-02-24
+
+### Added
+
+- Table of Contents added to README
+
+### Changed
+
+- Migrated from Jest + ts-jest to Vitest — native ESM, native TypeScript, no transform workarounds
+- Removed `jest`, `jest-config`, `ts-jest`, `@types/jest` dependencies
+- `jest.config.js` replaced with `vitest.config.js`
+- Test files converted from `.cjs` to `.ts`
+- Updated `@lopatnov/get-internal-type` to 2.2.1
+- Updated `@lopatnov/rollup-plugin-uglify` to 4.1.3
+
 ## [2.0.0] - 2026-02-14
 
 ### Added
