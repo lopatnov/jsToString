@@ -10,8 +10,10 @@
             "name": "Launch Tests",
             "program": "${workspaceFolder}\\node_modules\\jest\\bin\\jest",
             "args": [
-                "--debug"
+                "--runInBand",
+                "--no-cache"
             ],
+            "console": "integratedTerminal"
         }
     ]
 }
