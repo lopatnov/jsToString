@@ -30,8 +30,7 @@
   },
   "scripts": {
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --entryPointStrategy expand src",
-    "configure-npm": "node ./set-registry.js -s https://registry.npmjs.org",
-    "configure-gpr": "node ./set-registry.js -s https://npm.pkg.github.com",
+
     "test": "jest"
   },
   "devDependencies": {
