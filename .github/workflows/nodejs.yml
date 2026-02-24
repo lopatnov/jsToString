@@ -1,4 +1,4 @@
-name: Node CI
+name: Node Package CI
 
 on: [push, pull_request]
 
@@ -11,24 +11,24 @@ jobs:
         node-version: [18.x, 20.x, 22.x, 24.x]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Lint and format check
-      run: npm run check
+      - name: Lint and format check
+        run: npm run check
 
-    - name: Build
-      run: npm run build
+      - name: Build
+        run: npm run build
 
-    - name: Test
-      run: npm test
-      env:
-        CI: true
+      - name: Test
+        run: npm test
+        env:
+          CI: true

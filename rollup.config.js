@@ -1,15 +1,15 @@
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import camelCase from 'lodash.camelcase';
-import typescript from '@rollup/plugin-typescript';
-import json from '@rollup/plugin-json';
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import camelCase from "lodash.camelcase";
+import typescript from "@rollup/plugin-typescript";
+import json from "@rollup/plugin-json";
 import uglify from "@lopatnov/rollup-plugin-uglify";
-import { createRequire } from 'module';
+import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
-const pkg = require('./package.json');
+const pkg = require("./package.json");
 
-const libraryName = 'JavaScriptToString';
+const libraryName = "JavaScriptToString";
 
 export default {
   input: `src/${libraryName.toLowerCase()}.ts`,
@@ -17,39 +17,37 @@ export default {
     {
       file: pkg.browser,
       name: camelCase(libraryName),
-      format: 'umd',
+      format: "umd",
       sourcemap: true,
-      plugins: [uglify({ sourceMap: true })]
+      plugins: [uglify({ sourceMap: true, hook: "renderChunk" })],
     },
     {
       file: pkg.module,
-      format: 'es',
-      sourcemap: true
+      format: "es",
+      sourcemap: true,
     },
     {
       file: pkg.main,
-      format: 'cjs',
+      format: "cjs",
       sourcemap: true,
-      exports: 'default'
+      exports: "default",
     },
   ],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: [
-    ...Object.keys(pkg.peerDependencies || {})
-  ],
+  external: [...Object.keys(pkg.peerDependencies || {})],
   watch: {
-    include: 'src/**/*',
+    include: "src/**/*",
   },
   plugins: [
     // Allow json resolution
     json(),
     // Compile TypeScript files
     typescript({
-      tsconfig: './tsconfig.json',
+      tsconfig: "./tsconfig.json",
       // Override tsconfig settings for rollup bundling
       declaration: false,
       declarationDir: undefined,
-      outDir: undefined
+      outDir: undefined,
     }),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs(),
